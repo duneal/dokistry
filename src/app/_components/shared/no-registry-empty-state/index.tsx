@@ -4,7 +4,7 @@ import { Plus } from "lucide-react"
 import * as React from "react"
 import Button from "@/app/_components/ui/button"
 import type { Registry } from "@/utils/types/registry.interface"
-import { RegistryAddForm } from "../registry-add-form"
+import { RegistryAddForm } from "../registry-form"
 import "./no-registry-empty-state.scss"
 
 interface NoRegistryEmptyStateProps {

@@ -1,8 +1,18 @@
 "use client"
 
-import { Check, ChevronsUpDown, Plus, Server } from "lucide-react"
+import { ChevronsUpDown, Loader2, Pencil, Plus, Server, Trash2, XCircle } from "lucide-react"
 import * as React from "react"
+import { useEffect } from "react"
+import { toast } from "sonner"
 import Button from "@/app/_components/ui/button"
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/app/_components/ui/dialog"
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,14 +20,16 @@ import {
 	DropdownMenuTrigger,
 } from "@/app/_components/ui/dropdown-menu"
 import { SidebarMenuButton } from "@/app/_components/ui/sidebar"
+import { removeFromString } from "@/utils/helpers/text"
 import {
+	deleteRegistry,
 	getUserRegistries,
 	getUserWithSelectedRegistry,
 	updateSelectedRegistry,
 } from "@/utils/lib/auth-actions"
 import type { Registry } from "@/utils/types/registry.interface"
 import { Separator } from "../../ui"
-import { RegistryAddForm } from "../registry-add-form"
+import { RegistryForm } from "../registry-form"
 import "./registry-switcher.scss"
 
 interface RegistrySwitcherProps {
@@ -28,11 +40,15 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 	const [registries, setRegistries] = React.useState<Registry[]>([])
 	const [selectedRegistry, setSelectedRegistry] = React.useState<string>("")
 	const [isDialogOpen, setIsDialogOpen] = React.useState(false)
+	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
+	const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
+	const [registryToDelete, setRegistryToDelete] = React.useState<Registry | null>(null)
+	const [registryToEdit, setRegistryToEdit] = React.useState<Registry | null>(null)
+	const [isDeleting, setIsDeleting] = React.useState(false)
 	const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
 	const [isLoading, setIsLoading] = React.useState(false)
 
-	// Fetch registries and user's selected registry on component mount
-	React.useEffect(() => {
+	useEffect(() => {
 		const fetchData = async () => {
 			setIsLoading(true)
 			try {
@@ -93,9 +109,8 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 		fetchData()
 	}, [defaultRegistry])
 
-	const handleRegistryAdded = async (newRegistry: Registry) => {
-		setRegistries((prev) => [...prev, newRegistry])
-		setSelectedRegistry(newRegistry.url)
+	const handleRegistryAdded = async (_newRegistry: Registry) => {
+		window.location.reload()
 	}
 
 	const handleRegistrySelect = async (registryUrl: string) => {
@@ -126,6 +141,79 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 		setIsDialogOpen(true)
 	}
 
+	const handleEditClick = (registry: Registry) => {
+		setRegistryToEdit(registry)
+		setIsEditDialogOpen(true)
+		setIsDropdownOpen(false)
+	}
+
+	const handleDeleteClick = (registry: Registry) => {
+		setRegistryToDelete(registry)
+		setIsDeleteDialogOpen(true)
+		setIsDropdownOpen(false)
+	}
+
+	const handleConfirmDelete = async () => {
+		if (!registryToDelete) return
+
+		setIsDeleting(true)
+		try {
+			const result = await deleteRegistry(registryToDelete.id)
+
+			if (result.error) {
+				toast.error("Failed to delete registry", {
+					description: result.error,
+					duration: 4000,
+				})
+			} else {
+				toast.success("Registry deleted successfully", {
+					duration: 3000,
+				})
+
+				setIsDeleteDialogOpen(false)
+				setRegistryToDelete(null)
+
+				window.location.reload()
+			}
+		} catch (error) {
+			// Check if this is a redirect error (which is expected and handled by Next.js)
+			if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+				throw error
+			}
+
+			toast.error("Failed to delete registry", {
+				description: "An unexpected error occurred",
+				duration: 4000,
+			})
+			console.error("Failed to delete registry:", error)
+		} finally {
+			setIsDeleting(false)
+		}
+	}
+
+	const handleCancelDelete = () => {
+		setIsDeleteDialogOpen(false)
+		setRegistryToDelete(null)
+	}
+
+	const handleDeleteDialogOpenChange = (open: boolean) => {
+		if (!open && !isDeleting) {
+			setIsDeleteDialogOpen(false)
+			setRegistryToDelete(null)
+		}
+	}
+
+	const handleEditDialogOpenChange = (open: boolean) => {
+		if (!open) {
+			setIsEditDialogOpen(false)
+			setRegistryToEdit(null)
+		}
+	}
+
+	const handleRegistrySaved = async (_registry: Registry) => {
+		window.location.reload()
+	}
+
 	return (
 		<div className="registry-switcher">
 			<DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -137,7 +225,9 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 						<div className="registry-switcher__content">
 							<span className="registry-switcher__content__title">Registry</span>
 							<span className="registry-switcher__content__subtitle">
-								{selectedRegistry || "No registry selected"}
+								{selectedRegistry
+									? removeFromString(removeFromString(selectedRegistry, "https://"), "http://")
+									: "No registry selected"}
 							</span>
 						</div>
 						<ChevronsUpDown className="registry-switcher__chevron" size={18} />
@@ -160,10 +250,33 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 								onSelect={() => handleRegistrySelect(registry.url)}
 								className={`registry-switcher__item ${registry.url === selectedRegistry ? "registry-switcher__item--selected" : ""}`}
 							>
-								{registry.url}
-								{registry.url === selectedRegistry && (
-									<Check className="registry-switcher__item__check" size={18} />
-								)}
+								<span className="registry-switcher__item__text">
+									{removeFromString(removeFromString(registry.url, "https://"), "http://")}
+								</span>
+								<div className="registry-switcher__item__actions">
+									<button
+										type="button"
+										className="registry-switcher__item__action registry-switcher__item__action--edit"
+										onClick={(e) => {
+											e.preventDefault()
+											e.stopPropagation()
+											handleEditClick(registry)
+										}}
+									>
+										<Pencil className="registry-switcher__item__action__icon" size={16} />
+									</button>
+									<button
+										type="button"
+										className="registry-switcher__item__action registry-switcher__item__action--delete"
+										onClick={(e) => {
+											e.preventDefault()
+											e.stopPropagation()
+											handleDeleteClick(registry)
+										}}
+									>
+										<Trash2 className="registry-switcher__item__action__icon" size={16} />
+									</button>
+								</div>
 							</DropdownMenuItem>
 						))
 					)}
@@ -183,12 +296,54 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 				</DropdownMenuContent>
 			</DropdownMenu>
 
-			<RegistryAddForm
+			<RegistryForm
 				open={isDialogOpen}
 				onOpenChange={setIsDialogOpen}
-				onRegistryAdded={handleRegistryAdded}
+				onRegistrySaved={handleRegistryAdded}
 				className="registry-switcher__dialog"
 			/>
+
+			<RegistryForm
+				open={isEditDialogOpen}
+				onOpenChange={handleEditDialogOpenChange}
+				onRegistrySaved={handleRegistrySaved}
+				registry={registryToEdit}
+				className="registry-switcher__dialog"
+			/>
+
+			<Dialog open={isDeleteDialogOpen} onOpenChange={handleDeleteDialogOpenChange}>
+				<DialogContent className="registry-switcher__delete-dialog">
+					<DialogHeader>
+						<DialogTitle>Delete Registry</DialogTitle>
+						<DialogDescription>
+							Are you sure you want to delete <strong>{registryToDelete?.url}</strong>? This action
+							cannot be undone.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button variant="ghost" size="sm" onClick={handleCancelDelete} disabled={isDeleting}>
+							<XCircle className="registry-switcher__delete-dialog__icon" size={16} />
+							Cancel
+						</Button>
+						<Button variant="danger" size="sm" onClick={handleConfirmDelete} disabled={isDeleting}>
+							{isDeleting ? (
+								<>
+									<Loader2
+										className="registry-switcher__delete-dialog__icon registry-switcher__delete-dialog__icon--spinning"
+										size={16}
+									/>
+									Deleting...
+								</>
+							) : (
+								<>
+									<Trash2 className="registry-switcher__delete-dialog__icon" size={16} />
+									Delete Permanently
+								</>
+							)}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</div>
 	)
 }

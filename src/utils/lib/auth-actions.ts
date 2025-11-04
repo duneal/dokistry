@@ -1,5 +1,6 @@
 "use server"
 
+import axios from "axios"
 import { APIError } from "better-auth/api"
 import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
@@ -270,6 +271,59 @@ export async function updateSelectedRegistry(registryId: string) {
 	}
 }
 
+export async function testRegistryConnection(
+	url: string,
+	username: string,
+	password: string,
+): Promise<{ success: boolean; error?: string }> {
+	try {
+		const baseUrl = url.replace(/\/$/, "")
+		const auth = Buffer.from(`${username}:${password}`).toString("base64")
+
+		const result = await axios.get(`${baseUrl}/v2/`, {
+			headers: {
+				Authorization: `Basic ${auth}`,
+				Accept: "application/json",
+				"User-Agent": "Dokistry/1.0",
+			},
+			timeout: 10000,
+		})
+
+		console.log("Result:", result)
+
+		return { success: true }
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			if (error.response?.status === 401) {
+				return { success: false, error: "Authentication failed: Invalid credentials" }
+			}
+			if (error.response?.status === 403) {
+				return { success: false, error: "Access forbidden: Insufficient permissions" }
+			}
+			if (error.response?.status === 404) {
+				return { success: false, error: "Registry endpoint not found" }
+			}
+			if (error.code === "ECONNABORTED") {
+				return { success: false, error: "Connection timeout: Registry did not respond" }
+			}
+			if (error.code === "ECONNREFUSED") {
+				return { success: false, error: "Connection refused: Cannot reach registry" }
+			}
+			if (error.code === "ENOTFOUND") {
+				return { success: false, error: "Host not found: Invalid registry URL" }
+			}
+			return {
+				success: false,
+				error: error.message || "Failed to connect to registry",
+			}
+		}
+		return {
+			success: false,
+			error: error instanceof Error ? error.message : "Unknown error occurred",
+		}
+	}
+}
+
 export async function createRegistry(url: string, username: string, password: string) {
 	try {
 		const session = await getSession()
@@ -305,6 +359,146 @@ export async function createRegistry(url: string, username: string, password: st
 
 		console.error("Error creating registry:", error)
 		return { error: "Failed to create registry" }
+	}
+}
+
+export async function updateRegistry(
+	registryId: string,
+	url: string,
+	username: string,
+	password: string,
+) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			redirect("/signin")
+		}
+
+		// Verify the registry belongs to the user
+		const userRegistry = await db
+			.select()
+			.from(registry)
+			.where(eq(registry.id, registryId))
+			.limit(1)
+
+		if (userRegistry.length === 0) {
+			return { error: "Registry not found" }
+		}
+
+		if (userRegistry[0].userId !== session.user.id) {
+			return { error: "Unauthorized" }
+		}
+
+		// Prepare update data - only update password if provided
+		const updateData: {
+			url: string
+			username: string
+			password?: string
+			updatedAt: Date
+		} = {
+			url,
+			username,
+			updatedAt: new Date(),
+		}
+
+		// Only update password if it's provided (not empty)
+		if (password && password.trim() !== "") {
+			updateData.password = password
+		}
+
+		// Update the registry
+		const updatedRegistry = await db
+			.update(registry)
+			.set(updateData)
+			.where(eq(registry.id, registryId))
+			.returning()
+
+		// Convert Date objects to strings for the interface
+		const formattedRegistry = {
+			...updatedRegistry[0],
+			createdAt: updatedRegistry[0].createdAt.toISOString(),
+			updatedAt: updatedRegistry[0].updatedAt.toISOString(),
+		}
+
+		return { registry: formattedRegistry }
+	} catch (error) {
+		// Check if this is a redirect error (which is expected)
+		if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+			// Re-throw redirect errors so Next.js can handle them
+			throw error
+		}
+
+		console.error("Error updating registry:", error)
+		return { error: "Failed to update registry" }
+	}
+}
+
+export async function deleteRegistry(registryId: string) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			redirect("/signin")
+		}
+
+		// Verify the registry belongs to the user
+		const userRegistry = await db
+			.select()
+			.from(registry)
+			.where(eq(registry.id, registryId))
+			.limit(1)
+
+		if (userRegistry.length === 0) {
+			return { error: "Registry not found" }
+		}
+
+		if (userRegistry[0].userId !== session.user.id) {
+			return { error: "Unauthorized" }
+		}
+
+		// Check if this is the user's selected registry
+		const userData = await db
+			.select({
+				selectedRegistryId: user.selectedRegistryId,
+			})
+			.from(user)
+			.where(eq(user.id, session.user.id))
+			.limit(1)
+
+		const isSelectedRegistry = userData[0]?.selectedRegistryId === registryId
+
+		// Delete the registry
+		await db.delete(registry).where(eq(registry.id, registryId))
+
+		// If this was the selected registry, clear the selection or select another one
+		if (isSelectedRegistry) {
+			const remainingRegistries = await db
+				.select()
+				.from(registry)
+				.where(eq(registry.userId, session.user.id))
+				.limit(1)
+
+			if (remainingRegistries.length > 0) {
+				// Select the first remaining registry
+				await db
+					.update(user)
+					.set({ selectedRegistryId: remainingRegistries[0].id })
+					.where(eq(user.id, session.user.id))
+			} else {
+				// Clear selection if no registries remain
+				await db.update(user).set({ selectedRegistryId: null }).where(eq(user.id, session.user.id))
+			}
+		}
+
+		return { success: true }
+	} catch (error) {
+		// Check if this is a redirect error (which is expected)
+		if (error instanceof Error && error.message === "NEXT_REDIRECT") {
+			// Re-throw redirect errors so Next.js can handle them
+			throw error
+		}
+
+		console.error("Error deleting registry:", error)
+		return { error: "Failed to delete registry" }
 	}
 }
 

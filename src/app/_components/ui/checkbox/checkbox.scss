@@ -1,5 +1,5 @@
-@use '../../../../styles/base/variables' as *;
-@use '../../../../styles/base/mixins' as *;
+@use "../../../../styles/base/variables" as *;
+@use "../../../../styles/base/mixins" as *;
 
 .checkbox {
   $self: &;
@@ -31,14 +31,14 @@
     }
 
     // Checked state
-    &[data-state='checked'] {
+    &[data-state="checked"] {
       background: $c-primary;
       border-color: $c-primary;
       color: $c-white;
     }
 
     // Indeterminate state
-    &[data-state='indeterminate'] {
+    &[data-state="indeterminate"] {
       background: $c-grey;
       border-color: $c-grey;
       color: $c-white;

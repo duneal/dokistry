@@ -112,9 +112,70 @@
       background-color: $c-primary-lightest;
     }
 
+    &__text {
+      flex: 1;
+      min-width: 0;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &:hover &__text {
+      overflow: hidden;
+    }
+
+    &__actions {
+      @include flex(center, center, row, $spacing-xs);
+      margin-left: $spacing-sm;
+      opacity: 0;
+      transition: opacity 0.2s $ease-out;
+    }
+
+    &:hover &__actions {
+      opacity: 1;
+
+      * {
+        cursor: pointer;
+      }
+    }
+
     &__check {
       color: $c-primary-darker;
-      margin-left: auto;
+    }
+
+    &__action {
+      @include flex(center, center, row);
+      padding: $spacing-xs;
+      border: none;
+      background-color: transparent;
+      border-radius: $border-radius-sm;
+      cursor: pointer;
+      transition: background-color 0.2s $ease-out, color 0.2s $ease-out;
+
+      &:hover {
+        background-color: $c-grey-light;
+      }
+
+      &--edit {
+        color: $c-primary-darker;
+
+        &:hover {
+          color: $c-primary-darkest;
+          background-color: $c-primary-lightest;
+        }
+      }
+
+      &--delete {
+        color: $c-grey-dark;
+
+        &:hover {
+          color: $c-danger;
+          background-color: rgba($c-danger, 0.1);
+        }
+      }
+
+      &__icon {
+        display: block;
+      }
     }
   }
 
@@ -150,5 +211,17 @@
     @include text($fs-regular-sm, $fw-medium, normal, normal, $color: $c-grey);
     padding: $spacing-sm $spacing-md;
     text-align: center;
+  }
+
+  &__delete-dialog {
+    padding: $spacing-xl !important;
+
+    &__icon {
+      display: block;
+
+      &--spinning {
+        animation: spin 1s linear infinite;
+      }
+    }
   }
 }

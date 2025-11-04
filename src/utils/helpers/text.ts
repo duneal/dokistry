@@ -33,3 +33,18 @@ export const capitalizeFirstLetter = (str: string): string => {
 	if (str.length === 0) return str // Handle empty strings
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
+
+/**
+ * Function to remove a given part of a string
+ * @param {string} str - The string to modify
+ * @param {string} partToRemove - The part to remove from the string
+ * @returns {string} The string with the specified part removed
+ *
+ * @example
+ * const result = removeFromString('https://example.com', 'https://');
+ * // Returns: 'example.com'
+ */
+export const removeFromString = (str: string, partToRemove: string): string => {
+	if (!str || !partToRemove) return str
+	return str.replace(new RegExp(partToRemove.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), "")
+}
