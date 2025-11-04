@@ -5,15 +5,14 @@
   "scripts": {
     "start:dev": "next dev --turbopack",
     "start:prod": "next start",
-    "start:dev:turbo": "next dev --turbopack --port 3002",
-    "build": "next build --turbopack",
-    "lint": "biome check src && tsc --noEmit",
-    "lint:fix": "biome check --fix src && tsc --noEmit",
+    "build": "next build",
+    "lint": "biome check && tsc --noEmit",
+    "lint:fix": "biome check --fix && tsc --noEmit",
     "format": "biome format --write .",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:generate": "DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:5432/dokistry' drizzle-kit generate",
+    "db:migrate": "DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:5432/dokistry' drizzle-kit migrate",
+    "db:push": "DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:5432/dokistry' drizzle-kit push",
+    "db:studio": "DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:5432/dokistry' drizzle-kit studio --host=127.0.0.1"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,scss,md}": [

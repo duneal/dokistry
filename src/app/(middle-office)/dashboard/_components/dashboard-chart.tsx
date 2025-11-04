@@ -62,7 +62,7 @@ export default function DashboardChart({ repositories }: DashboardChartProps) {
 
 	const cleanupCommands = [
 		"docker run --rm \\",
-		"  -v $(docker volume inspect --format '{{ .Mountpoint }}' qm-web-registry-m8aqqr_registry-data):/var/lib/registry \\",
+		"  -v $(docker volume inspect --format '{{ .Mountpoint }}' qm-web-registry-iq3gem_registry-data):/var/lib/registry \\",
 		"  registry:2 garbage-collect /etc/docker/registry/config.yml",
 	]
 

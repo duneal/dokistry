@@ -1,1 +1,1 @@
-export { registryService } from "./services"
+export { databaseRegistryService, registryService } from "./services"

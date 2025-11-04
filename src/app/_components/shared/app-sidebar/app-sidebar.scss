@@ -10,6 +10,10 @@
     width: 22rem;
   }
 
+  .registry-switcher {
+    margin-bottom: $spacing-lg;
+  }
+
   &__actions {
     opacity: 0;
     transition: opacity 0.2s $ease-in-out;
@@ -75,6 +79,11 @@
   &__logout {
     margin-top: auto;
     padding-top: $spacing-md;
-    border-top: 1px solid $c-grey-light;
+    width: 100%;
+
+    .sidebar__menu__button {
+      width: 100%;
+      justify-content: center;
+    }
   }
 }

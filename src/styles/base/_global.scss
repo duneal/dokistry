@@ -67,7 +67,7 @@ body {
   font-style: normal !important;
   font-size: $base-font-size !important;
   color: $base-color !important;
-  background-color: $base-bg-color !important;
+  background-color: rgba($c-primary-lightest, 0.3) !important;
   height: 100%;
   min-height: 100vh;
 

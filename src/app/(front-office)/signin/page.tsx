@@ -1,28 +1,24 @@
 import { useId } from "react"
-
-import Button from "@/app/_components/ui/button"
-import Input from "@/app/_components/ui/input"
+import { PasswordInput } from "@/app/_components/shared"
+import { Button, Checkbox, Input } from "@/app/_components/ui"
 import { signInAction } from "@/utils/lib/auth-actions"
-
+import Logo from "~/images/logo.svg"
 import "./signin.scss"
 
 export default function SignInPage() {
 	const emailId = useId()
 	const passwordId = useId()
+	const rememberId = useId()
 
 	return (
 		<div className="signin">
-			<div className="signin__container">
-				<div className="signin__header">
-					<h1 className="signin__header__title">Welcome back</h1>
-					<p className="signin__header__subtitle">Sign in to your account</p>
-				</div>
-
-				<form className="signin__form" action={signInAction}>
+			<div className="signin__form">
+				<form action={signInAction}>
+					<h2 className="signin__form__title">
+						<Logo width={40} height={40} />
+						Sign in
+					</h2>
 					<div className="signin__form__field">
-						<label htmlFor={emailId} className="signin__form__field__label">
-							Email
-						</label>
 						<Input
 							id={emailId}
 							name="email"
@@ -34,23 +30,33 @@ export default function SignInPage() {
 					</div>
 
 					<div className="signin__form__field">
-						<label htmlFor={passwordId} className="signin__form__field__label">
-							Password
-						</label>
-						<Input
+						<PasswordInput
 							id={passwordId}
 							name="password"
-							type="password"
 							required
 							placeholder="Enter your password"
 							className="signin__form__field__input"
 						/>
 					</div>
 
-					<Button type="submit" variant="primary" size="lg" className="signin__form__submit">
-						Sign In
+					<div className="signin__form__remember">
+						<Checkbox id={rememberId} name="rememberMe" />
+						<label htmlFor={rememberId} className="signin__form__remember__label">
+							Remember me
+						</label>
+					</div>
+
+					<Button type="submit" variant="primary" className="signin__form__submit">
+						Sign in
 					</Button>
 				</form>
+			</div>
+
+			<div className="signin__presentation">
+				<h1 className="signin__presentation__title">
+					<Logo width={50} height={50} />
+					Dokistry
+				</h1>
 			</div>
 		</div>
 	)

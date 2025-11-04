@@ -3,6 +3,11 @@
 .dashboard {
   @include flex(flex-start, flex-start, row, $spacing-lg);
 
+  &--empty {
+    width: 100%;
+    height: 100%;
+  }
+
   &__card {
     height: 550px;
     min-width: 500px;

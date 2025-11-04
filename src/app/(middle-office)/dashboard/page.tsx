@@ -1,13 +1,24 @@
 import { Package } from "lucide-react"
 import Link from "next/link"
+import { NoRegistryEmptyState } from "@/app/_components/shared"
 import { Badge, Card, CardContent, CardHeader, CardTitle } from "@/app/_components/ui"
-import { registryService } from "@/features/registry"
+import { databaseRegistryService } from "@/features/registry"
 import type { Repository } from "@/utils/types/registry.interface"
 import DashboardChart from "./_components/dashboard-chart"
 import "./dashboard.scss"
 
 export default async function Dashboard() {
-	const data = await registryService.getRepositoriesWithTags()
+	const hasRegistry = await databaseRegistryService.hasRegistry()
+
+	if (!hasRegistry) {
+		return (
+			<main className="dashboard dashboard--empty">
+				<NoRegistryEmptyState />
+			</main>
+		)
+	}
+
+	const data = await databaseRegistryService.getRepositoriesWithTags()
 	const repositories = data.repositories as Repository[]
 
 	// Get the 10 latest images based on repository activity

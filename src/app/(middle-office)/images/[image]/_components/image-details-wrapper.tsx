@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { registryService } from "@/features/registry"
 import type { Repository } from "@/utils/types/registry.interface"
 import ImageDetails from "./image-details"
 
@@ -23,8 +22,15 @@ export default function ImageDetailsWrapper({
 		setError(null)
 
 		try {
-			const repositoriesData = await registryService.getRepositoriesWithTags()
-			const foundRepository = repositoriesData.repositories.find((repo) => repo.name === imageName)
+			const response = await fetch("/api/registry/repositories")
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`)
+			}
+
+			const repositoriesData = await response.json()
+			const foundRepository = repositoriesData.repositories.find(
+				(repo: Repository) => repo.name === imageName,
+			)
 
 			if (foundRepository) {
 				setRepository(foundRepository)

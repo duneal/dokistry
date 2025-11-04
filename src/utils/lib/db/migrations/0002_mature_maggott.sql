@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "selected_registry_id" text;

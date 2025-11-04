@@ -1,70 +1,112 @@
 @use "../../../styles/base" as *;
 
 .signin {
-  @include flex(center, center);
+  @include flex(stretch, stretch, row);
 
   & {
     min-height: 100vh;
     width: 100%;
-    background: linear-gradient(135deg, $c-primary-lightest 0%, $c-white 100%);
-  }
-
-  &__container {
-    width: 100%;
-    max-width: 400px;
-    padding: $spacing-xl;
-    background: $c-white;
-    border-radius: $border-radius-lg;
-    box-shadow: $box-shadow-blurry;
-  }
-
-  &__header {
-    text-align: center;
-    margin-bottom: $spacing-xl;
-
-    &__title {
-      @include title();
-
-      & {
-        font-size: $fs-xl;
-        font-weight: $fw-bold;
-        color: $c-primary-darkest;
-        margin-bottom: $spacing-sm;
-      }
-    }
-
-    &__subtitle {
-      @include text();
-
-      & {
-        color: $c-grey-dark;
-        font-size: $fs-regular-sm;
-      }
-    }
   }
 
   &__form {
-    @include flex(flex-start, flex-start, column, $spacing-lg);
+    @include flex(center, center, row);
+
+    & {
+      width: 40%;
+      background-color: $c-primary-lightest;
+    }
+
+    form {
+      @include flex(flex-start, flex-start, column, $spacing-regular-sm);
+
+      & {
+        width: 100%;
+        height: fit-content;
+        max-width: 450px;
+        padding: $spacing-xl;
+        border-radius: $border-radius-lg;
+      }
+
+      h2 {
+        @include title(
+          $fs-xl,
+          $fw-medium,
+          normal,
+          normal,
+          $color: $c-grey-darker
+        );
+
+        & {
+          @include flex(center, center, row, $spacing-sm);
+
+          width: 100%;
+          text-align: center;
+          padding-bottom: $spacing-regular;
+        }
+      }
+    }
 
     &__field {
       width: 100%;
-
-      &__label {
-        display: block;
-        font-size: $fs-sm;
-        font-weight: $fw-medium;
-        color: $c-primary-darkest;
-        margin-bottom: $spacing-xs;
-      }
 
       &__input {
         width: 100%;
       }
     }
 
-    &__submit {
+    &__remember {
+      @include flex(flex-start, center, row, $spacing-sm);
       width: 100%;
       margin-top: $spacing-md;
+      margin-bottom: $spacing-sm;
+      margin-left: $spacing-xs;
+
+      .checkbox {
+        border-radius: $border-radius-sm !important;
+        border: none !important;
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+      }
+
+      &__label {
+        @include text(
+          $fs-regular-sm,
+          $fw-semibold,
+          normal,
+          normal,
+          $color: $c-primary-darker
+        );
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+
+    &__submit {
+      width: 100%;
+    }
+  }
+
+  &__presentation {
+    @include flex(center, center, row);
+
+    & {
+      width: 60%;
+      background-color: $c-primary-darkest;
+    }
+
+    &__title {
+      @include flex(center, center, row, $spacing-sm);
+
+      & {
+        @include title(
+          $fs-xl,
+          $fw-bold,
+          normal,
+          normal,
+          $color: $c-primary-lightest
+        );
+        margin-bottom: $spacing-sm;
+      }
     }
   }
 }

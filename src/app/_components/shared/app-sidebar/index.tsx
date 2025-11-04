@@ -8,8 +8,8 @@ import "react-loading-skeleton/dist/skeleton.css"
 import "./app-sidebar.scss"
 
 import { toast } from "sonner"
+import { RegistrySwitcher } from "@/app/_components/shared"
 import {
-	Button,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -131,6 +131,9 @@ export function AppSidebar({ className }: AppSidebarProps) {
 		<div className={clsx("app-sidebar", className)}>
 			<Sidebar>
 				<SidebarContent>
+					{/* Registry Switcher */}
+					<RegistrySwitcher />
+
 					<SidebarGroup>
 						<SidebarGroupLabel>Dashboard</SidebarGroupLabel>
 						<SidebarGroupContent>
@@ -203,10 +206,10 @@ export function AppSidebar({ className }: AppSidebarProps) {
 					<div className="app-sidebar__logout">
 						<SidebarMenu>
 							<SidebarMenuItem>
-								<Button onClick={handleLogout}>
+								<SidebarMenuButton onClick={handleLogout}>
 									<LogOut size={16} />
-									Sign Out
-								</Button>
+									Sign out
+								</SidebarMenuButton>
 							</SidebarMenuItem>
 						</SidebarMenu>
 					</div>

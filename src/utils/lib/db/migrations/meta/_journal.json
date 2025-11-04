@@ -3,10 +3,24 @@
 	"dialect": "postgresql",
 	"entries": [
 		{
-			"idx": 0,
+			"idx": 1,
 			"version": "7",
-			"when": 1758743767980,
-			"tag": "0000_flimsy_next_avengers",
+			"when": 1759996497995,
+			"tag": "0001_thin_millenium_guard",
+			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1760002311012,
+			"tag": "0002_mature_maggott",
+			"breakpoints": true
+		},
+		{
+			"idx": 3,
+			"version": "7",
+			"when": 1762166847876,
+			"tag": "0003_amused_timeslip",
 			"breakpoints": true
 		}
 	]

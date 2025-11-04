@@ -15,11 +15,7 @@ const cspHeader = `
 `
 
 const nextConfig: NextConfig = {
-	eslint: {
-		ignoreDuringBuilds: true,
-		dirs: ["src"],
-	},
-
+	output: "standalone",
 	reactStrictMode: true,
 
 	images: {
@@ -48,6 +44,16 @@ const nextConfig: NextConfig = {
 				as: "*.js",
 			},
 		},
+	},
+
+	webpack: (config) => {
+		// Handle SVG files with @svgr/webpack
+		config.module.rules.push({
+			test: /\.svg$/,
+			use: ["@svgr/webpack"],
+		})
+
+		return config
 	},
 }
 

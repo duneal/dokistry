@@ -12,6 +12,10 @@ export const user = pgTable("user", {
 		.$onUpdate(() => /* @__PURE__ */ new Date())
 		.notNull(),
 	role: text("role").default("user").notNull(),
+	banned: boolean("banned").default(false),
+	banReason: text("ban_reason"),
+	banExpires: timestamp("ban_expires"),
+	selectedRegistryId: text("selected_registry_id"),
 })
 
 export const session = pgTable("session", {
@@ -27,6 +31,7 @@ export const session = pgTable("session", {
 	userId: text("user_id")
 		.notNull()
 		.references(() => user.id, { onDelete: "cascade" }),
+	impersonatedBy: text("impersonated_by"),
 })
 
 export const account = pgTable("account", {
@@ -54,6 +59,21 @@ export const verification = pgTable("verification", {
 	identifier: text("identifier").notNull(),
 	value: text("value").notNull(),
 	expiresAt: timestamp("expires_at").notNull(),
+	createdAt: timestamp("created_at").defaultNow().notNull(),
+	updatedAt: timestamp("updated_at")
+		.defaultNow()
+		.$onUpdate(() => /* @__PURE__ */ new Date())
+		.notNull(),
+})
+
+export const registry = pgTable("registry", {
+	id: text("id").primaryKey(),
+	url: text("url").notNull(),
+	username: text("username").notNull(),
+	password: text("password").notNull(),
+	userId: text("user_id")
+		.notNull()
+		.references(() => user.id, { onDelete: "cascade" }),
 	createdAt: timestamp("created_at").defaultNow().notNull(),
 	updatedAt: timestamp("updated_at")
 		.defaultNow()

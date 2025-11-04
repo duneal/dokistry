@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { registryService } from "@/features/registry/services"
+import { databaseRegistryService } from "@/features/registry/services"
 
 interface RouteParams {
 	params: {
@@ -16,8 +16,22 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 			return NextResponse.json({ error: "Invalid repository name" }, { status: 400 })
 		}
 
+		// Check if registry is configured
+		const hasRegistry = await databaseRegistryService.hasRegistry()
+		if (!hasRegistry) {
+			return NextResponse.json(
+				{
+					error: "NO_REGISTRY_CONFIGURED",
+					message: "No registry configuration found",
+					repository: repository,
+					tagsWithDigests: [],
+				},
+				{ status: 200 },
+			)
+		}
+
 		// Get repository tags
-		const tags = await registryService.getRepositoryTags(repository)
+		const tags = await databaseRegistryService.getRepositoryTags(repository)
 
 		if (!tags || tags.length === 0) {
 			return NextResponse.json({ error: "Repository not found or has no tags" }, { status: 404 })
@@ -27,7 +41,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 		const tagsWithDigests = await Promise.all(
 			tags.map(async (tag: string) => {
 				try {
-					const digest = await registryService.getManifestDigest(repository, tag)
+					const digest = await databaseRegistryService.getManifestDigest(repository, tag)
 					return { tag, digest }
 				} catch (error) {
 					console.warn(`Failed to get digest for tag ${tag}:`, error)
@@ -72,8 +86,20 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 			return NextResponse.json({ error: "Invalid repository name" }, { status: 400 })
 		}
 
+		// Check if registry is configured
+		const hasRegistry = await databaseRegistryService.hasRegistry()
+		if (!hasRegistry) {
+			return NextResponse.json(
+				{
+					error: "NO_REGISTRY_CONFIGURED",
+					message: "No registry configuration found",
+				},
+				{ status: 400 },
+			)
+		}
+
 		// Delete the tags
-		const result = await registryService.deleteTags(repository, tags)
+		const result = await databaseRegistryService.deleteTags(repository, tags)
 
 		// Return success response with details
 		return NextResponse.json({

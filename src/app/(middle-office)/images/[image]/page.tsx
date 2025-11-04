@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { registryService } from "@/features/registry"
+import { NoRegistryEmptyState } from "@/app/_components/shared"
+import { databaseRegistryService } from "@/features/registry"
 import type { RegistryRepositoriesResponse, Repository } from "@/utils/types/registry.interface"
 import ImageDetailsWrapper from "./_components/image-details-wrapper"
 import "./image.scss"
@@ -23,11 +24,23 @@ export default async function ImagePage({ params }: ImagePageProps) {
 	const { image } = await params
 	const imageName = decodeURIComponent(image)
 
+	const hasRegistry = await databaseRegistryService.hasRegistry()
+
+	if (!hasRegistry) {
+		return (
+			<main className="image-page">
+				<div className="image-page__container">
+					<NoRegistryEmptyState />
+				</div>
+			</main>
+		)
+	}
+
 	let repositoriesData: RegistryRepositoriesResponse = { repositories: [] }
 	let error: string | null = null
 
 	try {
-		repositoriesData = await registryService.getRepositoriesWithTags()
+		repositoriesData = await databaseRegistryService.getRepositoriesWithTags()
 	} catch (err) {
 		console.error("Failed to fetch registry data:", err)
 		error = err instanceof Error ? err.message : "Failed to fetch registry data"

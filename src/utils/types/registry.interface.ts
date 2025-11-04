@@ -71,6 +71,16 @@ export interface Repository {
 	totalCompressedSize?: number
 }
 
+export interface Registry {
+	id: string
+	url: string
+	username: string
+	password: string
+	userId: string
+	createdAt: string
+	updatedAt: string
+}
+
 export interface RegistryRepositoriesResponse {
 	repositories: Repository[]
 }

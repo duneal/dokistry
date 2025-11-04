@@ -1,15 +1,16 @@
-@use '../../../../styles/base/variables' as *;
-@use '../../../../styles/base/mixins' as *;
-@use 'sass:color';
+@use "../../../../styles/base/variables" as *;
+@use "../../../../styles/base/mixins" as *;
+@use "sass:color";
 
 .input {
   $self: &;
   @include flex(space-between, center, row);
 
   & {
+    @include text($fs-regular-sm, $fw-medium, normal, normal, $c-grey-darker);
     width: 100%;
-    background-color: $c-grey;
-    border-radius: $border-radius-sm;
+    background-color: $c-white;
+    border-radius: $border-radius-regular;
     padding: $spacing-regular $spacing-md;
     border: 1px solid transparent;
     outline: none;

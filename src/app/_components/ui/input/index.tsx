@@ -14,7 +14,7 @@ const Input = ({
 }: React.ComponentProps<"input"> & InputProps) => {
 	const inputClassName = clsx("input", `input--type-${type}`, `input--${variant}`, className)
 
-	return <input className={inputClassName} {...props} />
+	return <input className={inputClassName} type={type} {...props} />
 }
 
 export default Input

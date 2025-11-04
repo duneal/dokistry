@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 			<body className={`${nunitoSans.variable}`}>
 				<ReactQueryProvider>
 					{children}
-					<Toaster position="top-right" richColors />
+					<Toaster position="bottom-right" richColors />
 				</ReactQueryProvider>
 			</body>
 		</html>
