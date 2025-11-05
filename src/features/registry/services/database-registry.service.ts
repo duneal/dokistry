@@ -289,14 +289,90 @@ class DatabaseRegistryService {
 	}
 
 	async getManifestDigest(repositoryName: string, tag: string): Promise<string> {
-		const manifest = await this.makeRequest<ImageManifest>(`/v2/${repositoryName}/manifests/${tag}`)
+		await this.initializeConfig()
 
-		// Handle different manifest formats
-		if (manifest.config?.digest) {
-			return manifest.config.digest
+		const endpoint = `/v2/${repositoryName}/manifests/${tag}`
+		const url = `${this.baseUrl}${endpoint}`
+		const headers = {
+			Authorization: `Basic ${this.auth}`,
+			Accept:
+				"application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json",
+			"User-Agent": "Dokistry/1.0",
 		}
 
-		// Fallback for other manifest formats
+		const extractDigestFromHeaders = (
+			responseHeaders: Record<string, string | string[] | undefined>,
+		) => {
+			const digestHeader = responseHeaders["docker-content-digest"]
+			if (Array.isArray(digestHeader)) {
+				return digestHeader[0]
+			}
+			return digestHeader ?? null
+		}
+
+		try {
+			const headResponse = await axios.head(url, {
+				headers,
+				timeout: 10000,
+			})
+			const digestFromHead = extractDigestFromHeaders(headResponse.headers)
+			if (digestFromHead) {
+				return digestFromHead
+			}
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				// Some registries may not support HEAD for manifests; fall back to GET
+				if (error.response?.status !== 405) {
+					console.warn(
+						`HEAD request for manifest digest failed for ${repositoryName}:${tag}: ${error.message}`,
+					)
+				}
+			} else {
+				console.warn(
+					`HEAD request for manifest digest failed for ${repositoryName}:${tag}: ${String(error)}`,
+				)
+			}
+		}
+
+		try {
+			const response = await axios.get<ImageManifest>(url, {
+				headers,
+				timeout: 10000,
+			})
+			const digestFromHeaders = extractDigestFromHeaders(response.headers)
+			if (digestFromHeaders) {
+				return digestFromHeaders
+			}
+
+			// As a last resort, fall back to manifest content digests if available
+			if (response.data?.config?.digest) {
+				return response.data.config.digest
+			}
+			if (response.data?.manifests && response.data.manifests.length > 0) {
+				const manifestDigest = response.data.manifests.find((manifest) => manifest.digest)?.digest
+				if (manifestDigest) {
+					return manifestDigest
+				}
+			}
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				if (error.response?.status === 401) {
+					throw new Error("Authentication failed: Invalid credentials")
+				}
+				if (error.response?.status === 403) {
+					throw new Error("Access forbidden: Insufficient permissions")
+				}
+				if (error.response?.status === 404) {
+					throw new Error("Registry endpoint not found")
+				}
+				if (error.code === "ECONNABORTED") {
+					throw new Error("Registry request failed: timeout exceeded")
+				}
+				throw new Error(`Registry request failed: ${error.message}`)
+			}
+			throw new Error("Unknown error occurred while connecting to registry")
+		}
+
 		throw new Error("Unable to extract digest from manifest")
 	}
 

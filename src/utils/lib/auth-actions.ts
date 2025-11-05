@@ -9,12 +9,16 @@ import { auth } from "./auth"
 import { db } from "./db"
 import { registry, user } from "./db/schema"
 
+function normalizeRegistryUrl(registryUrl: string) {
+	const trimmed = registryUrl.trim()
+	const normalized = trimmed.replace(/\/+$/, "")
+	return normalized || trimmed
+}
+
 export async function signInAction(formData: FormData) {
 	const email = formData.get("email") as string
 	const password = formData.get("password") as string
 	const rememberMe = formData.get("rememberMe") === "on"
-
-	console.log(rememberMe)
 
 	try {
 		// With nextCookies plugin, cookies are automatically set
@@ -289,8 +293,6 @@ export async function testRegistryConnection(
 			timeout: 10000,
 		})
 
-		console.log("Result:", result)
-
 		return { success: true }
 	} catch (error) {
 		if (axios.isAxiosError(error)) {
@@ -331,11 +333,25 @@ export async function createRegistry(url: string, username: string, password: st
 			redirect("/signin")
 		}
 
+		const normalizedUrl = normalizeRegistryUrl(url)
+
+		const existingRegistries = await db
+			.select({ id: registry.id, url: registry.url })
+			.from(registry)
+
+		const duplicateRegistry = existingRegistries.some(
+			(existingRegistry) => normalizeRegistryUrl(existingRegistry.url) === normalizedUrl,
+		)
+
+		if (duplicateRegistry) {
+			return { error: "A registry with this URL already exists" }
+		}
+
 		const newRegistry = await db
 			.insert(registry)
 			.values({
 				id: crypto.randomUUID(),
-				url,
+				url: normalizedUrl,
 				username,
 				password,
 				userId: session.user.id,
@@ -374,6 +390,8 @@ export async function updateRegistry(
 			redirect("/signin")
 		}
 
+		const normalizedUrl = normalizeRegistryUrl(url)
+
 		// Verify the registry belongs to the user
 		const userRegistry = await db
 			.select()
@@ -389,6 +407,18 @@ export async function updateRegistry(
 			return { error: "Unauthorized" }
 		}
 
+		const allRegistries = await db.select({ id: registry.id, url: registry.url }).from(registry)
+
+		const duplicateRegistry = allRegistries.some(
+			(existingRegistry) =>
+				existingRegistry.id !== registryId &&
+				normalizeRegistryUrl(existingRegistry.url) === normalizedUrl,
+		)
+
+		if (duplicateRegistry) {
+			return { error: "A registry with this URL already exists" }
+		}
+
 		// Prepare update data - only update password if provided
 		const updateData: {
 			url: string
@@ -396,7 +426,7 @@ export async function updateRegistry(
 			password?: string
 			updatedAt: Date
 		} = {
-			url,
+			url: normalizedUrl,
 			username,
 			updatedAt: new Date(),
 		}

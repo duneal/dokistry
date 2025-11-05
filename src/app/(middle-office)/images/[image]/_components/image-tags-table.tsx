@@ -5,13 +5,13 @@ import { format, formatDistanceToNow } from "date-fns"
 import { ArrowUpDown, CalendarDays, HardDrive, Package, Tag } from "lucide-react"
 import { Badge, Button, Checkbox, Table } from "@/app/_components/ui"
 import type { Repository } from "@/utils/types/registry.interface"
+import "./image-tags-table.scss"
+import TagsActionBar from "./tags-action-bar"
 import {
 	type ManifestGroup,
 	type TagWithDateAndSize,
 	useImageTagsTable,
 } from "./use-image-tags-table"
-import "./image-tags-table.scss"
-import TagsActionBar from "./tags-action-bar"
 
 interface ImageTagsTableProps {
 	repository: Repository | undefined
@@ -80,7 +80,6 @@ export default function ImageTagsTable({
 								: false
 					}
 					onCheckedChange={(value) => {
-						console.log("Header checkbox clicked:", value)
 						table.toggleAllPageRowsSelected(!!value)
 					}}
 					aria-label="Select all"
@@ -90,12 +89,6 @@ export default function ImageTagsTable({
 				<Checkbox
 					checked={row.getIsSelected()}
 					onCheckedChange={(value) => {
-						console.log(
-							"Row checkbox clicked:",
-							value,
-							"for manifest:",
-							row.original.manifestDigest,
-						)
 						row.toggleSelected(!!value)
 					}}
 					aria-label="Select row"

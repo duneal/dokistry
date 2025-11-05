@@ -46,7 +46,7 @@ export function useAppSidebar() {
 	const handleLogout = async () => {
 		try {
 			const result = await clientSignOut()
-			console.log("logout result", result)
+
 			if (result.error) {
 				toast.error("Failed to sign out")
 			} else {

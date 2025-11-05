@@ -58,13 +58,11 @@ export function Table<TData, TValue>({
 
 	// Notify parent component of selection changes
 	React.useEffect(() => {
-		console.log("Table useEffect triggered, rowSelection:", rowSelection)
 		if (onSelectionChange) {
 			const selectedRows = table.getFilteredSelectedRowModel().rows.map((row) => row.original)
-			console.log("Selected rows from table:", selectedRows)
 			onSelectionChange(selectedRows)
 		}
-	}, [rowSelection, onSelectionChange, table.getFilteredSelectedRowModel])
+	}, [onSelectionChange, table.getFilteredSelectedRowModel])
 
 	return (
 		<div className={`table ${className || ""}`}>

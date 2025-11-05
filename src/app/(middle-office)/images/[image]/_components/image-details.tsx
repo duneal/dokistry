@@ -28,9 +28,7 @@ const formatFileSize = (bytes: number): string => {
 }
 
 export default function ImageDetails({ repository, imageName, onRefresh }: ImageDetailsProps) {
-	const handleTagSelection = useCallback((selectedTags: string[]) => {
-		console.log("Selected tags:", selectedTags)
-	}, [])
+	const handleTagSelection = useCallback((selectedTags: string[]) => {}, [])
 
 	const handleDeleteTags = useCallback(
 		async (tags: string[]) => {
@@ -49,7 +47,6 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 				}
 
 				const result = await response.json()
-				console.log("Deletion result:", result)
 
 				// Show success message
 				if (result.summary.successful > 0) {

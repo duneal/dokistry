@@ -1,7 +1,7 @@
 "use client"
 
 import clsx from "clsx"
-import { ArrowUpRightIcon, LogOut, MoreVertical, Trash2 } from "lucide-react"
+import { ArrowUpRightIcon, LogOut, MoreVertical } from "lucide-react"
 import Skeleton from "react-loading-skeleton"
 import "react-loading-skeleton/dist/skeleton.css"
 import "./app-sidebar.scss"
@@ -66,10 +66,10 @@ export function AppSidebar({ className }: AppSidebarProps) {
 							<ArrowUpRightIcon size={16} />
 							See
 						</DropdownMenuItem>
-						<DropdownMenuItem onClick={handleDeleteImage}>
+						{/* <DropdownMenuItem onClick={handleDeleteImage}>
 							<Trash2 size={16} />
 							Delete
-						</DropdownMenuItem>
+						</DropdownMenuItem> */}
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>

@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
 	}
 
 	// Authenticated → always redirect to dashboard
-	if (session && pathname !== "/dashboard") {
+	if (session && pathname !== "/dashboard" && !pathname.startsWith("/images/")) {
 		return NextResponse.redirect(new URL("/dashboard", request.url))
 	}
 

@@ -150,7 +150,7 @@ export function useImageTagsTable({
 		const manifestGroups = new Map<string, ManifestGroup>()
 
 		processedTags.forEach((tag) => {
-			const digest = tag.digest || "unknown"
+			const digest = tag.digest || tag.name
 
 			if (manifestGroups.has(digest)) {
 				const group = manifestGroups.get(digest)!
@@ -183,7 +183,6 @@ export function useImageTagsTable({
 
 	const handleSelectionChange = useCallback(
 		(selectedRows: ManifestGroup[]) => {
-			console.log("Selection changed:", selectedRows)
 			const tagNames = selectedRows.flatMap((row) => row.tags.map((tag) => tag.name))
 			setSelectedTags(tagNames)
 			onSelectionChange?.(tagNames)
