@@ -3,12 +3,13 @@ import { AlertCircle, Dock, LayoutDashboard, Package } from "lucide-react"
 interface SidebarIconProps {
 	iconName: string
 	className?: string
+	size?: number
 }
 
-export function SidebarIcon({ iconName, className }: SidebarIconProps) {
+export function SidebarIcon({ iconName, className, size = 16 }: SidebarIconProps) {
 	const iconProps = {
 		className: className || "sidebar__menu__button__icon",
-		size: 16,
+		size,
 	}
 
 	switch (iconName) {

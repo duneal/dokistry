@@ -4,7 +4,7 @@
 .sidebar {
   $self: &;
 
-  @include flex(flex-start, flex-start, column, $spacing-regular-sm);
+  @include flex(flex-start, stretch, column);
 
   & {
     position: fixed;
@@ -16,6 +16,8 @@
     overflow: hidden;
     transition: width 0.3s $ease-in-out;
     padding: $spacing-lg;
+    box-sizing: border-box;
+    background-color: transparent;
 
     @media (max-width: $bkp-l) {
       position: fixed;
@@ -31,6 +33,31 @@
     }
   }
 
+  &__panel {
+    @include flex(flex-start, stretch, column);
+
+    & {
+      width: 100%;
+      height: 100%;
+      padding: $spacing-md;
+      background-color: $c-white;
+      border-radius: $border-radius-regular;
+      box-shadow: $box-shadow-classic;
+      overflow: visible;
+    }
+  }
+
+  &__header {
+    @include flex(flex-start, flex-start, column, $spacing-regular);
+
+    & {
+      width: 100%;
+      padding-bottom: $spacing-md;
+      margin-bottom: $spacing-md;
+      border-bottom: 1px solid $c-grey-lighter;
+    }
+  }
+
   &__content {
     @include flex(flex-start, flex-start, column, 0);
 
@@ -39,10 +66,7 @@
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
-      background-color: $c-white;
-      padding: $spacing-md;
-      border-radius: $border-radius-regular;
-      box-shadow: 0 0 10px 0 rgba($c-grey-lighter, 1);
+      padding: 0;
     }
   }
 
@@ -116,6 +140,12 @@
           width: 100%;
           text-decoration: none;
           color: inherit;
+          transition: color 0.2s $ease-in-out;
+
+          span {
+            flex: 1;
+            text-align: left;
+          }
         }
       }
 
@@ -128,27 +158,75 @@
 
     &__button {
       @include flex(flex-start, center, row, $spacing-sm);
+
+      & {
+        width: 100%;
+        background: none;
+        border: none;
+        padding: 0;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+        transition: color 0.2s $ease-in-out;
+      }
+
+      svg {
+        flex-shrink: 0;
+        display: block;
+      }
+
+      &:focus {
+        outline: none;
+      }
     }
   }
 
   &--collapsed {
-    width: 4rem;
+    width: 7.5rem;
+    padding: $spacing-md;
+
+    #{$self}__panel {
+      padding: $spacing-md;
+    }
 
     #{$self}__header {
-      padding: $spacing-md;
+      display: none;
+    }
+
+    #{$self}__content {
+      padding: 0;
     }
 
     #{$self}__group__label {
       display: none;
     }
 
+    #{$self}__menu__item {
+      padding: 0;
+      justify-content: center;
+      width: 100%;
+    }
+
     #{$self}__menu__button {
-      padding: $spacing-sm;
+      @include flex(center, center, row, 0);
+      width: 3rem;
+      height: 3rem;
+      padding: 0;
+      margin: 0 auto;
+      border-radius: $border-radius-lg;
       justify-content: center;
 
       span {
         display: none;
       }
+
+      svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
+    #{$self}__group {
+      margin-bottom: $spacing-regular;
     }
   }
 
@@ -208,6 +286,10 @@
       }
     }
   }
+
+  &__rail {
+    display: none;
+  }
 }
 
 .sidebar-inset {
@@ -220,7 +302,20 @@
     min-height: 100vh;
     transition: margin-left 0.3s $ease-in-out;
     padding: $spacing-md $spacing-regular;
-    padding-left: 0;
+  }
+
+  @media (min-width: $bkp-l) {
+    &[data-sidebar-state="open"] {
+      margin-left: 22rem;
+    }
+
+    &[data-sidebar-state="open"][data-sidebar-collapsed="true"] {
+      margin-left: 7.5rem;
+    }
+
+    &[data-sidebar-state="closed"] {
+      margin-left: 0;
+    }
   }
 
   &__content {

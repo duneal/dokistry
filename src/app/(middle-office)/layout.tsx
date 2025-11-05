@@ -6,7 +6,7 @@ import { SidebarInset, SidebarProvider } from "@/app/_components/ui"
 
 export default function MiddleOfficeLayout({ children }: { children: ReactNode }) {
 	return (
-		<SidebarProvider defaultOpen={true}>
+		<SidebarProvider>
 			<AppSidebar />
 			<SidebarInset>
 				<Header />

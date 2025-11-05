@@ -7,7 +7,6 @@
   & {
     height: 100vh;
     overflow: hidden;
-    width: 22rem;
   }
 
   .registry-switcher {
@@ -84,6 +83,18 @@
     .sidebar__menu__button {
       width: 100%;
       justify-content: center;
+    }
+  }
+
+  &.sidebar--collapsed {
+    #{$self}__actions {
+      display: none;
+    }
+
+    #{$self}__logout {
+      .sidebar__menu__button {
+        justify-content: center;
+      }
     }
   }
 }

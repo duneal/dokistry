@@ -2,7 +2,14 @@
 
 import clsx from "clsx"
 import { PanelLeft } from "lucide-react"
-import React, { createContext, useContext, useState } from "react"
+import React, {
+	createContext,
+	useCallback,
+	useContext,
+	useLayoutEffect,
+	useMemo,
+	useState,
+} from "react"
 import "./sidebar.scss"
 
 // Sidebar Context
@@ -11,7 +18,9 @@ interface SidebarContextValue {
 	setIsOpen: (open: boolean) => void
 	isCollapsed: boolean
 	setIsCollapsed: (collapsed: boolean) => void
+	isMobile: boolean
 	toggleSidebar: () => void
+	toggleCollapsed: () => void
 }
 
 const SidebarContext = createContext<SidebarContextValue | undefined>(undefined)
@@ -31,25 +40,74 @@ interface SidebarProviderProps {
 	defaultCollapsed?: boolean
 }
 
+const DESKTOP_BREAKPOINT = 1024
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : React.useEffect
+
 const SidebarProvider = ({
 	children,
-	defaultOpen = true,
+	defaultOpen = false,
 	defaultCollapsed = false,
 }: SidebarProviderProps) => {
 	const [isOpen, setIsOpen] = useState(defaultOpen)
 	const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed)
+	const [isMobile, setIsMobile] = useState(false)
 
-	const toggleSidebar = () => {
-		setIsOpen(!isOpen)
-	}
+	const updateForViewport = useCallback((matchesDesktop: boolean) => {
+		setIsMobile(!matchesDesktop)
+		setIsCollapsed(false)
+		setIsOpen(matchesDesktop)
+	}, [])
 
-	return (
-		<SidebarContext.Provider
-			value={{ isOpen, setIsOpen, isCollapsed, setIsCollapsed, toggleSidebar }}
-		>
-			{children}
-		</SidebarContext.Provider>
+	useIsomorphicLayoutEffect(() => {
+		if (typeof window === "undefined") {
+			return undefined
+		}
+
+		const mediaQuery = window.matchMedia(`(min-width: ${DESKTOP_BREAKPOINT}px)`)
+		updateForViewport(mediaQuery.matches)
+
+		const handleChange = (event: MediaQueryListEvent | MediaQueryList) => {
+			updateForViewport(event.matches)
+		}
+
+		if (typeof mediaQuery.addEventListener === "function") {
+			mediaQuery.addEventListener("change", handleChange)
+		} else if (typeof mediaQuery.addListener === "function") {
+			mediaQuery.addListener(handleChange)
+		}
+
+		return () => {
+			if (typeof mediaQuery.removeEventListener === "function") {
+				mediaQuery.removeEventListener("change", handleChange)
+			} else if (typeof mediaQuery.removeListener === "function") {
+				mediaQuery.removeListener(handleChange)
+			}
+		}
+	}, [updateForViewport])
+
+	const toggleSidebar = useCallback(() => {
+		setIsOpen((prev) => !prev)
+	}, [])
+
+	const toggleCollapsed = useCallback(() => {
+		setIsCollapsed((prev) => !prev)
+	}, [])
+
+	const value = useMemo(
+		() => ({
+			isOpen,
+			setIsOpen,
+			isCollapsed,
+			setIsCollapsed,
+			isMobile,
+			toggleSidebar,
+			toggleCollapsed,
+		}),
+		[isCollapsed, isMobile, isOpen, toggleCollapsed, toggleSidebar],
 	)
+
+	return <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
 }
 
 // Main Sidebar Component
@@ -60,7 +118,15 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Sidebar = ({ children, className, ...props }: SidebarProps) => {
-	const { isOpen, isCollapsed } = useSidebar()
+	const { isOpen, isCollapsed, isMobile, setIsOpen } = useSidebar()
+
+	const handleOverlayClick = () => {
+		if (!isMobile) {
+			return
+		}
+
+		setIsOpen(false)
+	}
 
 	return (
 		<>
@@ -69,9 +135,15 @@ const Sidebar = ({ children, className, ...props }: SidebarProps) => {
 				data-state={isOpen ? "open" : "closed"}
 				{...props}
 			>
-				{children}
+				<div className="sidebar__panel">{children}</div>
 			</div>
-			{isOpen && <div className="sidebar__overlay" data-state={isOpen ? "open" : "closed"} />}
+			{isOpen && (
+				<div
+					className="sidebar__overlay"
+					data-state={isOpen ? "open" : "closed"}
+					onClick={handleOverlayClick}
+				/>
+			)}
 		</>
 	)
 }
@@ -222,8 +294,15 @@ interface SidebarInsetProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const SidebarInset = ({ children, className, ...props }: SidebarInsetProps) => {
+	const { isOpen, isCollapsed } = useSidebar()
+
 	return (
-		<div className={clsx("sidebar-inset", className)} {...props}>
+		<div
+			className={clsx("sidebar-inset", className)}
+			data-sidebar-state={isOpen ? "open" : "closed"}
+			data-sidebar-collapsed={isCollapsed ? "true" : "false"}
+			{...props}
+		>
 			{children}
 		</div>
 	)
@@ -235,10 +314,19 @@ interface SidebarTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
 }
 
 const SidebarTrigger = ({ className, ...props }: SidebarTriggerProps) => {
-	const { toggleSidebar } = useSidebar()
+	const { isMobile, toggleCollapsed, toggleSidebar } = useSidebar()
+
+	const handleClick = () => {
+		if (isMobile) {
+			toggleSidebar()
+			return
+		}
+
+		toggleCollapsed()
+	}
 
 	return (
-		<button className={clsx("sidebar__trigger", className)} onClick={toggleSidebar} {...props}>
+		<button className={clsx("sidebar__trigger", className)} onClick={handleClick} {...props}>
 			<PanelLeft className="sidebar__trigger__icon" />
 		</button>
 	)

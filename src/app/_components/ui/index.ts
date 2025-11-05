@@ -72,5 +72,6 @@ export {
 	SidebarProvider,
 	SidebarRail,
 	SidebarTrigger,
+	useSidebar,
 } from "./sidebar"
 export { Table } from "./table"

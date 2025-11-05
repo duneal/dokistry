@@ -2,6 +2,7 @@
 
 import clsx from "clsx"
 import { ArrowUpRightIcon, LogOut, MoreVertical } from "lucide-react"
+import { useCallback } from "react"
 import Skeleton from "react-loading-skeleton"
 import "react-loading-skeleton/dist/skeleton.css"
 import "./app-sidebar.scss"
@@ -17,9 +18,12 @@ import {
 	SidebarGroup,
 	SidebarGroupContent,
 	SidebarGroupLabel,
+	SidebarHeader,
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarRail,
+	useSidebar,
 } from "@/app/_components/ui"
 import type { SidebarImage } from "@/utils/types/registry.interface"
 import { SidebarIcon } from "./sidebar-icon"
@@ -32,14 +36,16 @@ interface AppSidebarProps {
 
 export function AppSidebar({ className }: AppSidebarProps) {
 	const { menuData, isLoading, error, refetch } = useSidebarMenu()
-	const {
-		isActiveUrl,
-		isMenuItemActive,
-		isSubItemActive,
-		handleDeleteImage,
-		handleSeeImage,
-		handleLogout,
-	} = useAppSidebar()
+	const { isActiveUrl, isMenuItemActive, isSubItemActive, handleSeeImage, handleLogout } =
+		useAppSidebar()
+	const { isMobile, isCollapsed, setIsOpen } = useSidebar()
+	const iconSize = isCollapsed ? 20 : 18
+
+	const handleMenuItemClick = useCallback(() => {
+		if (isMobile) {
+			setIsOpen(false)
+		}
+	}, [isMobile, setIsOpen])
 
 	const renderMenuItems = (items: SidebarImage[]) => {
 		return items.map((subItem) => (
@@ -48,10 +54,10 @@ export function AppSidebar({ className }: AppSidebarProps) {
 				isActive={isSubItemActive(subItem)}
 				className="app-sidebar__menu-item"
 			>
-				<SidebarMenuButton asChild>
+				<SidebarMenuButton asChild onClick={handleMenuItemClick}>
 					<a href={subItem.url}>
-						{subItem.icon && <SidebarIcon iconName={subItem.icon} />}
-						{subItem.title}
+						{subItem.icon && <SidebarIcon iconName={subItem.icon} size={iconSize} />}
+						<span>{subItem.title}</span>
 					</a>
 				</SidebarMenuButton>
 
@@ -66,10 +72,6 @@ export function AppSidebar({ className }: AppSidebarProps) {
 							<ArrowUpRightIcon size={16} />
 							See
 						</DropdownMenuItem>
-						{/* <DropdownMenuItem onClick={handleDeleteImage}>
-							<Trash2 size={16} />
-							Delete
-						</DropdownMenuItem> */}
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>
@@ -77,93 +79,93 @@ export function AppSidebar({ className }: AppSidebarProps) {
 	}
 
 	return (
-		<div className={clsx("app-sidebar", className)}>
-			<Sidebar>
-				<SidebarContent>
-					{/* Registry Switcher */}
-					<RegistrySwitcher />
-
-					<SidebarGroup>
-						<SidebarGroupLabel>Dashboard</SidebarGroupLabel>
-						<SidebarGroupContent>
-							<SidebarMenu>
-								<SidebarMenuItem isActive={isActiveUrl("/dashboard")}>
-									<SidebarMenuButton asChild>
-										<a href="/dashboard">
-											<SidebarIcon iconName="LayoutDashboard" />
-											Dashboard
-										</a>
-									</SidebarMenuButton>
-								</SidebarMenuItem>
-							</SidebarMenu>
-						</SidebarGroupContent>
-					</SidebarGroup>
-
-					{isLoading ? (
-						<SidebarGroup>
-							<SidebarGroupLabel>Images</SidebarGroupLabel>
-							<SidebarGroupContent>
-								<SidebarMenu>
-									{Array.from({ length: 3 }, (_, index) => `skeleton-${index}`).map((key) => (
-										<SidebarMenuItem key={key}>
-											<SidebarMenuButton asChild>
-												<SidebarIcon iconName="Package" />
-												<Skeleton height={16} width={120} />
-											</SidebarMenuButton>
-										</SidebarMenuItem>
-									))}
-								</SidebarMenu>
-							</SidebarGroupContent>
-						</SidebarGroup>
-					) : error ? (
-						<SidebarGroup>
-							<SidebarGroupLabel>Images</SidebarGroupLabel>
-							<SidebarGroupContent>
-								<div className="app-sidebar__error">
-									<p>Failed to load images: {error}</p>
-									<button type="button" onClick={refetch} className="app-sidebar__retry-button">
-										Retry
-									</button>
-								</div>
-							</SidebarGroupContent>
-						</SidebarGroup>
-					) : menuData ? (
-						menuData.navMain.map((item) => (
-							<SidebarGroup key={item.title}>
-								<SidebarGroupLabel>{item.title}</SidebarGroupLabel>
-								<SidebarGroupContent>
-									<SidebarMenu>
-										{item.items ? (
-											renderMenuItems(item.items)
-										) : (
-											<SidebarMenuItem isActive={isMenuItemActive(item)}>
-												<SidebarMenuButton asChild>
-													<a href={item.url}>
-														{item.icon && <SidebarIcon iconName={item.icon} />}
-														{item.title}
-													</a>
-												</SidebarMenuButton>
-											</SidebarMenuItem>
-										)}
-									</SidebarMenu>
-								</SidebarGroupContent>
-							</SidebarGroup>
-						))
-					) : null}
-
-					{/* Logout Button */}
-					<div className="app-sidebar__logout">
+		<Sidebar className={clsx("app-sidebar", className)}>
+			<SidebarHeader>
+				<RegistrySwitcher />
+			</SidebarHeader>
+			<SidebarContent>
+				<SidebarGroup>
+					<SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+					<SidebarGroupContent>
 						<SidebarMenu>
-							<SidebarMenuItem>
-								<SidebarMenuButton onClick={handleLogout}>
-									<LogOut size={16} />
-									Sign out
+							<SidebarMenuItem isActive={isActiveUrl("/dashboard")}>
+								<SidebarMenuButton asChild onClick={handleMenuItemClick}>
+									<a href="/dashboard">
+										<SidebarIcon iconName="LayoutDashboard" size={iconSize} />
+										<span>Dashboard</span>
+									</a>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
 						</SidebarMenu>
-					</div>
-				</SidebarContent>
-			</Sidebar>
-		</div>
+					</SidebarGroupContent>
+				</SidebarGroup>
+
+				{isLoading ? (
+					<SidebarGroup>
+						<SidebarGroupLabel>Images</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<SidebarMenu>
+								{Array.from({ length: 3 }, (_, index) => `skeleton-${index}`).map((key) => (
+									<SidebarMenuItem key={key}>
+										<SidebarMenuButton type="button">
+											<SidebarIcon iconName="Package" size={iconSize} />
+											<span>
+												<Skeleton height={16} width={120} />
+											</span>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
+								))}
+							</SidebarMenu>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				) : error ? (
+					<SidebarGroup>
+						<SidebarGroupLabel>Images</SidebarGroupLabel>
+						<SidebarGroupContent>
+							<div className="app-sidebar__error">
+								<p>Failed to load images: {error}</p>
+								<button type="button" onClick={refetch} className="app-sidebar__retry-button">
+									Retry
+								</button>
+							</div>
+						</SidebarGroupContent>
+					</SidebarGroup>
+				) : menuData ? (
+					menuData.navMain.map((item) => (
+						<SidebarGroup key={item.title}>
+							<SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+							<SidebarGroupContent>
+								<SidebarMenu>
+									{item.items ? (
+										renderMenuItems(item.items)
+									) : (
+										<SidebarMenuItem isActive={isMenuItemActive(item)}>
+											<SidebarMenuButton asChild onClick={handleMenuItemClick}>
+												<a href={item.url}>
+													{item.icon && <SidebarIcon iconName={item.icon} size={iconSize} />}
+													<span>{item.title}</span>
+												</a>
+											</SidebarMenuButton>
+										</SidebarMenuItem>
+									)}
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</SidebarGroup>
+					))
+				) : null}
+
+				<div className="app-sidebar__logout">
+					<SidebarMenu>
+						<SidebarMenuItem>
+							<SidebarMenuButton onClick={handleLogout} type="button">
+								<LogOut size={16} />
+								<span>Sign out</span>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					</SidebarMenu>
+				</div>
+			</SidebarContent>
+			<SidebarRail />
+		</Sidebar>
 	)
 }
