@@ -1,9 +1,6 @@
 "use client"
 
 import { ChevronsUpDown, Loader2, Pencil, Plus, Server, Trash2, XCircle } from "lucide-react"
-import * as React from "react"
-import { useEffect } from "react"
-import { toast } from "sonner"
 import Button from "@/app/_components/ui/button"
 import {
 	Dialog,
@@ -21,15 +18,9 @@ import {
 } from "@/app/_components/ui/dropdown-menu"
 import { SidebarMenuButton } from "@/app/_components/ui/sidebar"
 import { removeFromString } from "@/utils/helpers/text"
-import {
-	deleteRegistry,
-	getUserRegistries,
-	getUserWithSelectedRegistry,
-	updateSelectedRegistry,
-} from "@/utils/lib/auth-actions"
-import type { Registry } from "@/utils/types/registry.interface"
 import { Separator } from "../../ui"
 import { RegistryForm } from "../registry-form"
+import { useRegistrySwitcher } from "./use-registry-switcher"
 import "./registry-switcher.scss"
 
 interface RegistrySwitcherProps {
@@ -37,182 +28,30 @@ interface RegistrySwitcherProps {
 }
 
 export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
-	const [registries, setRegistries] = React.useState<Registry[]>([])
-	const [selectedRegistry, setSelectedRegistry] = React.useState<string>("")
-	const [isDialogOpen, setIsDialogOpen] = React.useState(false)
-	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false)
-	const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false)
-	const [registryToDelete, setRegistryToDelete] = React.useState<Registry | null>(null)
-	const [registryToEdit, setRegistryToEdit] = React.useState<Registry | null>(null)
-	const [isDeleting, setIsDeleting] = React.useState(false)
-	const [isDropdownOpen, setIsDropdownOpen] = React.useState(false)
-	const [isLoading, setIsLoading] = React.useState(false)
-
-	useEffect(() => {
-		const fetchData = async () => {
-			setIsLoading(true)
-			try {
-				// Fetch registries and user's selected registry in parallel
-				const [registriesResult, userResult] = await Promise.all([
-					getUserRegistries(),
-					getUserWithSelectedRegistry(),
-				])
-
-				if (registriesResult.error) {
-					console.error("Error fetching registries:", registriesResult.error)
-					return
-				}
-
-				if (userResult.error) {
-					console.error("Error fetching user:", userResult.error)
-					return
-				}
-
-				const registries = registriesResult.registries || []
-				setRegistries(registries)
-
-				// Determine which registry to select
-				let registryToSelect = ""
-
-				if (userResult.user?.selectedRegistryId) {
-					// User has a saved selected registry
-					const selectedRegistry = registries.find(
-						(r: Registry) => r.id === userResult.user.selectedRegistryId,
-					)
-					if (selectedRegistry) {
-						registryToSelect = selectedRegistry.url
-					}
-				}
-
-				if (
-					!registryToSelect &&
-					defaultRegistry &&
-					registries.some((r: Registry) => r.url === defaultRegistry)
-				) {
-					// Fallback to defaultRegistry prop if provided
-					registryToSelect = defaultRegistry
-				}
-
-				if (!registryToSelect && registries.length > 0) {
-					// Fallback to first registry
-					registryToSelect = registries[0].url
-				}
-
-				setSelectedRegistry(registryToSelect)
-			} catch (error) {
-				console.error("Error fetching data:", error)
-			} finally {
-				setIsLoading(false)
-			}
-		}
-
-		fetchData()
-	}, [defaultRegistry])
-
-	const handleRegistryAdded = async (_newRegistry: Registry) => {
-		window.location.reload()
-	}
-
-	const handleRegistrySelect = async (registryUrl: string) => {
-		// Find the registry by URL to get its ID
-		const selectedRegistry = registries.find((r: Registry) => r.url === registryUrl)
-		if (!selectedRegistry) {
-			console.error("Registry not found")
-			return
-		}
-
-		// Update local state immediately for better UX
-		setSelectedRegistry(registryUrl)
-
-		// Update in database
-		try {
-			const result = await updateSelectedRegistry(selectedRegistry.id)
-			if (result.error) {
-				console.error("Error updating selected registry:", result.error)
-				// Optionally revert the local state change
-			}
-		} catch (error) {
-			console.error("Error updating selected registry:", error)
-		}
-	}
-
-	const handleAddRegistryClick = () => {
-		setIsDropdownOpen(false)
-		setIsDialogOpen(true)
-	}
-
-	const handleEditClick = (registry: Registry) => {
-		setRegistryToEdit(registry)
-		setIsEditDialogOpen(true)
-		setIsDropdownOpen(false)
-	}
-
-	const handleDeleteClick = (registry: Registry) => {
-		setRegistryToDelete(registry)
-		setIsDeleteDialogOpen(true)
-		setIsDropdownOpen(false)
-	}
-
-	const handleConfirmDelete = async () => {
-		if (!registryToDelete) return
-
-		setIsDeleting(true)
-		try {
-			const result = await deleteRegistry(registryToDelete.id)
-
-			if (result.error) {
-				toast.error("Failed to delete registry", {
-					description: result.error,
-					duration: 4000,
-				})
-			} else {
-				toast.success("Registry deleted successfully", {
-					duration: 3000,
-				})
-
-				setIsDeleteDialogOpen(false)
-				setRegistryToDelete(null)
-
-				window.location.reload()
-			}
-		} catch (error) {
-			// Check if this is a redirect error (which is expected and handled by Next.js)
-			if (error instanceof Error && error.message === "NEXT_REDIRECT") {
-				throw error
-			}
-
-			toast.error("Failed to delete registry", {
-				description: "An unexpected error occurred",
-				duration: 4000,
-			})
-			console.error("Failed to delete registry:", error)
-		} finally {
-			setIsDeleting(false)
-		}
-	}
-
-	const handleCancelDelete = () => {
-		setIsDeleteDialogOpen(false)
-		setRegistryToDelete(null)
-	}
-
-	const handleDeleteDialogOpenChange = (open: boolean) => {
-		if (!open && !isDeleting) {
-			setIsDeleteDialogOpen(false)
-			setRegistryToDelete(null)
-		}
-	}
-
-	const handleEditDialogOpenChange = (open: boolean) => {
-		if (!open) {
-			setIsEditDialogOpen(false)
-			setRegistryToEdit(null)
-		}
-	}
-
-	const handleRegistrySaved = async (_registry: Registry) => {
-		window.location.reload()
-	}
+	const {
+		registries,
+		selectedRegistry,
+		isDialogOpen,
+		isDeleteDialogOpen,
+		isEditDialogOpen,
+		registryToDelete,
+		registryToEdit,
+		isDeleting,
+		isDropdownOpen,
+		isLoading,
+		setIsDialogOpen,
+		setIsDropdownOpen,
+		handleRegistryAdded,
+		handleRegistrySelect,
+		handleAddRegistryClick,
+		handleEditClick,
+		handleDeleteClick,
+		handleConfirmDelete,
+		handleCancelDelete,
+		handleDeleteDialogOpenChange,
+		handleEditDialogOpenChange,
+		handleRegistrySaved,
+	} = useRegistrySwitcher({ defaultRegistry })
 
 	return (
 		<div className="registry-switcher">

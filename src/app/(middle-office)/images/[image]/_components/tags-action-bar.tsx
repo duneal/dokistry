@@ -1,8 +1,6 @@
 "use client"
 
 import { CheckCircle, Loader2, Trash2, XCircle } from "lucide-react"
-import { useState } from "react"
-import { toast } from "sonner"
 import {
 	Badge,
 	Button,
@@ -14,6 +12,7 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/app/_components/ui"
+import { useTagsActionBar } from "./use-tags-action-bar"
 import "./tags-action-bar.scss"
 
 interface TagsActionBarProps {
@@ -28,32 +27,8 @@ export default function TagsActionBar({
 	onDeleteTags,
 	isDeleting = false,
 }: TagsActionBarProps) {
-	const [isDialogOpen, setIsDialogOpen] = useState(false)
-
-	const handleConfirmDelete = async () => {
-		try {
-			toast.loading(`Deleting ${selectedTags.length} tag(s)...`, {
-				id: "deleting-tags",
-				description: "Please wait while we process your request",
-			})
-
-			await onDeleteTags(selectedTags)
-			setIsDialogOpen(false)
-
-			toast.dismiss("deleting-tags")
-		} catch (error) {
-			console.error("Failed to delete tags:", error)
-			toast.dismiss("deleting-tags")
-		}
-	}
-
-	const handleCancelDelete = () => {
-		setIsDialogOpen(false)
-		toast.info("Deletion cancelled", {
-			description: "No tags were deleted",
-			duration: 2000,
-		})
-	}
+	const { isDialogOpen, setIsDialogOpen, handleConfirmDelete, handleCancelDelete } =
+		useTagsActionBar({ selectedTags, onDeleteTags })
 
 	if (selectedTags.length === 0) {
 		return null
