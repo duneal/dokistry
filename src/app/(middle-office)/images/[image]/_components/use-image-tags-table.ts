@@ -67,7 +67,7 @@ export function useImageTagsTable({
 		if (!repository?.tags || !repository?.tagsWithSize) return []
 
 		const processedTags = repository.tags.map((tag) => {
-			let date = new Date()
+			let date: Date | undefined
 
 			const readableDateMatch = tag.match(
 				/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+(\d{1,2}),\s+(\d{4})/,
@@ -131,6 +131,12 @@ export function useImageTagsTable({
 			}
 
 			const tagWithSize = repository.tagsWithSize?.find((t) => t.name === tag)
+			if (tagWithSize?.createdAt) {
+				const parsed = new Date(tagWithSize.createdAt)
+				if (!isNaN(parsed.getTime())) {
+					date = parsed
+				}
+			}
 			const size = tagWithSize?.size || 0
 			const layers = tagWithSize?.layers || 0
 
@@ -139,7 +145,7 @@ export function useImageTagsTable({
 
 			return {
 				name: tag,
-				date,
+				date: date ?? new Date(0),
 				isLatest: tag === "latest",
 				size,
 				layers,

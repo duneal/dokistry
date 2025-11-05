@@ -56,13 +56,18 @@ export function Table<TData, TValue>({
 		},
 	})
 
+	// Compute selected rows when selection changes
+	const selectedRows = React.useMemo(() => {
+		// Touch rowSelection so it's a real dependency for linting and recomputation
+		void rowSelection
+		return table.getFilteredSelectedRowModel().rows.map((row) => row.original)
+	}, [table, rowSelection])
+
 	// Notify parent component of selection changes
 	React.useEffect(() => {
-		if (onSelectionChange) {
-			const selectedRows = table.getFilteredSelectedRowModel().rows.map((row) => row.original)
-			onSelectionChange(selectedRows)
-		}
-	}, [onSelectionChange, table.getFilteredSelectedRowModel])
+		if (!onSelectionChange) return
+		onSelectionChange(selectedRows)
+	}, [onSelectionChange, selectedRows])
 
 	return (
 		<div className={`table ${className || ""}`}>

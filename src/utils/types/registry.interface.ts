@@ -61,6 +61,7 @@ export interface TagWithSize {
 	size: number
 	compressedSize: number
 	layers: number
+	createdAt?: string
 }
 
 export interface Repository {

@@ -72,7 +72,12 @@ body {
   min-height: 100vh;
 
   & {
-    @include flex(stretch, stretch, row);
+    @include flex(flex-start, stretch, row);
+  }
+
+  .app-sidebar {
+    flex: 0 0 auto;
+    width: 22rem;
   }
 }
 

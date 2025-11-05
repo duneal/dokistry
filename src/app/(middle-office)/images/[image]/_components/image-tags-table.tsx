@@ -2,7 +2,7 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import { format, formatDistanceToNow } from "date-fns"
-import { ArrowUpDown, CalendarDays, HardDrive, Package, Tag } from "lucide-react"
+import { ArrowUpDown, CalendarDays, HardDrive, Tag } from "lucide-react"
 import { Badge, Button, Checkbox, Table } from "@/app/_components/ui"
 import type { Repository } from "@/utils/types/registry.interface"
 import "./image-tags-table.scss"
@@ -135,13 +135,19 @@ export default function ImageTagsTable({
 					className="image-tags-table__sort-button"
 				>
 					<CalendarDays className="image-tags-table__header__icon" size={16} />
-					Last Updated
+					Creation time
 					<ArrowUpDown className="image-tags-table__sort-icon" size={14} />
 				</Button>
 			),
-			cell: ({ row }) => (
-				<span className="image-tags-table__date">{formatRelativeTime(row.getValue("date"))}</span>
-			),
+			cell: ({ row }) => {
+				const value = row.getValue("date") as Date
+				const isUnset = value instanceof Date && value.getTime() === 0
+				return (
+					<span className="image-tags-table__date">
+						{!value || isUnset ? "-" : formatRelativeTime(value)}
+					</span>
+				)
+			},
 		},
 		{
 			accessorKey: "size",
@@ -158,26 +164,7 @@ export default function ImageTagsTable({
 			),
 			cell: ({ row }) => <div>{formatFileSize(row.getValue("size"))}</div>,
 		},
-		{
-			accessorKey: "layers",
-			header: ({ column }) => (
-				<Button
-					variant="ghost"
-					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="image-tags-table__sort-button"
-				>
-					<Package className="image-tags-table__header__icon" size={16} />
-					Layers
-					<ArrowUpDown className="image-tags-table__sort-icon" size={14} />
-				</Button>
-			),
-			cell: ({ row }) => (
-				<span className="image-tags-table__layers">
-					{row.getValue("layers")} layer
-					{(row.getValue("layers") as number) !== 1 ? "s" : ""}
-				</span>
-			),
-		},
+		// layers column removed per request
 	]
 
 	if (!repository) {

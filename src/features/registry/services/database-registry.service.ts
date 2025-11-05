@@ -169,10 +169,12 @@ class DatabaseRegistryService {
 			const manifest = await this.getImageManifest(repositoryName, tag)
 
 			// Handle different manifest formats
-			const layers = manifest.layers || []
+			let layers = manifest.layers || []
 			let configSize = 0
 			let totalSize = 0
 			let compressedSize = 0
+			let createdAt: string | undefined
+			let configDigest: string | undefined
 
 			// Check if this is Docker Registry v1 format (schema version 1)
 			if (manifest.schemaVersion === 1) {
@@ -185,11 +187,32 @@ class DatabaseRegistryService {
 					totalSize = manifest.fsLayers.length * estimatedSizePerLayer
 					compressedSize = Math.floor(totalSize * 0.7) // Assume 70% compression ratio
 				}
+				// Try to read created date from history[0].v1Compatibility
+				if (manifest.history && manifest.history.length > 0) {
+					try {
+						const compat = JSON.parse(manifest.history[0].v1Compatibility)
+						if (compat?.created) {
+							createdAt = compat.created
+						}
+					} catch {}
+				}
+			} else if (manifest.manifests && manifest.manifests.length > 0) {
+				// Manifest list (multi-arch): fetch the first manifest to get layers and config
+				try {
+					const first = manifest.manifests[0]
+					const actual = await this.makeRequest<ImageManifest>(
+						`/v2/${repositoryName}/manifests/${first.digest}`,
+					)
+					layers = actual.layers || []
+					if (actual.config?.size) configSize = actual.config.size
+					configDigest = actual.config?.digest
+				} catch {}
 			} else {
-				// Docker Registry v2 format (schema version 2)
+				// Docker Registry v2 single manifest
 				if (manifest.config?.size) {
 					configSize = manifest.config.size
 				}
+				configDigest = manifest.config?.digest
 
 				// Calculate total size from layers
 				if (layers && layers.length > 0) {
@@ -201,11 +224,33 @@ class DatabaseRegistryService {
 				totalSize += configSize
 			}
 
+			// If we have a config digest, fetch the image config blob to read created date
+			if (!createdAt && configDigest) {
+				try {
+					await this.initializeConfig()
+					const response: AxiosResponse<any> = await axios.get(
+						`${this.baseUrl}/v2/${repositoryName}/blobs/${configDigest}`,
+						{
+							headers: {
+								Authorization: `Basic ${this.auth}`,
+								Accept: "application/vnd.docker.container.image.v1+json",
+								"User-Agent": "Dokistry/1.0",
+							},
+							timeout: 10000,
+						},
+					)
+					if (response.data?.created) {
+						createdAt = response.data.created
+					}
+				} catch {}
+			}
+
 			return {
 				name: tag,
 				size: totalSize,
 				compressedSize: compressedSize,
 				layers: layers.length,
+				createdAt,
 			}
 		} catch (error) {
 			console.error(`Failed to fetch size for ${repositoryName}:${tag}:`, error)

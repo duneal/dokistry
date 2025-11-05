@@ -1,22 +1,9 @@
 "use client"
 
-import { HardDrive, Wand2 } from "lucide-react"
-import { useMemo, useState } from "react"
+import { HardDrive } from "lucide-react"
+import { useMemo } from "react"
 import { Label, Pie, PieChart, Tooltip } from "recharts"
-import {
-	Button,
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-	ChartContainer,
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/app/_components/ui"
+import { Card, CardContent, CardHeader, CardTitle, ChartContainer } from "@/app/_components/ui"
 import type { Repository } from "@/utils/types/registry.interface"
 import "./dashboard-chart.scss"
 
@@ -58,14 +45,6 @@ const formatFileSize = (bytes: number): string => {
 }
 
 export default function DashboardChart({ repositories }: DashboardChartProps) {
-	const [isCleanupDialogOpen, setIsCleanupDialogOpen] = useState(false)
-
-	const cleanupCommands = [
-		"docker run --rm \\",
-		"  -v $(docker volume inspect --format '{{ .Mountpoint }}' qm-web-registry-iq3gem_registry-data):/var/lib/registry \\",
-		"  registry:2 garbage-collect /etc/docker/registry/config.yml",
-	]
-
 	const chartData = useMemo(() => {
 		const data = repositories
 			.filter((repo) => repo.totalSize && repo.totalSize > 0)
@@ -129,29 +108,6 @@ export default function DashboardChart({ repositories }: DashboardChartProps) {
 						<HardDrive />
 						Storage
 					</CardTitle>
-					<Dialog open={isCleanupDialogOpen} onOpenChange={setIsCleanupDialogOpen}>
-						<DialogTrigger asChild>
-							<Button variant="primary" size="sm">
-								<Wand2 size={16} />
-								Clean up
-							</Button>
-						</DialogTrigger>
-						<DialogContent className="dashboard__cleanup-dialog">
-							<DialogHeader>
-								<DialogTitle>Registry Cleanup Commands</DialogTitle>
-								<DialogDescription>
-									Run these commands to perform garbage collection on your Docker registry. This
-									will remove unused layers and free up disk space. Make sure the registry container
-									is stopped before running these commands.
-								</DialogDescription>
-							</DialogHeader>
-							<div className="dashboard__cleanup-commands">
-								<pre className="dashboard__cleanup-commands__code">
-									{cleanupCommands.join("\n")}
-								</pre>
-							</div>
-						</DialogContent>
-					</Dialog>
 				</div>
 			</CardHeader>
 			<CardContent className="dashboard__card__content">
