@@ -9,10 +9,6 @@
     overflow: hidden;
   }
 
-  .registry-switcher {
-    margin-bottom: $spacing-lg;
-  }
-
   &__actions {
     opacity: 0;
     transition: opacity 0.2s $ease-in-out;

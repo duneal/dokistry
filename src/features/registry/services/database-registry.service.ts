@@ -55,14 +55,14 @@ class DatabaseRegistryService {
 		}
 	}
 
-	private async makeRequest<T>(endpoint: string): Promise<T> {
+	private async makeRequest<T>(endpoint: string, customAccept?: string): Promise<T> {
 		await this.initializeConfig()
 
 		try {
 			const response: AxiosResponse<T> = await axios.get(`${this.baseUrl}${endpoint}`, {
 				headers: {
 					Authorization: `Basic ${this.auth}`,
-					Accept: "application/json",
+					Accept: customAccept || "application/json",
 					"User-Agent": "Dokistry/1.0",
 				},
 				timeout: 10000, // Increased timeout to 10 seconds
@@ -178,14 +178,52 @@ class DatabaseRegistryService {
 
 			// Check if this is Docker Registry v1 format (schema version 1)
 			if (manifest.schemaVersion === 1) {
-				// For v1 manifests, we can't easily get exact sizes without additional API calls
-				// Instead, we'll use a reasonable estimation based on the number of layers
+				// For v1 manifests, fetch actual blob sizes from the registry
 				if (manifest.fsLayers && manifest.fsLayers.length > 0) {
-					// Estimate size based on number of layers
-					// Docker images typically range from 100MB to 2GB, with most being 200-800MB
-					const estimatedSizePerLayer = 150 * 1024 * 1024 // 150MB per layer
-					totalSize = manifest.fsLayers.length * estimatedSizePerLayer
-					compressedSize = Math.floor(totalSize * 0.7) // Assume 70% compression ratio
+					try {
+						// Try to fetch actual blob sizes
+						const blobSizes = await Promise.all(
+							manifest.fsLayers.map(async (fsLayer) => {
+								try {
+									await this.initializeConfig()
+									const headResponse = await axios.head(
+										`${this.baseUrl}/v2/${repositoryName}/blobs/${fsLayer.blobSum}`,
+										{
+											headers: {
+												Authorization: `Basic ${this.auth}`,
+											},
+											timeout: 5000,
+										},
+									)
+									const contentLength = headResponse.headers["content-length"]
+									return contentLength ? parseInt(contentLength, 10) : 0
+								} catch {
+									return 0
+								}
+							}),
+						)
+
+						totalSize = blobSizes.reduce((sum, size) => sum + size, 0)
+						compressedSize = totalSize
+
+						layers = manifest.fsLayers.map((fsLayer, index) => ({
+							mediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
+							size: blobSizes[index],
+							digest: fsLayer.blobSum,
+						}))
+					} catch {
+						// Fallback to reasonable estimation if blob fetching fails
+						// Use a much smaller per-layer estimate based on typical compressed layer sizes
+						const estimatedSizePerLayer = 10 * 1024 * 1024 // 10MB per layer (more realistic)
+						totalSize = manifest.fsLayers.length * estimatedSizePerLayer
+						compressedSize = totalSize
+
+						layers = manifest.fsLayers.map((fsLayer) => ({
+							mediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
+							size: estimatedSizePerLayer,
+							digest: fsLayer.blobSum,
+						}))
+					}
 				}
 				// Try to read created date from history[0].v1Compatibility
 				if (manifest.history && manifest.history.length > 0) {
@@ -268,6 +306,7 @@ class DatabaseRegistryService {
 		try {
 			const response = await this.makeRequest<ImageManifest>(
 				`/v2/${repositoryName}/manifests/${tag}`,
+				"application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.oci.image.index.v1+json",
 			)
 
 			return response
