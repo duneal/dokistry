@@ -76,6 +76,10 @@
       border: 1px solid $c-grey-lighter;
       box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+      @media (max-width: $bkp-l) {
+        max-width: calc(100vw - 2 * #{$spacing-regular});
+      }
     }
 
     .separator {
@@ -128,6 +132,10 @@
       margin-left: $spacing-sm;
       opacity: 0;
       transition: opacity 0.2s $ease-out;
+
+      @media (max-width: $bkp-l) {
+        opacity: 1;
+      }
     }
 
     &:hover &__actions {

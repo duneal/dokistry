@@ -61,19 +61,21 @@ export function AppSidebar({ className }: AppSidebarProps) {
 					</a>
 				</SidebarMenuButton>
 
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<button type="button" className="app-sidebar__actions">
-							<MoreVertical size={16} />
-						</button>
-					</DropdownMenuTrigger>
-					<DropdownMenuContent align="start" sideOffset={10} side="right">
-						<DropdownMenuItem onClick={() => handleSeeImage(subItem.url)}>
-							<ArrowUpRightIcon size={16} />
-							See
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
+				{!isMobile && (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<button type="button" className="app-sidebar__actions">
+								<MoreVertical size={16} />
+							</button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="start" sideOffset={10} side="right">
+							<DropdownMenuItem onClick={() => handleSeeImage(subItem.url)}>
+								<ArrowUpRightIcon size={16} />
+								See
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				)}
 			</SidebarMenuItem>
 		))
 	}

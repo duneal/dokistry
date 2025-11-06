@@ -14,10 +14,9 @@
 }
 
 .imageDetails__header__info {
-  @include flex(space-between, center, row, $spacing-lg);
+  @include flex(space-between, center, row, $spacing-lg, wrap);
 
   @media (max-width: $bkp-m) {
-    flex-direction: column;
     gap: $spacing-md;
   }
 }
@@ -152,10 +151,6 @@
 }
 
 @media (max-width: $bkp-m) {
-  .imageDetails {
-    padding: $spacing-lg $spacing-md;
-  }
-
   .imageDetails__title {
     font-size: $fs-xl;
   }

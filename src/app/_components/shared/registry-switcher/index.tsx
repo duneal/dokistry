@@ -16,12 +16,12 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/app/_components/ui/dropdown-menu"
-import { SidebarMenuButton } from "@/app/_components/ui/sidebar"
+import { SidebarMenuButton, useSidebar } from "@/app/_components/ui/sidebar"
 import { removeFromString } from "@/utils/helpers/text"
 import { Separator } from "../../ui"
 import { RegistryForm } from "../registry-form"
-import { useRegistrySwitcher } from "./use-registry-switcher"
 import "./registry-switcher.scss"
+import { useRegistrySwitcher } from "./use-registry-switcher"
 
 interface RegistrySwitcherProps {
 	defaultRegistry?: string
@@ -52,6 +52,10 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 		handleEditDialogOpenChange,
 		handleRegistrySaved,
 	} = useRegistrySwitcher({ defaultRegistry })
+	const { isMobile } = useSidebar()
+	const dropdownMenuPlacement = isMobile
+		? { side: "bottom" as const, align: "center" as const, sideOffset: 8, collisionPadding: 16 }
+		: { side: "right" as const, align: "start" as const, sideOffset: 10 }
 
 	return (
 		<div className="registry-switcher">
@@ -72,12 +76,7 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 						<ChevronsUpDown className="registry-switcher__chevron" size={18} />
 					</SidebarMenuButton>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent
-					className="registry-switcher__dropdown"
-					side="right"
-					align="start"
-					sideOffset={10}
-				>
+				<DropdownMenuContent className="registry-switcher__dropdown" {...dropdownMenuPlacement}>
 					{isLoading ? (
 						<div className="registry-switcher__loading">Loading registries...</div>
 					) : registries.length === 0 ? (

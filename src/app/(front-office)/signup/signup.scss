@@ -15,6 +15,10 @@
     & {
       width: 40%;
       background-color: $c-primary-lightest;
+
+      @media (max-width: $bkp-m) {
+        width: 100%;
+      }
     }
 
     form {
@@ -78,6 +82,10 @@
     & {
       width: 60%;
       background-color: $c-primary-darkest;
+
+      @media (max-width: $bkp-m) {
+        display: none;
+      }
     }
 
     &__title {

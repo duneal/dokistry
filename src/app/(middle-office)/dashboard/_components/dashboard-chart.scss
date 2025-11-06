@@ -10,6 +10,14 @@
     -moz-user-select: none;
     -ms-user-select: none;
 
+    & {
+      @media (max-width: $bkp-m) {
+        width: 300px !important;
+        height: 300px !important;
+        margin: 0 !important;
+      }
+    }
+
     // Remove focus styles from Recharts components
     .recharts-wrapper {
       outline: none !important;
@@ -84,10 +92,6 @@
     &__content {
       @include flex(center, center, row, 0);
     }
-  }
-
-  &__cleanup-dialog {
-    max-width: 600px;
   }
 
   &__cleanup-commands {

@@ -58,6 +58,10 @@
 
   &__table-wrapper {
     width: 100%;
+    max-width: 90vw;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   &__table {
@@ -111,12 +115,7 @@
     white-space: nowrap;
   }
 
-  // Responsive design
   @media (max-width: $bkp-m) {
-    & {
-      padding: $spacing-md;
-    }
-
     &__title {
       font-size: $fs-lg;
     }

@@ -9,13 +9,18 @@
   }
 
   &__container {
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     border-radius: $border-radius-lg;
     border: 1px solid $c-grey-lighter;
+    width: 100%;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
   }
 
   &__table {
     width: 100%;
+    min-width: max(100%, $spacing-regular * 48);
     border-collapse: collapse;
     font-size: $fs-sm;
   }
