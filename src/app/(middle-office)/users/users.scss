@@ -1,0 +1,30 @@
+@use "../../../styles/base" as *;
+
+.users {
+  @include flex(flex-start, center, column);
+  width: 100%;
+  min-height: 100vh;
+
+  &__container {
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  h1 {
+    @include title($fs-xl, $fw-bold, normal, normal);
+
+    & {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      margin-bottom: $spacing-regular;
+    }
+  }
+
+  &__error {
+    padding: $spacing-lg;
+    background-color: $c-danger;
+    border-radius: $border-radius-regular;
+    color: $c-danger;
+  }
+}

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import {
 	deleteRegistry,
-	getUserRegistries,
+	getRegistriesList,
 	getUserWithSelectedRegistry,
 	updateSelectedRegistry,
 } from "@/utils/lib/auth-actions"
@@ -29,7 +29,7 @@ export function useRegistrySwitcher({ defaultRegistry }: UseRegistrySwitcherProp
 			setIsLoading(true)
 			try {
 				const [registriesResult, userResult] = await Promise.all([
-					getUserRegistries(),
+					getRegistriesList(),
 					getUserWithSelectedRegistry(),
 				])
 

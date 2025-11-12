@@ -1,11 +1,12 @@
 "use server"
 
+import crypto from "node:crypto"
 import axios from "axios"
 import { APIError } from "better-auth/api"
 import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
-import { auth } from "./auth"
+import { auth, authAdmin } from "./auth"
 import { db } from "./db"
 import { registry, user } from "./db/schema"
 
@@ -47,7 +48,7 @@ export async function signInAction(formData: FormData) {
 			console.log(error.message, error.status)
 		}
 
-		redirect("/signin?error=unexpected-error")
+		console.error("Signin error details:", error)
 	}
 }
 
@@ -111,7 +112,6 @@ export async function signUpAction(formData: FormData) {
 		}
 
 		console.error("Signup error details:", error)
-		redirect("/signup?error=unexpected-error")
 	}
 }
 
@@ -190,14 +190,14 @@ export async function checkAdminExists() {
 	}
 }
 
-export async function getUserRegistries() {
+export async function getRegistriesList() {
 	try {
 		const session = await getSession()
 		if (!session?.user) {
 			redirect("/signin")
 		}
 
-		const registries = await db.select().from(registry).where(eq(registry.userId, session.user.id))
+		const registries = await db.select().from(registry)
 
 		// Convert Date objects to strings for the interface
 		const formattedRegistries = registries.map((reg) => ({
@@ -247,19 +247,15 @@ export async function updateSelectedRegistry(registryId: string) {
 			redirect("/signin")
 		}
 
-		// Verify the registry belongs to the user
-		const userRegistry = await db
+		// Verify the registry exists
+		const registryExists = await db
 			.select()
 			.from(registry)
 			.where(eq(registry.id, registryId))
 			.limit(1)
 
-		if (userRegistry.length === 0) {
+		if (registryExists.length === 0) {
 			return { error: "Registry not found" }
-		}
-
-		if (userRegistry[0].userId !== session.user.id) {
-			return { error: "Unauthorized" }
 		}
 
 		// Update user's selected registry
@@ -284,7 +280,7 @@ export async function testRegistryConnection(
 		const baseUrl = url.replace(/\/$/, "")
 		const auth = Buffer.from(`${username}:${password}`).toString("base64")
 
-		const result = await axios.get(`${baseUrl}/v2/`, {
+		await axios.get(`${baseUrl}/v2/`, {
 			headers: {
 				Authorization: `Basic ${auth}`,
 				Accept: "application/json",
@@ -331,6 +327,10 @@ export async function createRegistry(url: string, username: string, password: st
 		const session = await getSession()
 		if (!session?.user) {
 			redirect("/signin")
+		}
+
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized: Only admins can create registries" }
 		}
 
 		const normalizedUrl = normalizeRegistryUrl(url)
@@ -390,9 +390,13 @@ export async function updateRegistry(
 			redirect("/signin")
 		}
 
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized: Only admins can update registries" }
+		}
+
 		const normalizedUrl = normalizeRegistryUrl(url)
 
-		// Verify the registry belongs to the user
+		// Verify the registry exists
 		const userRegistry = await db
 			.select()
 			.from(registry)
@@ -401,10 +405,6 @@ export async function updateRegistry(
 
 		if (userRegistry.length === 0) {
 			return { error: "Registry not found" }
-		}
-
-		if (userRegistry[0].userId !== session.user.id) {
-			return { error: "Unauthorized" }
 		}
 
 		const allRegistries = await db.select({ id: registry.id, url: registry.url }).from(registry)
@@ -470,7 +470,11 @@ export async function deleteRegistry(registryId: string) {
 			redirect("/signin")
 		}
 
-		// Verify the registry belongs to the user
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized: Only admins can delete registries" }
+		}
+
+		// Verify the registry exists
 		const userRegistry = await db
 			.select()
 			.from(registry)
@@ -481,41 +485,31 @@ export async function deleteRegistry(registryId: string) {
 			return { error: "Registry not found" }
 		}
 
-		if (userRegistry[0].userId !== session.user.id) {
-			return { error: "Unauthorized" }
-		}
-
-		// Check if this is the user's selected registry
-		const userData = await db
+		// Check if this is any user's selected registry (admin can delete any registry)
+		const usersWithSelectedRegistry = await db
 			.select({
+				id: user.id,
 				selectedRegistryId: user.selectedRegistryId,
 			})
 			.from(user)
-			.where(eq(user.id, session.user.id))
-			.limit(1)
-
-		const isSelectedRegistry = userData[0]?.selectedRegistryId === registryId
+			.where(eq(user.selectedRegistryId, registryId))
 
 		// Delete the registry
 		await db.delete(registry).where(eq(registry.id, registryId))
 
-		// If this was the selected registry, clear the selection or select another one
-		if (isSelectedRegistry) {
-			const remainingRegistries = await db
-				.select()
-				.from(registry)
-				.where(eq(registry.userId, session.user.id))
-				.limit(1)
+		// For each user who had this registry selected, update their selection
+		for (const userData of usersWithSelectedRegistry) {
+			const remainingRegistries = await db.select().from(registry).limit(1)
 
 			if (remainingRegistries.length > 0) {
-				// Select the first remaining registry
+				// Select the first remaining registry for this user
 				await db
 					.update(user)
 					.set({ selectedRegistryId: remainingRegistries[0].id })
-					.where(eq(user.id, session.user.id))
+					.where(eq(user.id, userData.id))
 			} else {
 				// Clear selection if no registries remain
-				await db.update(user).set({ selectedRegistryId: null }).where(eq(user.id, session.user.id))
+				await db.update(user).set({ selectedRegistryId: null }).where(eq(user.id, userData.id))
 			}
 		}
 
@@ -557,11 +551,7 @@ export async function getCurrentSelectedRegistry() {
 
 		// If no selected registry, get the first one
 		if (!userRecord.selectedRegistryId) {
-			const firstRegistry = await db
-				.select()
-				.from(registry)
-				.where(eq(registry.userId, session.user.id))
-				.limit(1)
+			const firstRegistry = await db.select().from(registry).limit(1)
 
 			if (firstRegistry.length === 0) {
 				return { error: "No registries found" }
@@ -636,8 +626,352 @@ export async function createFirstAdminUser(email: string, password: string, name
 
 		if (error instanceof APIError) {
 			console.error("API Error:", error.message, error.status)
+			return { error: error.message || "Failed to create account" }
 		}
 
 		return { error: "An unexpected error occurred" }
+	}
+}
+
+export async function changeUserPassword(
+	userId: string,
+	newPassword: string,
+	currentPassword?: string,
+) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			return { error: "Unauthorized" }
+		}
+
+		const headersList = await headers()
+
+		// If changing own password, use Better Auth's changePassword API (requires current password)
+		if (session.user.id === userId) {
+			if (!currentPassword || currentPassword.trim() === "") {
+				return { error: "Current password is required to change your password" }
+			}
+
+			const changePasswordResult = await auth.api.changePassword({
+				body: {
+					currentPassword,
+					newPassword,
+				},
+				headers: headersList,
+			})
+
+			if (!changePasswordResult) {
+				return { error: "Failed to update password" }
+			}
+
+			return { success: true }
+		}
+
+		// If admin changing another user's password, use Better Auth's setUserPassword API
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized: Only admins can change other users' passwords" }
+		}
+
+		// Always use Better Auth's setUserPassword API for admin password changes - no fallback
+		const setPasswordResult = await auth.api.setUserPassword({
+			body: {
+				userId,
+				newPassword,
+			},
+			headers: headersList,
+		})
+
+		if (!setPasswordResult) {
+			return { error: "Failed to update password" }
+		}
+
+		return { success: true }
+	} catch (error) {
+		if (error instanceof APIError) {
+			console.error("Password update error:", error.message, error.status)
+			return { error: error.message || "Failed to update password" }
+		}
+		console.error("Error updating password:", error)
+		return { error: "Failed to update password" }
+	}
+}
+
+export async function updateUserPassword(currentPassword: string, newPassword: string) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			return { error: "Unauthorized" }
+		}
+
+		return await changeUserPassword(session.user.id, newPassword, currentPassword)
+	} catch (error) {
+		console.error("Error updating password:", error)
+		return { error: "Failed to update password" }
+	}
+}
+
+export async function updateUserEmail(newEmail: string) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			return { error: "Unauthorized" }
+		}
+
+		const headersList = await headers()
+
+		const existingUser = await db.select().from(user).where(eq(user.email, newEmail)).limit(1)
+
+		if (existingUser.length > 0 && existingUser[0].id !== session.user.id) {
+			return { error: "A user with this email already exists" }
+		}
+
+		await auth.api.changeEmail({
+			body: {
+				newEmail,
+			},
+			headers: headersList,
+		})
+
+		return { success: true }
+	} catch (error) {
+		if (error instanceof APIError) {
+			console.error("Email update error:", error.message, error.status)
+			return { error: error.message || "Failed to update email" }
+		}
+		console.error("Error updating email:", error)
+		return { error: "Failed to update email" }
+	}
+}
+
+export async function getAllUsers() {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			redirect("/signin")
+		}
+
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized" }
+		}
+
+		const users = await db.select().from(user)
+
+		const formattedUsers = users.map((u) => ({
+			...u,
+			createdAt: u.createdAt.toISOString(),
+			updatedAt: u.updatedAt.toISOString(),
+		}))
+
+		return { users: formattedUsers }
+	} catch (error) {
+		console.error("Error fetching users:", error)
+		return { error: "Failed to fetch users" }
+	}
+}
+
+export async function createUser(
+	email: string,
+	password: string,
+	name: string,
+	role?: "admin" | "user",
+) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			redirect("/signin")
+		}
+
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized" }
+		}
+
+		const existingUser = await db.select().from(user).where(eq(user.email, email)).limit(1)
+
+		if (existingUser.length > 0) {
+			return { error: "A user with this email already exists" }
+		}
+
+		// Use authAdmin to avoid auto sign-in when creating users from admin interface
+		const signupResult = await authAdmin.api.signUpEmail({
+			body: {
+				email,
+				password,
+				name,
+			},
+		})
+
+		if (!signupResult.user) {
+			return { error: "Failed to create user" }
+		}
+
+		// Update role if needed (Better Auth creates users with default role "user")
+		if (role && role !== "user") {
+			const headersList = await headers()
+			await auth.api.setRole({
+				body: {
+					userId: signupResult.user.id,
+					role: role,
+				},
+				headers: headersList,
+			})
+		}
+
+		// Fetch the updated user from database to get the correct role
+		const newUser = await db.select().from(user).where(eq(user.id, signupResult.user.id)).limit(1)
+
+		if (newUser.length === 0) {
+			return { error: "Failed to retrieve created user" }
+		}
+
+		const formattedUser = {
+			...newUser[0],
+			createdAt: newUser[0].createdAt.toISOString(),
+			updatedAt: newUser[0].updatedAt.toISOString(),
+		}
+
+		return { user: formattedUser }
+	} catch (error) {
+		if (error instanceof APIError) {
+			console.error("Create user error:", error.message, error.status)
+			return { error: error.message || "Failed to create user" }
+		}
+		console.error("Error creating user:", error)
+		return { error: "Failed to create user" }
+	}
+}
+
+export async function updateUser(
+	userId: string,
+	email?: string,
+	password?: string,
+	name?: string,
+	role?: "admin" | "user",
+) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			redirect("/signin")
+		}
+
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized" }
+		}
+
+		const userToUpdate = await db.select().from(user).where(eq(user.id, userId)).limit(1)
+
+		if (userToUpdate.length === 0) {
+			return { error: "User not found" }
+		}
+
+		const headersList = await headers()
+
+		// Prepare data for Better Auth's adminUpdateUser API
+		const updateData: { email?: string; name?: string } = {}
+
+		if (email && email !== userToUpdate[0].email) {
+			const existingUser = await db.select().from(user).where(eq(user.email, email)).limit(1)
+
+			if (existingUser.length > 0 && existingUser[0].id !== userId) {
+				return { error: "A user with this email already exists" }
+			}
+
+			updateData.email = email
+		}
+
+		if (name && name !== userToUpdate[0].name) {
+			updateData.name = name
+		}
+
+		// Use Better Auth's adminUpdateUser API for user data updates (name, email)
+		if (Object.keys(updateData).length > 0) {
+			await auth.api.adminUpdateUser({
+				body: {
+					userId,
+					data: updateData,
+				},
+				headers: headersList,
+			})
+		}
+
+		// Use Better Auth's setRole API for role updates
+		if (role && role !== userToUpdate[0].role) {
+			await auth.api.setRole({
+				body: {
+					userId,
+					role,
+				},
+				headers: headersList,
+			})
+		}
+
+		// Use Better Auth's setUserPassword API for password updates
+		if (password && password.trim() !== "") {
+			const passwordResult = await changeUserPassword(userId, password)
+
+			if (passwordResult.error) {
+				return { error: passwordResult.error }
+			}
+		}
+
+		// Fetch updated user from database
+		const updatedUser = await db.select().from(user).where(eq(user.id, userId)).limit(1)
+
+		if (updatedUser.length === 0) {
+			return { error: "Failed to retrieve updated user" }
+		}
+
+		const formattedUser = {
+			...updatedUser[0],
+			createdAt: updatedUser[0].createdAt.toISOString(),
+			updatedAt: updatedUser[0].updatedAt.toISOString(),
+		}
+
+		return { user: formattedUser }
+	} catch (error) {
+		if (error instanceof APIError) {
+			console.error("Update user error:", error.message, error.status)
+			return { error: error.message || "Failed to update user" }
+		}
+		console.error("Error updating user:", error)
+		return { error: "Failed to update user" }
+	}
+}
+
+export async function deleteUser(userId: string) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			redirect("/signin")
+		}
+
+		if (session.user.role !== "admin") {
+			return { error: "Unauthorized" }
+		}
+
+		if (session.user.id === userId) {
+			return { error: "Cannot delete your own account" }
+		}
+
+		const userToDelete = await db.select().from(user).where(eq(user.id, userId)).limit(1)
+
+		if (userToDelete.length === 0) {
+			return { error: "User not found" }
+		}
+
+		// Admin deletion: Better Auth's deleteUser API is designed for users deleting
+		// their own account (requires password or fresh session). For admin deletion
+		// of other users, we use direct database deletion. Better Auth's schema uses
+		// CASCADE deletes, so related records (sessions, accounts, etc.) will be
+		// automatically deleted by the database foreign key constraints.
+		await db.delete(user).where(eq(user.id, userId))
+
+		return { success: true }
+	} catch (error) {
+		if (error instanceof APIError) {
+			console.error("Delete user error:", error.message, error.status)
+			return { error: error.message || "Failed to delete user" }
+		}
+		console.error("Error deleting user:", error)
+		return { error: "Failed to delete user" }
 	}
 }

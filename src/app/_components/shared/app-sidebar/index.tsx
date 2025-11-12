@@ -1,7 +1,7 @@
 "use client"
 
 import clsx from "clsx"
-import { ArrowUpRightIcon, LogOut, MoreVertical } from "lucide-react"
+import { ArrowUpRightIcon, LogOut, MoreVertical, Settings, Users } from "lucide-react"
 import { useCallback } from "react"
 import Skeleton from "react-loading-skeleton"
 import "react-loading-skeleton/dist/skeleton.css"
@@ -25,6 +25,7 @@ import {
 	SidebarRail,
 	useSidebar,
 } from "@/app/_components/ui"
+import { useAuth } from "@/utils/lib/auth-hooks"
 import type { SidebarImage } from "@/utils/types/registry.interface"
 import { SidebarIcon } from "./sidebar-icon"
 import { useAppSidebar } from "./use-app-sidebar"
@@ -39,13 +40,34 @@ export function AppSidebar({ className }: AppSidebarProps) {
 	const { isActiveUrl, isMenuItemActive, isSubItemActive, handleSeeImage, handleLogout } =
 		useAppSidebar()
 	const { isMobile, isCollapsed, setIsOpen } = useSidebar()
+	const { user } = useAuth()
 	const iconSize = isCollapsed ? 20 : 18
+	const isAdmin = user?.role === "admin"
 
 	const handleMenuItemClick = useCallback(() => {
 		if (isMobile) {
 			setIsOpen(false)
 		}
 	}, [isMobile, setIsOpen])
+
+	const settingsMenuItems = [
+		...(isAdmin
+			? [
+					{
+						url: "/users",
+						icon: Users,
+						label: "Users",
+						isActive: isActiveUrl("/users"),
+					},
+				]
+			: []),
+		{
+			url: "/settings",
+			icon: Settings,
+			label: "Settings",
+			isActive: isActiveUrl("/settings"),
+		},
+	]
 
 	const renderMenuItems = (items: SidebarImage[]) => {
 		return items.map((subItem) => (
@@ -156,8 +178,21 @@ export function AppSidebar({ className }: AppSidebarProps) {
 					))
 				) : null}
 
-				<div className="app-sidebar__logout">
+				<div className="app-sidebar__bottom">
 					<SidebarMenu>
+						{settingsMenuItems.map((item) => {
+							const IconComponent = item.icon
+							return (
+								<SidebarMenuItem key={item.url} isActive={item.isActive}>
+									<SidebarMenuButton asChild onClick={handleMenuItemClick}>
+										<a href={item.url}>
+											<IconComponent size={iconSize} />
+											<span>{item.label}</span>
+										</a>
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							)
+						})}
 						<SidebarMenuItem>
 							<SidebarMenuButton onClick={handleLogout} type="button">
 								<LogOut size={16} />

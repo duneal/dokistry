@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
 import { auth } from "@/utils/lib/auth"
 import { APP_URL } from "./utils/constants/config"
+import { MIDDLE_OFFICE_PATHS } from "./utils/constants/navigation"
 
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl
@@ -32,8 +33,12 @@ export async function middleware(request: NextRequest) {
 	}
 
 	// Authenticated → always redirect to dashboard
-	if (session && pathname !== "/dashboard" && !pathname.startsWith("/images/")) {
-		return NextResponse.redirect(new URL("/dashboard", request.url))
+	if (
+		session &&
+		!Object.values(MIDDLE_OFFICE_PATHS).includes(pathname as keyof typeof MIDDLE_OFFICE_PATHS) &&
+		!Object.values(MIDDLE_OFFICE_PATHS).some((p) => pathname.startsWith(p))
+	) {
+		return NextResponse.redirect(new URL(MIDDLE_OFFICE_PATHS.DASHBOARD, request.url))
 	}
 
 	return NextResponse.next()

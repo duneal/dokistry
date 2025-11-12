@@ -1,4 +1,4 @@
-@use '../../../../styles/base' as *;
+@use "../../../../styles/base" as *;
 
 .dialog {
   &__overlay {
@@ -8,11 +8,11 @@
     background-color: rgba($c-black, 0.5);
     transition: opacity 200ms $ease-in-out;
 
-    &[data-state='open'] {
+    &[data-state="open"] {
       animation: dialog-overlay-show 200ms $ease-in-out;
     }
 
-    &[data-state='closed'] {
+    &[data-state="closed"] {
       animation: dialog-overlay-hide 200ms $ease-in-out;
     }
   }
@@ -28,7 +28,7 @@
     gap: $spacing-lg;
     border: 1px solid $c-grey-light;
     background-color: $c-white;
-    padding: $spacing-xl $spacing-lg;
+    padding: $spacing-xl;
     border-radius: $border-radius-lg;
     box-shadow: $box-shadow-blurry;
     transform: translate(-50%, -50%);
@@ -38,11 +38,11 @@
       max-width: 32rem; // 512px
     }
 
-    &[data-state='open'] {
+    &[data-state="open"] {
       animation: dialog-content-show 200ms $ease-in-out;
     }
 
-    &[data-state='closed'] {
+    &[data-state="closed"] {
       animation: dialog-content-hide 200ms $ease-in-out;
     }
   }
@@ -99,8 +99,12 @@
   &__footer {
     @include flex(space-between, center, column-reverse, $spacing-xs);
 
-    @media (min-width: $bkp-m) {
-      flex-direction: row;
+    & {
+      width: 100%;
+
+      @media (min-width: $bkp-m) {
+        flex-direction: row;
+      }
     }
   }
 

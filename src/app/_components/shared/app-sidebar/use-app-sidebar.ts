@@ -20,6 +20,9 @@ export function useAppSidebar() {
 			return decodeURIComponent(urlImage) === decodeURIComponent(pathImage)
 		}
 
+		if (url === "/settings" && pathname === "/settings") return true
+		if (url === "/users" && pathname === "/users") return true
+
 		return url === pathname
 	}
 

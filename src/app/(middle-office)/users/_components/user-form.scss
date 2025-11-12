@@ -1,0 +1,49 @@
+@use "../../../../styles/base" as *;
+
+.user-form {
+  @include flex(flex-start, flex-start, column, $spacing-regular);
+
+  &__field {
+    @include flex(flex-start, flex-start, column, $spacing-xs);
+
+    & {
+      width: 100%;
+    }
+
+    .input,
+    .password-input .input,
+    .user-form__select {
+      background-color: $c-grey-lighter;
+    }
+  }
+
+  &__select {
+    @include text($fs-regular-sm, $fw-medium, normal, normal, $c-grey-darker);
+    width: 100%;
+    border-radius: $border-radius-regular;
+    padding: $spacing-regular $spacing-md;
+    border: 1px solid transparent;
+    outline: none;
+    transition: transform 0.2s $ease-out;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      transform: translateX(3px);
+    }
+  }
+
+  &__label {
+    @include text(
+      $fs-regular-sm,
+      $fw-medium,
+      normal,
+      normal,
+      $color: $c-grey-darker
+    );
+  }
+
+  &__button__icon {
+    margin-right: $spacing-xs;
+  }
+}

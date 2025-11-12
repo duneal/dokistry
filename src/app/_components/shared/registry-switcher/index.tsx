@@ -18,6 +18,7 @@ import {
 } from "@/app/_components/ui/dropdown-menu"
 import { SidebarMenuButton, useSidebar } from "@/app/_components/ui/sidebar"
 import { removeFromString } from "@/utils/helpers/text"
+import { useAuth } from "@/utils/lib/auth-hooks"
 import { Separator } from "../../ui"
 import { RegistryForm } from "../registry-form"
 import "./registry-switcher.scss"
@@ -53,6 +54,8 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 		handleRegistrySaved,
 	} = useRegistrySwitcher({ defaultRegistry })
 	const { isMobile } = useSidebar()
+	const { user } = useAuth()
+	const isAdmin = user?.role === "admin"
 	const dropdownMenuPlacement = isMobile
 		? { side: "bottom" as const, align: "center" as const, sideOffset: 8, collisionPadding: 16 }
 		: { side: "right" as const, align: "start" as const, sideOffset: 10 }
@@ -91,46 +94,52 @@ export function RegistrySwitcher({ defaultRegistry }: RegistrySwitcherProps) {
 								<span className="registry-switcher__item__text">
 									{removeFromString(removeFromString(registry.url, "https://"), "http://")}
 								</span>
-								<div className="registry-switcher__item__actions">
-									<button
-										type="button"
-										className="registry-switcher__item__action registry-switcher__item__action--edit"
-										onClick={(e) => {
-											e.preventDefault()
-											e.stopPropagation()
-											handleEditClick(registry)
-										}}
-									>
-										<Pencil className="registry-switcher__item__action__icon" size={16} />
-									</button>
-									<button
-										type="button"
-										className="registry-switcher__item__action registry-switcher__item__action--delete"
-										onClick={(e) => {
-											e.preventDefault()
-											e.stopPropagation()
-											handleDeleteClick(registry)
-										}}
-									>
-										<Trash2 className="registry-switcher__item__action__icon" size={16} />
-									</button>
-								</div>
+								{isAdmin && (
+									<div className="registry-switcher__item__actions">
+										<button
+											type="button"
+											className="registry-switcher__item__action registry-switcher__item__action--edit"
+											onClick={(e) => {
+												e.preventDefault()
+												e.stopPropagation()
+												handleEditClick(registry)
+											}}
+										>
+											<Pencil className="registry-switcher__item__action__icon" size={16} />
+										</button>
+										<button
+											type="button"
+											className="registry-switcher__item__action registry-switcher__item__action--delete"
+											onClick={(e) => {
+												e.preventDefault()
+												e.stopPropagation()
+												handleDeleteClick(registry)
+											}}
+										>
+											<Trash2 className="registry-switcher__item__action__icon" size={16} />
+										</button>
+									</div>
+								)}
 							</DropdownMenuItem>
 						))
 					)}
-					<Separator orientation="horizontal" />
-					<DropdownMenuItem
-						className="registry-switcher__add-button"
-						onSelect={(e) => {
-							e.preventDefault()
-							handleAddRegistryClick()
-						}}
-					>
-						<Button variant="ghost" size="sm">
-							<Plus size={18} />
-							Add a registry
-						</Button>
-					</DropdownMenuItem>
+					{isAdmin && (
+						<>
+							<Separator orientation="horizontal" />
+							<DropdownMenuItem
+								className="registry-switcher__add-button"
+								onSelect={(e) => {
+									e.preventDefault()
+									handleAddRegistryClick()
+								}}
+							>
+								<Button variant="ghost" size="sm">
+									<Plus size={18} />
+									Add a registry
+								</Button>
+							</DropdownMenuItem>
+						</>
+					)}
 				</DropdownMenuContent>
 			</DropdownMenu>
 

@@ -1,4 +1,3 @@
-import { eq } from "drizzle-orm"
 import { nanoid } from "nanoid"
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
@@ -16,7 +15,7 @@ export async function GET(request: NextRequest) {
 			return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 		}
 
-		const registries = await db.select().from(registry).where(eq(registry.userId, session.user.id))
+		const registries = await db.select().from(registry)
 
 		return NextResponse.json({ registries })
 	} catch (error) {

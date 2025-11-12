@@ -20,6 +20,8 @@ export default function Header() {
 			const imageName = path.replace("/images/", "")
 			return decodeURIComponent(imageName)
 		}
+		if (path === "/settings") return "Settings"
+		if (path === "/users") return "Users"
 		return path.charAt(1).toUpperCase() + path.slice(2)
 	}
 

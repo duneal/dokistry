@@ -72,7 +72,7 @@
     }
 
     &__cell {
-      @include text($fs-sm, $fw-regular, $color: $c-black);
+      @include text($fs-regular-sm, $fw-regular, $color: $c-black);
       padding: $spacing-sm $spacing-regular;
       vertical-align: middle;
       height: 3rem;
