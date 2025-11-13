@@ -394,12 +394,31 @@ class DatabaseRegistryService {
 			return digestHeader ?? null
 		}
 
+		const convertAxiosHeaders = (
+			axiosHeaders: Record<string, unknown> | unknown,
+		): Record<string, string | string[] | undefined> => {
+			const converted: Record<string, string | string[] | undefined> = {}
+			if (!axiosHeaders || typeof axiosHeaders !== "object") {
+				return converted
+			}
+			for (const [key, value] of Object.entries(axiosHeaders)) {
+				if (value === null) {
+					converted[key] = undefined
+				} else if (typeof value === "string") {
+					converted[key] = value
+				} else if (Array.isArray(value)) {
+					converted[key] = value.filter((v): v is string => typeof v === "string")
+				}
+			}
+			return converted
+		}
+
 		try {
 			const headResponse = await axios.head(url, {
 				headers,
 				timeout: 10000,
 			})
-			const digestFromHead = extractDigestFromHeaders(headResponse.headers)
+			const digestFromHead = extractDigestFromHeaders(convertAxiosHeaders(headResponse.headers))
 			if (digestFromHead) {
 				return digestFromHead
 			}
@@ -423,7 +442,7 @@ class DatabaseRegistryService {
 				headers,
 				timeout: 10000,
 			})
-			const digestFromHeaders = extractDigestFromHeaders(response.headers)
+			const digestFromHeaders = extractDigestFromHeaders(convertAxiosHeaders(response.headers))
 			if (digestFromHeaders) {
 				return digestFromHeaders
 			}

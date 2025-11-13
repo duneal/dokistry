@@ -2,9 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { databaseRegistryService } from "@/features/registry/services"
 
 interface RouteParams {
-	params: {
+	params: Promise<{
 		repository: string
-	}
+	}>
 }
 
 export async function GET(_request: NextRequest, { params }: RouteParams) {

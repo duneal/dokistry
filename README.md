@@ -1,76 +1,39 @@
-![qmweb](https://github.com/user-attachments/assets/4ea966f6-e5b5-4612-970a-3f349c86c78e)
+<img width="2376" height="594" alt="banner" src="https://github.com/user-attachments/assets/120501f8-1284-4f75-b88e-e15debce75ac" />
 
-## ✅ Prerequisites
+<br><br>
 
-Before starting, make sure you have the following installed:
+Dokistry is an open-source tool to preview and manage Docker registries, images, and users from a single interface.
 
-- **Node.js** `>= 22.0.0` [Download Node.js](https://nodejs.org/en/download) or **NVM**
-- **Yarn** (`npm install -g yarn`)
-- **Docker**  
-  [Install Docker](https://docs.docker.com/get-docker/)
-- **Docker Compose**  
-  [Install Docker Compose](https://docs.docker.com/compose/install/)
-
-<br>
-
-## 🛠️ Getting Started
-
-1. **Install the dependencies:**
-
-```bash
-corepack enable
-yarn install
-```
-
-2. **Copy the environment file:**
-
-```bash
-cp .env.dev.example .env
-```
-
-3. **Start the services:**
-
-```bash
-docker compose up
-```
-
-3. **Open your browser and visit http://localhost:3000** (the port set in the .env file).
+## ✨ Features
+- Preview and manage Docker registries
+- View image and tag sizes and disk usage
+- Inspect tags on each registry
+- Delete images or tags
+- Manage multiple registries from one instance
+- Add and manage users (admin privileges required)
 
 <br>
 
-## ✨ Creating a New Feature
+## 🚀 Getting Started
 
-To generate a new feature (optionally with a page and styles), run:
-
-```bash
-yarn next-maker feature:create
-```
-
-You will be prompted for the feature name, and whether to create a page for it. If you choose to create a page, you will also select the section (front, middle, or back). The script will generate the necessary files and folders in the appropriate locations.
-
-<br>
-
-## 🚀 Deploy to production
-
-1. **Set the following secrets in your GitHub repository:**
-
-   - `NEXT_PUBLIC_APP_URL`: APP URL
-   - `NEXT_PUBLIC_APP_URL_CANONICAL`: APP Canonical URL
-   - `SMTP_USER`: SMTP username
-   - `SMTP_PASSWORD`: SMTP password
-   - `REGISTRY_USERNAME`: Docker registry username
-   - `REGISTRY_PASSWORD`: Docker registry password/token
-   - Any other secrets required for your CI/CD pipeline
-
-2. **Push to production branch** (from your local machine):
+Make sure you have Docker and Docker Compose installed. Then:
 
 ```bash
-git switch prod
-git push origin prod
-```
-
-3. **Start the services** (from your production server):
-
-```bash
+git clone https://github.com/duneal/dokistry.git
+cd dokistry
 docker compose -f docker-compose.prod.yml up -d
 ```
+
+Your application will be available at http://localhost:3000.
+
+<br>
+
+## 🤝 Contributing
+
+Check out the Contributing Guide for more information.
+
+<br>
+
+## 👀 Preview
+
+<img width="2400" height="1632" alt="dashboard" src="https://github.com/user-attachments/assets/a526f9dc-6bdf-4285-9708-d55839da2634" />

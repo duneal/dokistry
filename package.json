@@ -1,6 +1,17 @@
 {
   "name": "dokistry",
-  "private": true,
+  "description": "Dokistry is an open-source tool to preview and manage Docker registries, images, and users from a single interface.",
+  "version": "0.0.1",
+  "author": "Duneal Studio",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/duneal/dokistry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/duneal/dokistry/issues"
+  },
+  "homepage": "https://github.com/duneal/dokistry#readme",
   "packageManager": "yarn@4.6.0",
   "scripts": {
     "start:dev": "next dev --turbopack",

@@ -5,10 +5,12 @@ import type { RegistryRepositoriesResponse, Repository } from "@/utils/types/reg
 import ImageDetailsWrapper from "./_components/image-details-wrapper"
 import "./image.scss"
 
+export const dynamic = "force-dynamic"
+
 interface ImagePageProps {
-	params: {
+	params: Promise<{
 		image: string
-	}
+	}>
 }
 
 export async function generateMetadata({ params }: ImagePageProps): Promise<Metadata> {

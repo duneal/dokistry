@@ -1,34 +1,45 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
-import { auth } from "@/utils/lib/auth"
-import { APP_URL } from "./utils/constants/config"
 import { MIDDLE_OFFICE_PATHS } from "./utils/constants/navigation"
 
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl
 
+	const baseUrl = new URL(request.url).origin
+
 	let session = null
 	try {
-		session = await auth.api.getSession({ headers: request.headers })
+		const sessionResponse = await fetch(`${baseUrl}/api/auth/session`, {
+			headers: {
+				cookie: request.headers.get("cookie") || "",
+			},
+			cache: "no-store",
+		})
+		const sessionData = await sessionResponse.json()
+		session = sessionData.session
 	} catch {
-		// Session retrieval failed, treat as unauthenticated
 		session = null
 	}
 
-	// Not authenticated → check if admin exists to determine redirect
 	if (!session) {
-		const adminExists = await fetch(`${APP_URL}/api/admin/exists`, {
-			cache: "no-store",
-		})
+		try {
+			const adminResponse = await fetch(`${baseUrl}/api/admin/exists`, {
+				cache: "no-store",
+			})
+			const adminData = await adminResponse.json()
+			const adminExists = adminData.adminExists
 
-		// If no admin exists, redirect to signup
-		if (!adminExists && pathname !== "/signup") {
-			return NextResponse.redirect(new URL("/signup", request.url))
-		}
+			if (!adminExists && pathname !== "/signup") {
+				return NextResponse.redirect(new URL("/signup", request.url))
+			}
 
-		// If admin exists, redirect to signin
-		if (adminExists && pathname !== "/signin") {
-			return NextResponse.redirect(new URL("/signin", request.url))
+			if (adminExists && pathname !== "/signin") {
+				return NextResponse.redirect(new URL("/signin", request.url))
+			}
+		} catch {
+			if (pathname !== "/signin") {
+				return NextResponse.redirect(new URL("/signin", request.url))
+			}
 		}
 	}
 
