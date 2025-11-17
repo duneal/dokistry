@@ -46,9 +46,9 @@ jobs:
 
       - name: 🏷️ Run semantic-release
         id: semantic-release
+        uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn semantic-release
 
   build-and-push:
     name: 🐋 Build & Push Docker Image
