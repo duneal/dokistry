@@ -8,14 +8,6 @@ COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn set version 4.6.0
 RUN yarn install --immutable
 
-# Secret build args
-ARG BETTER_AUTH_SECRET
-ARG BETTER_AUTH_URL
-
-# Expose public vars during build (e.g., Next.js embeds them at build)
-ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
-ENV BETTER_AUTH_URL=$BETTER_AUTH_URL
-
 # Additional env variables
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
@@ -26,9 +18,7 @@ COPY src/ ./src
 COPY public/ ./public
 
 # Build app & Inject secrets into build without persisting
-RUN BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET \
-    BETTER_AUTH_URL=$BETTER_AUTH_URL \
-    yarn build
+RUN yarn build
 
 # Final production image (no secret baked in)
 FROM node:22-slim AS prod
