@@ -44,6 +44,12 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install --immutable
 
+      - name: 🏷️ Fetch all tags
+        run: |
+          git fetch --tags --force origin
+          echo "📊 Available tags:"
+          git tag -l | head -10
+
       - name: 🏷️ Run semantic-release
         id: semantic-release
         uses: cycjimmy/semantic-release-action@v4
