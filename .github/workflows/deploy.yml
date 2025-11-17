@@ -35,13 +35,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 📦 Setup Yarn
-        uses: yarn-actions/setup-yarn@v3
-        with:
-          yarn-version: '4.6.0'
+      - name: 📦 Enable Corepack
+        run: corepack enable
+
+      - name: 📦 Set Yarn version
+        run: yarn set version 4.6.0
 
       - name: 📦 Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: 🏷️ Run semantic-release
         id: semantic-release
