@@ -1,7 +1,7 @@
 {
   "name": "dokistry",
   "description": "Dokistry is an open-source tool to preview and manage Docker registries, images, and users from a single interface.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "Duneal Studio",
   "license": "MIT",
   "repository": {

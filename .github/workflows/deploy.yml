@@ -20,8 +20,8 @@ jobs:
       pull-requests: write
 
     outputs:
-      version: ${{ steps.semantic-release.outputs.new_release_version }}
-      released: ${{ steps.semantic-release.outputs.new_release_published }}
+      version: ${{ steps.set-outputs.outputs.version }}
+      released: ${{ steps.set-outputs.outputs.released }}
 
     steps:
       - name: 📦 Checkout code
@@ -44,21 +44,30 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install --immutable
 
-      - name: 🏷️ Create initial tag v0.0.0 if needed
-        run: |
-          if ! git rev-parse v0.0.0 >/dev/null 2>&1; then
-            echo "📌 Creating initial tag v0.0.0"
-            git tag v0.0.0
-            git push origin v0.0.0
-          else
-            echo "✅ Initial tag v0.0.0 already exists"
-          fi
-
       - name: 🏷️ Run semantic-release
         id: semantic-release
         uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔍 Set job outputs
+        id: set-outputs
+        run: |
+          VERSION="${{ steps.semantic-release.outputs.new_release_version }}"
+          PUBLISHED="${{ steps.semantic-release.outputs.new_release_published }}"
+          
+          echo "Debug - VERSION: $VERSION"
+          echo "Debug - PUBLISHED: $PUBLISHED"
+          
+          if [ -n "$VERSION" ] && [ "$PUBLISHED" == "true" ]; then
+            echo "✅ Release published: $VERSION"
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            echo "released=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️  No release published"
+            echo "version=" >> $GITHUB_OUTPUT
+            echo "released=false" >> $GITHUB_OUTPUT
+          fi
 
   build-and-push:
     name: 🐋 Build & Push Docker Image
