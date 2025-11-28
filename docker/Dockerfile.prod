@@ -30,6 +30,8 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+COPY --from=builder /app/drizzle.config.ts ./
+COPY --from=builder /app/src/utils/lib/db/migrations ./src/utils/lib/db/migrations
 
 EXPOSE 3000
 
