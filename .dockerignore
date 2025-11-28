@@ -97,9 +97,6 @@ lefthook.yml
 .editorconfig
 tsconfig.tsbuildinfo
 
-# Database migrations (keep only schema, not migration files)
-src/utils/lib/db/migrations/
-
 # Scripts (not needed in production)
 scripts/
 
