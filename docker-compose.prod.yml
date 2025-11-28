@@ -1,9 +1,9 @@
 services:
-  app:
+  dokistry:
     image: duneal/dokistry:latest
     restart: on-failure:2
     ports:
-      - "3000:3000"
+      - 3000
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}

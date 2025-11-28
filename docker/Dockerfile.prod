@@ -24,6 +24,7 @@ RUN yarn build
 FROM node:22-slim AS prod
 
 WORKDIR /app
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Copy the standalone build from the builder stage
 COPY --from=builder /app/.next/standalone ./

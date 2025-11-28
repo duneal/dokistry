@@ -1,5 +1,5 @@
 services:
-  app:
+  dokistry:
     build:
       context: .
       dockerfile: docker/Dockerfile.dev
