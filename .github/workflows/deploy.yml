@@ -28,7 +28,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          tags: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📦 Setup Node.js
