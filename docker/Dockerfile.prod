@@ -27,7 +27,7 @@ WORKDIR /app
 
 # Healthcheck and Drizzle dependencies
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-RUN yarn add drizzle-kit@0.31.4
+RUN yarn add drizzle-kit@0.31.4 drizzle-orm@0.44.5
 
 # Copy the standalone build from the builder stage
 COPY --from=builder /app/.next/standalone ./
