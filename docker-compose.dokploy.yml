@@ -4,7 +4,7 @@ services:
     pull_policy: always
     restart: on-failure:2
     ports:
-      - "3000:3000"
+      - 3000
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
@@ -12,6 +12,9 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - dokploy-network
+      - default
 
   postgres:
     image: postgres:15-alpine
@@ -20,8 +23,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -34,6 +35,13 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    networks:
+      - dokploy-network
+      - default
 
 volumes:
   postgres_data:
+
+networks:
+  dokploy-network:
+    external: true
