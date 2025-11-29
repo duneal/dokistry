@@ -5,6 +5,18 @@ import { admin } from "better-auth/plugins"
 import { db } from "./db"
 import { account, session, user, verification } from "./db/schema"
 
+const getTrustedOrigins = (request: Request): string[] => {
+	const origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+	const host = request.headers.get("host")
+	if (host) {
+		origins.push(`https://${host}`)
+		origins.push(`http://${host}`)
+	}
+
+	return origins
+}
+
 const baseConfig = {
 	database: drizzleAdapter(db, {
 		provider: "pg",
@@ -15,7 +27,7 @@ const baseConfig = {
 			verification,
 		},
 	}),
-	trustedOrigins: ["http://localhost:3000", "http://127.0.0.1:3000"],
+	trustedOrigins: getTrustedOrigins,
 	user: {
 		changeEmail: {
 			enabled: true,
