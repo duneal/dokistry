@@ -17,6 +17,8 @@ const cspHeader = `
 const nextConfig: NextConfig = {
 	output: "standalone",
 	reactStrictMode: true,
+	poweredByHeader: false,
+	compress: true,
 
 	images: {
 		dangerouslyAllowSVG: true,

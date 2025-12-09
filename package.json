@@ -27,7 +27,7 @@
     "db:studio": "DATABASE_URL='postgresql://postgres:postgres@127.0.0.1:5432/dokistry' drizzle-kit studio --host=127.0.0.1"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,css,scss,md}": [
+    "**/*.{js,jsx,ts,tsx,css,json}": [
       "biome check --fix"
     ]
   },

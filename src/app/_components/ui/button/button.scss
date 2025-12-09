@@ -71,11 +71,11 @@
   &--secondary {
     &,
     * {
-      color: $c-white;
+      color: $c-primary-darker;
     }
 
     & {
-      background-color: $c-secondary-darker;
+      background-color: $c-primary-lighter;
     }
   }
 

@@ -34,11 +34,11 @@
   }
 
   &--secondary {
-    background-color: color.change($c-secondary, $alpha: 0.2);
+    background-color: color.change($c-primary-lighter, $alpha: 0.2);
 
     &,
     * {
-      color: $c-secondary;
+      color: $c-primary-darker;
     }
   }
 

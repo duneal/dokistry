@@ -4,27 +4,31 @@
  ** ====================================================
  */
 
-/* Primary Colors */
-$c-primary-darkest: #174f4a;
-$c-primary-darker: #257e77;
-$c-primary-dark: #32aea4;
-$c-primary: #51cdbe;
-$c-primary-light: #81dad3;
-$c-primary-lighter: #b0e8e3;
-$c-primary-lightest: #effaf9;
+/* Primary Colors (Steel Blue) */
+$c-primary-darkest: #1b314b;
+$c-primary-darker: #294970;
+$c-primary-dark: #366196;
+$c-primary: #447abb;
+$c-primary-light: #6994c9;
+$c-primary-lighter: #b4cae4;
+$c-primary-lightest: #ecf2f8;
 
-/* Secondary Colors */
-$c-secondary-darkest: #dc6d18;
-$c-secondary-darker: #e98335;
-$c-secondary-dark: #ed9c5a;
-$c-secondary: #efa76c;
-$c-secondary-light: #f3bb91;
-$c-secondary-lighter: #f7d2b6;
-$c-secondary-lightest: #fdf4ed;
+/* Steel Blue Colors */
+$c-steel-blue-50: #ecf2f8;
+$c-steel-blue-100: #dae4f1;
+$c-steel-blue-200: #b4cae4;
+$c-steel-blue-300: #8fafd6;
+$c-steel-blue-400: #6994c9;
+$c-steel-blue-500: #447abb;
+$c-steel-blue-600: #366196;
+$c-steel-blue-700: #294970;
+$c-steel-blue-800: #1b314b;
+$c-steel-blue-900: #0e1825;
+$c-steel-blue-950: #09111a;
 
 /* Information Colors */
 $c-success: $c-primary-dark;
-$c-info: #3454d1;
+$c-info: $c-steel-blue-500;
 $c-warning: #ffa500;
 $c-danger: #dc143c;
 
@@ -44,11 +48,11 @@ $select-color: $c-black;
 $select-bg-color: $c-primary-lighter;
 
 /* Chart colors */
-$c-chart-1: $c-primary-light;
-$c-chart-2: $c-secondary-light;
-$c-chart-3: $c-info;
-$c-chart-4: $c-danger;
-$c-chart-5: $c-warning;
+$c-chart-1: $c-steel-blue-600;
+$c-chart-2: $c-steel-blue-400;
+$c-chart-3: $c-steel-blue-300;
+$c-chart-4: $c-steel-blue-200;
+$c-chart-5: $c-steel-blue-100;
 
 /* Base variables */
 $base-color: $c-black;
