@@ -2,6 +2,7 @@
 
 import { HardDrive, Tag } from "lucide-react"
 import { redirect } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useCallback } from "react"
 import { toast } from "sonner"
 import { Badge } from "@/app/_components/ui"
@@ -26,6 +27,7 @@ const formatFileSize = (bytes: number): string => {
 }
 
 export default function ImageDetails({ repository, imageName, onRefresh }: ImageDetailsProps) {
+	const t = useTranslations("images")
 	const handleTagSelection = useCallback((_selectedTags: string[]) => {}, [])
 
 	const handleDeleteTags = useCallback(
@@ -47,7 +49,7 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 				const result = await response.json()
 
 				if (result.summary.successful > 0) {
-					toast.success(`Successfully deleted ${result.summary.successful} tag(s)`, {
+					toast.success(t("deleteTagsSuccess", { count: result.summary.successful }), {
 						description: result.deleted.join(", "),
 						duration: 4000,
 					})
@@ -55,7 +57,7 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 
 				if (result.summary.failed > 0) {
 					result.failed.forEach((failure: { tag: string; error: string }) => {
-						toast.error(`Failed to delete tag: ${failure.tag}`, {
+						toast.error(t("deleteTagsFailedWithTag", { tag: failure.tag }), {
 							description: failure.error,
 							duration: 6000,
 						})
@@ -63,8 +65,11 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 				}
 
 				if (result.summary.failed > 0 && result.summary.successful > 0) {
-					toast.warning(`Partial deletion completed`, {
-						description: `${result.summary.successful} succeeded, ${result.summary.failed} failed`,
+					toast.warning(t("deleteTagsPartial"), {
+						description: t("deleteTagsPartialDescription", {
+							successful: result.summary.successful,
+							failed: result.summary.failed,
+						}),
 						duration: 5000,
 					})
 				}
@@ -74,9 +79,9 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 				}
 			} catch (error) {
 				console.error("Failed to delete tags:", error)
-				const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
+				const errorMessage = error instanceof Error ? error.message : t("unknownError")
 
-				toast.error("Failed to delete tags", {
+				toast.error(t("deleteTagsError"), {
 					description: errorMessage,
 					duration: 6000,
 				})
@@ -84,7 +89,7 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 				throw error
 			}
 		},
-		[imageName, onRefresh],
+		[imageName, onRefresh, t],
 	)
 
 	if (!repository) {
@@ -99,8 +104,7 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 					<div className="flex flex-wrap gap-2">
 						<Badge variant="secondary" size="md" className="flex items-center gap-1.5">
 							<Tag className="size-3.5" />
-							{repository.tags.length} tag
-							{repository.tags.length !== 1 ? "s" : ""}
+							{repository.tags.length} {repository.tags.length === 1 ? t("tag") : t("tags")}
 						</Badge>
 						<Badge variant="secondary" size="md" className="flex items-center gap-1.5">
 							<HardDrive className="size-3.5" />

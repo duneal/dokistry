@@ -1,6 +1,7 @@
 "use client"
 
 import { usePathname } from "next/navigation"
+import { useTranslations } from "next-intl"
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -9,18 +10,20 @@ import {
 	Separator,
 	SidebarTrigger,
 } from "@/app/_components/ui"
+import { LanguageSwitcher } from "../language-switcher"
 
 export default function Header() {
 	const pathname = usePathname()
+	const t = useTranslations("header")
 
 	const getPageName = (path: string): string => {
-		if (path === "/") return "Dashboard"
+		if (path === "/") return t("dashboard")
 		if (path.startsWith("/images/")) {
 			const imageName = path.replace("/images/", "")
 			return decodeURIComponent(imageName)
 		}
-		if (path === "/account") return "Account"
-		if (path === "/users") return "Users"
+		if (path === "/account") return t("account")
+		if (path === "/users") return t("users")
 		return path.charAt(1).toUpperCase() + path.slice(2)
 	}
 
@@ -38,6 +41,9 @@ export default function Header() {
 						</BreadcrumbItem>
 					</BreadcrumbList>
 				</Breadcrumb>
+			</div>
+			<div className="ml-auto px-4">
+				<LanguageSwitcher />
 			</div>
 		</header>
 	)

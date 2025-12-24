@@ -1,6 +1,7 @@
 "use client"
 
 import { Pencil, Plus } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useId, useMemo, useState } from "react"
 import { PasswordInput } from "@/app/_components/shared"
 import { Button, Input } from "@/app/_components/ui"
@@ -31,8 +32,10 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const isEditMode = useMemo(() => Boolean(user), [user])
+	const t = useTranslations("users")
+	const tCommon = useTranslations("common")
 
-	const submitLabel = isEditMode ? "Update user" : "Create user"
+	const submitLabel = isEditMode ? t("updateUser") : t("createUser")
 	const SubmitIcon = isEditMode ? Pencil : Plus
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,7 +64,7 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 					htmlFor={nameId}
 					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 				>
-					Name
+					{tCommon("name")}
 				</label>
 				<Input
 					id={nameId}
@@ -69,7 +72,7 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					required
-					placeholder="Enter full name"
+					placeholder={t("fullNamePlaceholder")}
 				/>
 			</div>
 
@@ -78,7 +81,7 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 					htmlFor={roleId}
 					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 				>
-					Role
+					{tCommon("role")}
 				</label>
 				<select
 					id={roleId}
@@ -93,8 +96,8 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 					)}
 					required
 				>
-					<option value="user">Member</option>
-					<option value="admin">Admin</option>
+					<option value="user">{tCommon("member")}</option>
+					<option value="admin">{tCommon("admin")}</option>
 				</select>
 			</div>
 
@@ -103,7 +106,7 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 					htmlFor={emailId}
 					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 				>
-					Email
+					{tCommon("email")}
 				</label>
 				<Input
 					id={emailId}
@@ -111,7 +114,7 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
 					required
-					placeholder="user@example.com"
+					placeholder={t("emailPlaceholder")}
 				/>
 			</div>
 
@@ -120,20 +123,20 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 					htmlFor={passwordId}
 					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 				>
-					{isEditMode ? "New password (optional)" : "Password"}
+					{isEditMode ? t("newPasswordOptional") : tCommon("password")}
 				</label>
 				<PasswordInput
 					id={passwordId}
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 					required={!isEditMode}
-					placeholder={isEditMode ? "Leave empty to keep current password" : "Enter password"}
+					placeholder={isEditMode ? t("passwordPlaceholderEdit") : t("passwordPlaceholder")}
 				/>
 			</div>
 
 			<DialogFooter>
 				<Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
-					Cancel
+					{tCommon("cancel")}
 				</Button>
 				<Button type="submit" loading={isSubmitting}>
 					<SubmitIcon className="mr-2 size-4" />

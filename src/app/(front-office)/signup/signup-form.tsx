@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useId } from "react"
 import { PasswordInput } from "@/app/_components/shared"
 import { Button, Input } from "@/app/_components/ui"
@@ -11,6 +12,7 @@ export function SignupForm() {
 	const passwordId = useId()
 	const confirmPasswordId = useId()
 	const { isLoading, handleSubmit } = useSignup()
+	const t = useTranslations("auth")
 
 	return (
 		<div className="flex min-h-screen w-full flex-row">
@@ -19,7 +21,7 @@ export function SignupForm() {
 				<form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 p-8">
 					<h2 className="flex items-center justify-center gap-2 pb-4 text-2xl font-medium text-foreground">
 						<Logo width={40} height={40} />
-						Sign up
+						{t("signUp")}
 					</h2>
 
 					<div className="space-y-2">
@@ -28,7 +30,7 @@ export function SignupForm() {
 							name="email"
 							type="email"
 							required
-							placeholder="Enter your email"
+							placeholder={t("enterEmail")}
 							className="w-full"
 						/>
 					</div>
@@ -38,7 +40,7 @@ export function SignupForm() {
 							id={passwordId}
 							name="password"
 							required
-							placeholder="Create a password"
+							placeholder={t("createPassword")}
 							className="w-full"
 						/>
 					</div>
@@ -48,13 +50,13 @@ export function SignupForm() {
 							id={confirmPasswordId}
 							name="confirmPassword"
 							required
-							placeholder="Confirm your password"
+							placeholder={t("confirmPassword")}
 							className="w-full"
 						/>
 					</div>
 
 					<Button type="submit" className="w-full mt-4" disabled={isLoading} loading={isLoading}>
-						{isLoading ? "Creating Account..." : "Sign up"}
+						{isLoading ? t("creatingAccount") : t("signUp")}
 					</Button>
 				</form>
 			</div>

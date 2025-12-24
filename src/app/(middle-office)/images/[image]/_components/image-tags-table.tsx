@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { format, formatDistanceToNow } from "date-fns"
 import { ArrowUpDown, CalendarDays, HardDrive, MoreHorizontal, Tag, Trash2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import * as React from "react"
 import {
 	Badge,
@@ -76,6 +77,8 @@ export default function ImageTagsTable({
 		handleClearSelection,
 		handleDeleteTags,
 	} = useImageTagsTable({ repository, onSelectionChange, onDeleteTags, onRefresh })
+	const t = useTranslations("images")
+	const tCommon = useTranslations("common")
 
 	const columns: ColumnDef<ManifestGroup>[] = [
 		{
@@ -92,7 +95,7 @@ export default function ImageTagsTable({
 					onCheckedChange={(value) => {
 						table.toggleAllPageRowsSelected(!!value)
 					}}
-					aria-label="Select all"
+					aria-label={tCommon("selectAll")}
 				/>
 			),
 			cell: ({ row }) => (
@@ -101,7 +104,7 @@ export default function ImageTagsTable({
 					onCheckedChange={(value) => {
 						row.toggleSelected(!!value)
 					}}
-					aria-label="Select row"
+					aria-label={tCommon("selectRow")}
 				/>
 			),
 			enableSorting: false,
@@ -117,7 +120,7 @@ export default function ImageTagsTable({
 					className="-ml-4 my-1"
 				>
 					<Tag className="size-4" />
-					Tags
+					{t("tags")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
@@ -147,7 +150,7 @@ export default function ImageTagsTable({
 					className="-ml-4"
 				>
 					<CalendarDays className="size-4" />
-					Creation time
+					{t("creationTime")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
@@ -171,7 +174,7 @@ export default function ImageTagsTable({
 					className="-ml-4"
 				>
 					<HardDrive className="size-4" />
-					Size
+					{t("size")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
@@ -188,12 +191,12 @@ export default function ImageTagsTable({
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<Button variant="ghost" className="h-6 w-8 p-0">
-								<span className="sr-only">Open menu</span>
+								<span className="sr-only">{t("openMenu")}</span>
 								<MoreHorizontal className="h-4 w-4" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>Actions</DropdownMenuLabel>
+							<DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								onClick={() => handleDeleteTags(tagNames)}
@@ -201,7 +204,7 @@ export default function ImageTagsTable({
 								className="text-destructive focus:text-destructive"
 							>
 								<Trash2 className="mr-2 h-4 w-4" />
-								Delete
+								{tCommon("delete")}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -218,7 +221,7 @@ export default function ImageTagsTable({
 		<div className="space-y-4">
 			<div className="flex items-center py-4 m-0">
 				<Input
-					placeholder="Filter tags..."
+					placeholder={t("filterTags")}
 					value={filterValue}
 					onChange={(event) => setFilterValue(event.target.value)}
 					className="max-w-sm"
@@ -237,7 +240,7 @@ export default function ImageTagsTable({
 					enableSelection={true}
 					enablePagination={true}
 					onSelectionChange={handleSelectionChange}
-					emptyMessage="No tags found."
+					emptyMessage={t("noTagsFound")}
 					filterColumn="tags"
 					filterValue={filterValue}
 					defaultSorting={[{ id: "date", desc: true }]}

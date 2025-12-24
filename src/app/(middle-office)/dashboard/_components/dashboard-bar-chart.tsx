@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useMemo } from "react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import {
@@ -31,6 +32,7 @@ const formatFileSize = (bytes: number): string => {
 }
 
 export default function DashboardBarChart({ repositories }: DashboardBarChartProps) {
+	const t = useTranslations("dashboard")
 	const chartData = useMemo(() => {
 		return repositories
 			.filter((repo) => repo.totalSize && repo.totalSize > 0)
@@ -44,7 +46,7 @@ export default function DashboardBarChart({ repositories }: DashboardBarChartPro
 
 	const chartConfig = {
 		size: {
-			label: "Taille",
+			label: t("size"),
 			color: "#447abb",
 		},
 	} satisfies ChartConfig
@@ -56,8 +58,8 @@ export default function DashboardBarChart({ repositories }: DashboardBarChartPro
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Répartition par image/dépôt</CardTitle>
-				<CardDescription>Taille de stockage par image/dépôt</CardDescription>
+				<CardTitle>{t("distributionByRepository")}</CardTitle>
+				<CardDescription>{t("distributionByRepositoryDescription")}</CardDescription>
 			</CardHeader>
 			<CardContent>
 				{chartData.length > 0 ? (
@@ -80,7 +82,7 @@ export default function DashboardBarChart({ repositories }: DashboardBarChartPro
 								cursor={false}
 								content={
 									<ChartTooltipContent
-										labelFormatter={(value) => `Repository: ${value}`}
+										labelFormatter={(value) => `${t("repository")}: ${value}`}
 										formatter={(value) => formatFileSize(Number(value))}
 									/>
 								}
@@ -90,20 +92,20 @@ export default function DashboardBarChart({ repositories }: DashboardBarChartPro
 					</ChartContainer>
 				) : (
 					<div className="flex h-[150px] items-center justify-center text-muted-foreground">
-						Aucune donnée disponible
+						{t("noDataAvailable")}
 					</div>
 				)}
 			</CardContent>
 			<CardFooter className="flex-col items-start gap-2 text-sm">
 				<div className="flex gap-2 leading-none font-medium">
 					{chartData.length > 0
-						? `${chartData.length} ${chartData.length !== 1 ? "repositories" : "repository"} affichés`
-						: "Aucun repository avec des données"}
+						? `${chartData.length} ${chartData.length === 1 ? t("repository") : t("repositoryPlural")} ${t("repositoriesDisplayed")}`
+						: t("noRepositoryWithData")}
 				</div>
 				<div className="text-muted-foreground leading-none">
 					{chartData.length > 0
-						? `Total: ${formatFileSize(totalSize)}`
-						: "Ajoutez des images à vos repositories pour voir les statistiques"}
+						? `${t("total")}: ${formatFileSize(totalSize)}`
+						: t("addImagesToSeeStats")}
 				</div>
 			</CardFooter>
 		</Card>

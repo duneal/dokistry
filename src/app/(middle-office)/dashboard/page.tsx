@@ -1,3 +1,5 @@
+import type { Metadata } from "next"
+import { getTranslations } from "next-intl/server"
 import { NoRegistryEmptyState } from "@/app/_components/shared"
 import { databaseRegistryService } from "@/features/registry"
 import type { Repository } from "@/utils/types/registry.interface"
@@ -6,7 +8,16 @@ import DashboardStatsCards from "./_components/dashboard-stats-cards"
 
 export const dynamic = "force-dynamic"
 
+export async function generateMetadata(): Promise<Metadata> {
+	const t = await getTranslations("dashboard")
+	return {
+		title: t("title"),
+		description: t("description"),
+	}
+}
+
 export default async function Dashboard() {
+	const t = await getTranslations("dashboard")
 	const hasRegistry = await databaseRegistryService.hasRegistry()
 
 	if (!hasRegistry) {
@@ -23,10 +34,8 @@ export default async function Dashboard() {
 	return (
 		<main className="flex flex-col gap-6 p-4">
 			<div className="space-y-2">
-				<h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-				<p className="text-muted-foreground">
-					Vue d&apos;ensemble de vos repositories Docker et statistiques de stockage
-				</p>
+				<h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+				<p className="text-muted-foreground">{t("description")}</p>
 			</div>
 			<DashboardStatsCards repositories={repositories} />
 			<DashboardBarChart repositories={repositories} />

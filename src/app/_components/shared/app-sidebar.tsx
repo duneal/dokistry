@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import type * as React from "react"
 import { useCallback } from "react"
 
@@ -31,6 +32,8 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 	const { isActiveUrl, isMenuItemActive, isSubItemActive } = useAppSidebar()
 	const { isMobile, state, setOpenMobile } = useSidebar()
 	const iconSize = state === "collapsed" ? 20 : 18
+	const t = useTranslations("sidebar")
+	const tCommon = useTranslations("common")
 
 	const handleMenuItemClick = useCallback(() => {
 		if (isMobile) {
@@ -64,7 +67,7 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Dashboard</SidebarGroupLabel>
+					<SidebarGroupLabel>{t("dashboard")}</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							<SidebarMenuItem>
@@ -75,7 +78,7 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 								>
 									<a href="/dashboard">
 										<SidebarIcon iconName="LayoutDashboard" size={iconSize} />
-										<span>Dashboard</span>
+										<span>{t("dashboard")}</span>
 									</a>
 								</SidebarMenuButton>
 							</SidebarMenuItem>
@@ -85,7 +88,7 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 
 				{isLoading ? (
 					<SidebarGroup>
-						<SidebarGroupLabel>Images</SidebarGroupLabel>
+						<SidebarGroupLabel>{t("images")}</SidebarGroupLabel>
 						<SidebarGroupContent>
 							<SidebarMenu>
 								{Array.from({ length: 3 }, (_, index) => `skeleton-${index}`).map((key) => (
@@ -96,16 +99,18 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 					</SidebarGroup>
 				) : error ? (
 					<SidebarGroup>
-						<SidebarGroupLabel>Images</SidebarGroupLabel>
+						<SidebarGroupLabel>{t("images")}</SidebarGroupLabel>
 						<SidebarGroupContent>
 							<div className="flex flex-col gap-2 p-4 text-sm text-destructive">
-								<p className="m-0 leading-relaxed">Failed to load images: {error}</p>
+								<p className="m-0 leading-relaxed">
+									{t("failedToLoad")}: {error}
+								</p>
 								<button
 									type="button"
 									onClick={refetch}
 									className="h-8 w-8 flex items-center justify-center rounded-md border border-input bg-transparent text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring cursor-pointer"
 								>
-									Retry
+									{t("retry")}
 								</button>
 							</div>
 						</SidebarGroupContent>

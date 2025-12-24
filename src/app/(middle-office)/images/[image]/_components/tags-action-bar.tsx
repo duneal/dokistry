@@ -1,6 +1,7 @@
 "use client"
 
 import { CheckCircle, Loader2, Trash2, XCircle } from "lucide-react"
+import { useTranslations } from "next-intl"
 import {
 	Badge,
 	Button,
@@ -28,6 +29,8 @@ export default function TagsActionBar({
 }: TagsActionBarProps) {
 	const { isDialogOpen, setIsDialogOpen, handleConfirmDelete, handleCancelDelete } =
 		useTagsActionBar({ selectedTags, onDeleteTags })
+	const t = useTranslations("images")
+	const tCommon = useTranslations("common")
 
 	if (selectedTags.length === 0) {
 		return null
@@ -38,7 +41,8 @@ export default function TagsActionBar({
 			<div className="flex items-center gap-2">
 				<Badge variant="secondary" className="flex items-center gap-1.5">
 					<CheckCircle className="size-3.5" />
-					{selectedTags.length} tag{selectedTags.length !== 1 ? "s" : ""} selected
+					{selectedTags.length} {selectedTags.length === 1 ? t("tag") : t("tags")}{" "}
+					{t("tagsSelected")}
 				</Badge>
 			</div>
 
@@ -51,19 +55,15 @@ export default function TagsActionBar({
 							) : (
 								<Trash2 className="mr-2 size-4" />
 							)}
-							Delete
+							{tCommon("delete")}
 						</Button>
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
 							<DialogTitle>
-								Delete {selectedTags.length} tag
-								{selectedTags.length !== 1 ? "s" : ""}
+								{t("deleteTagsTitle")} ({selectedTags.length})
 							</DialogTitle>
-							<DialogDescription>
-								This action cannot be undone. The selected tags will be permanently deleted, do you
-								want to continue?
-							</DialogDescription>
+							<DialogDescription>{t("deleteTagsDescription")}</DialogDescription>
 						</DialogHeader>
 						<DialogFooter>
 							<Button
@@ -73,7 +73,7 @@ export default function TagsActionBar({
 								disabled={isDeleting}
 							>
 								<XCircle className="mr-2 size-4" />
-								Cancel
+								{tCommon("cancel")}
 							</Button>
 							<Button
 								variant="destructive"
@@ -84,12 +84,12 @@ export default function TagsActionBar({
 								{isDeleting ? (
 									<>
 										<Loader2 className="mr-2 size-4 animate-spin" />
-										Deleting...
+										{t("deleting")}
 									</>
 								) : (
 									<>
 										<Trash2 className="mr-2 size-4" />
-										Delete Permanently
+										{t("deletePermanently")}
 									</>
 								)}
 							</Button>

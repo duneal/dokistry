@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { useId } from "react"
 import { PasswordInput } from "@/app/_components/shared"
 import { Button, Checkbox, Input } from "@/app/_components/ui"
@@ -11,6 +12,7 @@ export function SigninForm() {
 	const passwordId = useId()
 	const rememberId = useId()
 	const { isLoading, handleSubmit } = useSignin()
+	const t = useTranslations("auth")
 
 	return (
 		<div className="flex min-h-screen w-full flex-row">
@@ -19,7 +21,7 @@ export function SigninForm() {
 				<form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 p-8">
 					<h2 className="flex items-center justify-center gap-2 pb-4 text-2xl font-medium text-foreground">
 						<Logo width={40} height={40} />
-						Sign in
+						{t("signIn")}
 					</h2>
 
 					<div className="space-y-2">
@@ -28,7 +30,7 @@ export function SigninForm() {
 							name="email"
 							type="email"
 							required
-							placeholder="Enter your email"
+							placeholder={t("enterEmail")}
 							className="w-full"
 						/>
 					</div>
@@ -38,7 +40,7 @@ export function SigninForm() {
 							id={passwordId}
 							name="password"
 							required
-							placeholder="Enter your password"
+							placeholder={t("enterPassword")}
 							className="w-full"
 						/>
 					</div>
@@ -49,12 +51,12 @@ export function SigninForm() {
 							htmlFor={rememberId}
 							className="text-sm font-medium leading-none text-muted-foreground cursor-pointer select-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 						>
-							Remember me
+							{t("rememberMe")}
 						</label>
 					</div>
 
 					<Button type="submit" className="w-full mt-4" disabled={isLoading} loading={isLoading}>
-						{isLoading ? "Signing in..." : "Sign in"}
+						{isLoading ? t("signingIn") : t("signIn")}
 					</Button>
 				</form>
 			</div>

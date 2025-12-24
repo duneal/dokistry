@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -8,12 +9,13 @@ interface UseTagsActionBarProps {
 
 export function useTagsActionBar({ selectedTags, onDeleteTags }: UseTagsActionBarProps) {
 	const [isDialogOpen, setIsDialogOpen] = useState(false)
+	const t = useTranslations("images")
 
 	const handleConfirmDelete = async () => {
 		try {
-			toast.loading(`Deleting ${selectedTags.length} tag(s)...`, {
+			toast.loading(t("deletingTags", { count: selectedTags.length }), {
 				id: "deleting-tags",
-				description: "Please wait while we process your request",
+				description: t("pleaseWait"),
 			})
 
 			await onDeleteTags(selectedTags)
@@ -28,8 +30,8 @@ export function useTagsActionBar({ selectedTags, onDeleteTags }: UseTagsActionBa
 
 	const handleCancelDelete = () => {
 		setIsDialogOpen(false)
-		toast.info("Deletion cancelled", {
-			description: "No tags were deleted",
+		toast.info(t("deletionCancelled"), {
+			description: t("noTagsDeleted"),
 			duration: 2000,
 		})
 	}

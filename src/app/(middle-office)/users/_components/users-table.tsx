@@ -14,6 +14,7 @@ import {
 	User as UserIcon,
 	XCircle,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 import {
@@ -64,6 +65,8 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 	const [deletingUserId, setDeletingUserId] = useState<string | null>(null)
 	const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 	const [userPendingDeletion, setUserPendingDeletion] = useState<User | null>(null)
+	const t = useTranslations("users")
+	const tCommon = useTranslations("common")
 
 	const handleCreateUser = async (
 		email: string,
@@ -75,8 +78,8 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 		const trimmedPassword = password?.trim()
 
 		if (!trimmedName || !trimmedPassword) {
-			toast.error("Failed to create user", {
-				description: "Name and password are required",
+			toast.error(t("failedToCreate"), {
+				description: t("nameAndPasswordRequired"),
 			})
 			return false
 		}
@@ -90,7 +93,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 			)
 
 			if (result.error) {
-				toast.error("Failed to create user", {
+				toast.error(t("failedToCreate"), {
 					description: result.error,
 				})
 				return false
@@ -98,8 +101,8 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 
 			if (result.user) {
 				setUsers([...users, result.user as User])
-				toast.success("User created successfully", {
-					description: `User ${result.user.email} has been created.`,
+				toast.success(t("createUser"), {
+					description: t("userCreated", { email: result.user.email }),
 				})
 				setIsCreateDialogOpen(false)
 				return true
@@ -107,8 +110,8 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 
 			return false
 		} catch (error) {
-			toast.error("Failed to create user", {
-				description: "An unexpected error occurred.",
+			toast.error(t("failedToCreate"), {
+				description: t("unexpectedError"),
 			})
 			console.error("Create user error:", error)
 			return false
@@ -132,7 +135,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 			)
 
 			if (result.error) {
-				toast.error("Failed to update user", {
+				toast.error(t("failedToUpdate"), {
 					description: result.error,
 				})
 				return false
@@ -140,8 +143,8 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 
 			if (result.user) {
 				setUsers(users.map((u) => (u.id === userId ? (result.user as User) : u)))
-				toast.success("User updated successfully", {
-					description: `User ${result.user.email} has been updated.`,
+				toast.success(t("updateUser"), {
+					description: t("userUpdated", { email: result.user.email }),
 				})
 				setEditingUser(null)
 				return true
@@ -149,8 +152,8 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 
 			return false
 		} catch (error) {
-			toast.error("Failed to update user", {
-				description: "An unexpected error occurred.",
+			toast.error(t("failedToUpdate"), {
+				description: t("unexpectedError"),
 			})
 			console.error("Update user error:", error)
 			return false
@@ -180,18 +183,18 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 			const result = await deleteUser(userId)
 
 			if (result.error) {
-				toast.error("Failed to delete user", {
+				toast.error(t("failedToDelete"), {
 					description: result.error,
 				})
 			} else {
 				setUsers(users.filter((u) => u.id !== userId))
-				toast.success("User deleted successfully", {
-					description: "The user has been deleted.",
+				toast.success(t("deletePermanently"), {
+					description: t("userDeleted"),
 				})
 			}
 		} catch (error) {
-			toast.error("Failed to delete user", {
-				description: "An unexpected error occurred.",
+			toast.error(t("failedToDelete"), {
+				description: t("unexpectedError"),
 			})
 			console.error("Delete user error:", error)
 		} finally {
@@ -222,7 +225,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					onCheckedChange={(value) => {
 						table.toggleAllPageRowsSelected(!!value)
 					}}
-					aria-label="Select all"
+					aria-label={tCommon("selectAll")}
 				/>
 			),
 			cell: ({ row }) => (
@@ -231,7 +234,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					onCheckedChange={(value) => {
 						row.toggleSelected(!!value)
 					}}
-					aria-label="Select row"
+					aria-label={tCommon("selectRow")}
 				/>
 			),
 			enableSorting: false,
@@ -247,7 +250,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					className="-ml-4 my-1"
 				>
 					<UserIcon className="size-4" />
-					Name
+					{t("name")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
@@ -269,7 +272,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					className="-ml-4 my-1"
 				>
 					<Mail className="size-4" />
-					Email
+					{t("email")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
@@ -284,7 +287,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					className="-ml-4 my-1"
 				>
 					<Shield className="size-4" />
-					Role
+					{t("role")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
@@ -303,7 +306,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					className="-ml-4 my-1"
 				>
 					<CalendarDays className="size-4" />
-					Created At
+					{t("createdAt")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
@@ -324,18 +327,18 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button variant="ghost" className="h-6 w-8 p-0">
-									<span className="sr-only">Open menu</span>
+									<span className="sr-only">{t("openMenu")}</span>
 									<MoreHorizontal className="h-4 w-4" />
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
-								<DropdownMenuLabel>Actions</DropdownMenuLabel>
+								<DropdownMenuLabel>{t("actions")}</DropdownMenuLabel>
 								<DropdownMenuSeparator />
 								{!isCurrentUser && (
 									<>
 										<DropdownMenuItem onSelect={() => setEditingUser(user)}>
 											<Pencil className="mr-2 h-4 w-4" />
-											Edit
+											{tCommon("edit")}
 										</DropdownMenuItem>
 										<DropdownMenuItem
 											onSelect={() => handleRequestDeleteUser(user)}
@@ -343,13 +346,13 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 											className="text-destructive focus:text-destructive"
 										>
 											<Trash2 className="mr-2 h-4 w-4" />
-											Delete
+											{tCommon("delete")}
 										</DropdownMenuItem>
 									</>
 								)}
 								{isCurrentUser && (
 									<DropdownMenuItem disabled className="text-muted-foreground">
-										You cannot edit or delete your own account
+										{t("cannotEditOwnAccount")}
 									</DropdownMenuItem>
 								)}
 							</DropdownMenuContent>
@@ -360,8 +363,8 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 						>
 							<DialogContent>
 								<DialogHeader>
-									<DialogTitle>Edit User</DialogTitle>
-									<DialogDescription>Update user email and password.</DialogDescription>
+									<DialogTitle>{t("editUserTitle")}</DialogTitle>
+									<DialogDescription>{t("editUserDescription")}</DialogDescription>
 								</DialogHeader>
 								<UserForm
 									user={user}
@@ -382,7 +385,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 		<div className="space-y-4">
 			<div className="flex items-center justify-between py-4 m-0">
 				<Input
-					placeholder="Filter users..."
+					placeholder={t("filterUsers")}
 					value={filterValue}
 					onChange={(event) => setFilterValue(event.target.value)}
 					className="max-w-sm"
@@ -391,15 +394,13 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					<DialogTrigger asChild>
 						<Button variant="outline">
 							<Plus className="size-4" />
-							Create User
+							{t("createUserButton")}
 						</Button>
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
-							<DialogTitle>Create User</DialogTitle>
-							<DialogDescription>
-								Provide the details below to invite a new user to Dokistry.
-							</DialogDescription>
+							<DialogTitle>{t("createUserTitle")}</DialogTitle>
+							<DialogDescription>{t("createUserDescription")}</DialogDescription>
 						</DialogHeader>
 						<UserForm
 							onSubmit={(email, password, name, role) =>
@@ -416,7 +417,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					data={users}
 					enableSelection={true}
 					enablePagination={true}
-					emptyMessage="No users found."
+					emptyMessage={t("noUsersFound")}
 					filterColumn="name"
 					filterValue={filterValue}
 					defaultSorting={[{ id: "createdAt", desc: true }]}
@@ -426,10 +427,9 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 			<Dialog open={isDeleteDialogOpen} onOpenChange={handleDeleteDialogOpenChange}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Delete User</DialogTitle>
+						<DialogTitle>{t("deleteUserTitle")}</DialogTitle>
 						<DialogDescription>
-							Are you sure you want to delete <strong>{userPendingDeletion?.email}</strong>? This
-							action cannot be undone.
+							{t("deleteUserDescription", { email: userPendingDeletion?.email || "" })}
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
@@ -440,7 +440,7 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 							disabled={!!deletingUserId}
 						>
 							<XCircle className="mr-2 size-4" />
-							Cancel
+							{tCommon("cancel")}
 						</Button>
 						<Button
 							variant="destructive"
@@ -451,12 +451,12 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 							{deletingUserId ? (
 								<>
 									<Loader2 className="mr-2 size-4 animate-spin" />
-									Deleting...
+									{t("deleting")}
 								</>
 							) : (
 								<>
 									<Trash2 className="mr-2 size-4" />
-									Delete permanently
+									{t("deletePermanently")}
 								</>
 							)}
 						</Button>

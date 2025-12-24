@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
+import { cookies } from "next/headers"
+import { NextIntlClientProvider } from "next-intl"
+import { getMessages } from "next-intl/server"
 import type { ReactNode } from "react"
 import { Toaster } from "sonner"
 
 import { ReactQueryProvider } from "@/utils/providers/ReactQueryProvider"
 import { ThemeProvider } from "@/utils/providers/ThemeProvider"
+import type { Locale } from "@/utils/types/i18n.interface"
+import { locales } from "@/utils/types/i18n.interface"
 import "./globals.css"
 
 const inter = Inter({
@@ -12,7 +17,7 @@ const inter = Inter({
 	variable: "--font-inter",
 })
 
-export const revalidate = 300 // 5 minutes
+export const revalidate = 300
 
 export async function generateMetadata(): Promise<Metadata> {
 	return {
@@ -34,16 +39,23 @@ export const viewport: Viewport = {
 	initialScale: 1,
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+	const cookieStore = await cookies()
+	const localeCookie = cookieStore.get("NEXT_LOCALE")?.value
+	const locale = (locales.includes(localeCookie as Locale) ? localeCookie : "en") as Locale
+	const messages = await import(`../i18n/messages/${locale}.json`).then((m) => m.default)
+
 	return (
-		<html lang="fr" className={inter.variable} suppressHydrationWarning>
+		<html lang={locale} className={inter.variable} suppressHydrationWarning>
 			<body className="font-sans antialiased">
-				<ThemeProvider>
-					<ReactQueryProvider>
-						{children}
-						<Toaster position="bottom-right" richColors />
-					</ReactQueryProvider>
-				</ThemeProvider>
+				<NextIntlClientProvider messages={messages} locale={locale}>
+					<ThemeProvider>
+						<ReactQueryProvider>
+							{children}
+							<Toaster position="bottom-right" richColors />
+						</ReactQueryProvider>
+					</ThemeProvider>
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	)

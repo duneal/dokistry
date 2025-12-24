@@ -1,6 +1,7 @@
 "use client"
 
 import { Pencil, Plus } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { useId } from "react"
 import PasswordInput from "@/app/_components/shared/password-input"
 import { Button } from "@/app/_components/ui/button"
@@ -45,16 +46,16 @@ export function RegistryForm({
 		handleSubmit,
 		handleDialogOpenChange,
 	} = useRegistryForm({ registry, onOpenChange, onRegistrySaved })
+	const t = useTranslations("registry")
+	const tCommon = useTranslations("common")
 
 	return (
 		<Dialog open={open} onOpenChange={handleDialogOpenChange}>
 			<DialogContent className={cn("sm:max-w-md", className)}>
 				<DialogHeader>
-					<DialogTitle>{isEditMode ? "Edit Registry" : "Add a Registry"}</DialogTitle>
+					<DialogTitle>{isEditMode ? t("editRegistry") : t("addRegistry")}</DialogTitle>
 					<DialogDescription>
-						{isEditMode
-							? "Update the Docker registry information."
-							: "Add a new Docker registry to your list of available registries."}
+						{isEditMode ? t("updateDescription") : t("addDescription")}
 					</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={handleSubmit} className="space-y-4">
@@ -63,12 +64,12 @@ export function RegistryForm({
 							htmlFor={urlId}
 							className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 						>
-							Registry URL
+							{t("registryUrl")}
 						</label>
 						<Input
 							id={urlId}
 							type="url"
-							placeholder="https://registry.example.com"
+							placeholder={t("urlPlaceholder")}
 							value={formData.url}
 							onChange={(e) => handleInputChange("url", e.target.value)}
 							required
@@ -79,12 +80,12 @@ export function RegistryForm({
 							htmlFor={usernameId}
 							className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 						>
-							Username
+							{tCommon("username")}
 						</label>
 						<Input
 							id={usernameId}
 							type="text"
-							placeholder="Enter username"
+							placeholder={t("usernamePlaceholder")}
 							value={formData.username}
 							onChange={(e) => handleInputChange("username", e.target.value)}
 							required
@@ -95,11 +96,11 @@ export function RegistryForm({
 							htmlFor={passwordId}
 							className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
 						>
-							Password
+							{tCommon("password")}
 						</label>
 						<PasswordInput
 							id={passwordId}
-							placeholder={isEditMode ? "Leave empty to keep current password" : "Enter password"}
+							placeholder={isEditMode ? t("passwordPlaceholderEdit") : t("passwordPlaceholder")}
 							value={formData.password}
 							onChange={(e) => handleInputChange("password", e.target.value)}
 							required={!isEditMode}
@@ -112,16 +113,16 @@ export function RegistryForm({
 							disabled={isTestingConnection}
 						>
 							{isTestingConnection ? (
-								"Testing connection..."
+								t("testingConnection")
 							) : isEditMode ? (
 								<>
 									<Pencil className="mr-2 size-4" />
-									Update Registry
+									{t("updateRegistry")}
 								</>
 							) : (
 								<>
 									<Plus className="mr-2 size-4" />
-									Add Registry
+									{t("addRegistry")}
 								</>
 							)}
 						</Button>

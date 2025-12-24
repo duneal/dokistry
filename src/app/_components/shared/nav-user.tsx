@@ -2,6 +2,7 @@
 
 import { BadgeCheck, ChevronsUpDown, LogOut, Moon, Sun, Users } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import { useCallback, useEffect, useState } from "react"
 
@@ -32,6 +33,9 @@ export function NavUser() {
 	const router = useRouter()
 	const { theme, setTheme } = useTheme()
 	const [mounted, setMounted] = useState(false)
+	const t = useTranslations("common")
+	const tAuth = useTranslations("auth")
+	const tToast = useTranslations("toast")
 
 	useEffect(() => {
 		setMounted(true)
@@ -52,8 +56,7 @@ export function NavUser() {
 							<AvatarFallback className="rounded-lg">...</AvatarFallback>
 						</Avatar>
 						<div className="grid flex-1 text-left text-sm leading-tight">
-							<span className="truncate font-medium">Loading...</span>
-							<span className="truncate text-xs text-muted-foreground">Please wait</span>
+							<span className="truncate font-medium">{t("loading")}</span>
 						</div>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
@@ -80,7 +83,7 @@ export function NavUser() {
 		{
 			url: "/account",
 			icon: BadgeCheck,
-			label: "Account",
+			label: t("account"),
 			isActive: isActiveUrl("/account"),
 		},
 		...(isAdmin
@@ -88,7 +91,7 @@ export function NavUser() {
 					{
 						url: "/users",
 						icon: Users,
-						label: "Users",
+						label: t("users"),
 						isActive: isActiveUrl("/users"),
 					},
 				]
@@ -147,7 +150,7 @@ export function NavUser() {
 								) : (
 									<Moon strokeWidth={1.5} />
 								)}
-								<span className="sr-only">Toggle theme</span>
+								<span className="sr-only">{tToast("toggleTheme")}</span>
 							</Button>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
@@ -175,7 +178,7 @@ export function NavUser() {
 						)}
 						<DropdownMenuItem onClick={handleLogout}>
 							<LogOut size={16} />
-							Log out
+							{tAuth("logOut")}
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

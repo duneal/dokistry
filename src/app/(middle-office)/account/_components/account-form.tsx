@@ -2,6 +2,7 @@
 
 import { KeyRound, Loader2, Mail } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { PasswordInput } from "@/app/_components/shared"
@@ -26,6 +27,8 @@ import { useAuth } from "@/utils/lib/auth-hooks"
 export default function AccountForm() {
 	const { user, isLoading, refetch } = useAuth()
 	const router = useRouter()
+	const t = useTranslations("account")
+	const tCommon = useTranslations("common")
 
 	const [name, setName] = useState("")
 	const [newEmail, setNewEmail] = useState("")
@@ -53,11 +56,7 @@ export default function AccountForm() {
 	}
 
 	if (!user) {
-		return (
-			<div className="py-8 text-center text-muted-foreground">
-				Please sign in to view your account settings.
-			</div>
-		)
+		return <div className="py-8 text-center text-muted-foreground">{t("pleaseSignIn")}</div>
 	}
 
 	const handleNameSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -68,16 +67,16 @@ export default function AccountForm() {
 			const trimmedName = name.trim()
 			const currentName = (user as { name?: string | null })?.name || ""
 			if (trimmedName === currentName) {
-				toast.info("Name unchanged", {
-					description: "The name is the same as the current one.",
+				toast.info(t("nameUnchanged"), {
+					description: t("nameUnchangedDescription"),
 				})
 				setIsUpdatingName(false)
 				return
 			}
 
 			if (!trimmedName || trimmedName === "") {
-				toast.error("Name cannot be empty", {
-					description: "Please enter a valid name.",
+				toast.error(t("nameEmpty"), {
+					description: t("nameEmptyDescription"),
 				})
 				setIsUpdatingName(false)
 				return
@@ -86,12 +85,12 @@ export default function AccountForm() {
 			const result = await updateUserName(trimmedName)
 
 			if (result.error) {
-				toast.error("Failed to update name", {
+				toast.error(t("nameUpdateFailed"), {
 					description: result.error,
 				})
 			} else {
-				toast.success("Name updated successfully", {
-					description: "Your name has been updated.",
+				toast.success(t("nameUpdateSuccess"), {
+					description: t("nameUpdateSuccessDescription"),
 				})
 				if (refetch) {
 					refetch()
@@ -99,8 +98,8 @@ export default function AccountForm() {
 				router.refresh()
 			}
 		} catch (error) {
-			toast.error("Failed to update name", {
-				description: "An unexpected error occurred.",
+			toast.error(t("nameUpdateFailed"), {
+				description: t("unexpectedError"),
 			})
 			console.error("Name update error:", error)
 		} finally {
@@ -114,8 +113,8 @@ export default function AccountForm() {
 
 		try {
 			if (newEmail === (user.email || "")) {
-				toast.info("Email unchanged", {
-					description: "The email address is the same as the current one.",
+				toast.info(t("emailUnchanged"), {
+					description: t("emailUnchangedDescription"),
 				})
 				setIsChangingEmail(false)
 				return
@@ -124,12 +123,12 @@ export default function AccountForm() {
 			const result = await updateUserEmail(newEmail)
 
 			if (result.error) {
-				toast.error("Failed to update email", {
+				toast.error(t("emailUpdateFailed"), {
 					description: result.error,
 				})
 			} else {
-				toast.success("Email updated successfully", {
-					description: "Your email address has been updated.",
+				toast.success(t("emailUpdateSuccess"), {
+					description: t("emailUpdateSuccessDescription"),
 				})
 				setIsEmailDialogOpen(false)
 				setNewEmail("")
@@ -139,8 +138,8 @@ export default function AccountForm() {
 				router.refresh()
 			}
 		} catch (error) {
-			toast.error("Failed to update email", {
-				description: "An unexpected error occurred.",
+			toast.error(t("emailUpdateFailed"), {
+				description: t("unexpectedError"),
 			})
 			console.error("Email update error:", error)
 		} finally {
@@ -154,24 +153,24 @@ export default function AccountForm() {
 
 		try {
 			if (!currentPassword || currentPassword.trim() === "") {
-				toast.error("Current password required", {
-					description: "Please enter your current password.",
+				toast.error(t("currentPasswordRequired"), {
+					description: t("currentPasswordRequiredDescription"),
 				})
 				setIsChangingPassword(false)
 				return
 			}
 
 			if (newPassword !== confirmPassword) {
-				toast.error("Passwords do not match", {
-					description: "Please make sure the new password and confirmation match.",
+				toast.error(t("passwordsDoNotMatch"), {
+					description: t("passwordsDoNotMatchDescription"),
 				})
 				setIsChangingPassword(false)
 				return
 			}
 
 			if (newPassword.length < 8) {
-				toast.error("Password too short", {
-					description: "Password must be at least 8 characters long.",
+				toast.error(t("passwordTooShort"), {
+					description: t("passwordTooShortDescription"),
 				})
 				setIsChangingPassword(false)
 				return
@@ -180,12 +179,12 @@ export default function AccountForm() {
 			const result = await updateUserPassword(currentPassword, newPassword)
 
 			if (result.error) {
-				toast.error("Failed to update password", {
+				toast.error(t("passwordUpdateFailed"), {
 					description: result.error,
 				})
 			} else {
-				toast.success("Password updated successfully", {
-					description: "Your password has been updated.",
+				toast.success(t("passwordUpdateSuccess"), {
+					description: t("passwordUpdateSuccessDescription"),
 				})
 				setIsPasswordDialogOpen(false)
 				setCurrentPassword("")
@@ -193,8 +192,8 @@ export default function AccountForm() {
 				setConfirmPassword("")
 			}
 		} catch (error) {
-			toast.error("Failed to update password", {
-				description: "An unexpected error occurred.",
+			toast.error(t("passwordUpdateFailed"), {
+				description: t("unexpectedError"),
 			})
 			console.error("Password update error:", error)
 		} finally {
@@ -209,14 +208,14 @@ export default function AccountForm() {
 			{/* Personal Information */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Personal Information</CardTitle>
-					<CardDescription>Update your personal information.</CardDescription>
+					<CardTitle>{t("personalInformation")}</CardTitle>
+					<CardDescription>{t("updatePersonalInfo")}</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleNameSubmit}>
 						<div className="space-y-2">
 							<label htmlFor="name" className="text-sm font-medium leading-none">
-								Name
+								{tCommon("name")}
 							</label>
 							<div className="flex gap-2">
 								<Input
@@ -224,7 +223,7 @@ export default function AccountForm() {
 									type="text"
 									value={name}
 									onChange={(e) => setName(e.target.value)}
-									placeholder="Your name"
+									placeholder={tCommon("name")}
 									required
 									disabled={isUpdatingName}
 									className="flex-1"
@@ -240,10 +239,10 @@ export default function AccountForm() {
 									{isUpdatingName ? (
 										<>
 											<Loader2 className="mr-2 size-4 animate-spin" />
-											Updating...
+											{t("updating")}
 										</>
 									) : (
-										"Update"
+										tCommon("update")
 									)}
 								</Button>
 							</div>
@@ -252,44 +251,39 @@ export default function AccountForm() {
 				</CardContent>
 			</Card>
 
-			{/* Account Security */}
 			<Card>
 				<CardHeader>
-					<CardTitle>Account Security</CardTitle>
-					<CardDescription>Manage your account security settings.</CardDescription>
+					<CardTitle>{t("accountSecurity")}</CardTitle>
+					<CardDescription>{t("manageSecurity")}</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-6">
-					{/* Email Address */}
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-3">
 							<Mail className="h-5 w-5 text-muted-foreground" />
 							<div>
 								<label htmlFor="email" className="text-sm font-medium">
-									Email Address
+									{t("emailAddress")}
 								</label>
 								<p className="text-sm text-muted-foreground">{userEmail}</p>
 							</div>
 						</div>
 						<Button variant="outline" onClick={() => setIsEmailDialogOpen(true)}>
-							Change email
+							{t("changeEmail")}
 						</Button>
 					</div>
 
-					{/* Password */}
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-3">
 							<KeyRound className="h-5 w-5 text-muted-foreground" />
 							<div>
 								<label htmlFor="password" className="text-sm font-medium">
-									Password
+									{tCommon("password")}
 								</label>
-								<p className="text-sm text-muted-foreground">
-									Your password must be at least 8 characters long.
-								</p>
+								<p className="text-sm text-muted-foreground">{t("passwordRequirement")}</p>
 							</div>
 						</div>
 						<Button variant="outline" onClick={() => setIsPasswordDialogOpen(true)}>
-							Change password
+							{t("changePassword")}
 						</Button>
 					</div>
 				</CardContent>
@@ -299,14 +293,14 @@ export default function AccountForm() {
 			<Dialog open={isEmailDialogOpen} onOpenChange={setIsEmailDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Change email address</DialogTitle>
-						<DialogDescription>Update your email address.</DialogDescription>
+						<DialogTitle>{t("changeEmailTitle")}</DialogTitle>
+						<DialogDescription>{t("updateEmailDescription")}</DialogDescription>
 					</DialogHeader>
 					<form onSubmit={handleEmailSubmit}>
 						<div className="space-y-4">
 							<div className="space-y-2">
 								<label htmlFor="currentEmail" className="text-sm font-medium leading-none">
-									Current email
+									{t("currentEmail")}
 								</label>
 								<Input
 									id="currentEmail"
@@ -315,18 +309,18 @@ export default function AccountForm() {
 									disabled
 									className="bg-muted"
 								/>
-								<p className="text-xs text-muted-foreground">Your current email address.</p>
+								<p className="text-xs text-muted-foreground">{t("currentEmailDescription")}</p>
 							</div>
 							<div className="space-y-2">
 								<label htmlFor="newEmail" className="text-sm font-medium leading-none">
-									New email
+									{t("newEmail")}
 								</label>
 								<Input
 									id="newEmail"
 									type="email"
 									value={newEmail}
 									onChange={(e) => setNewEmail(e.target.value)}
-									placeholder="new@email.com"
+									placeholder={t("newEmailPlaceholder")}
 									required
 									disabled={isChangingEmail}
 								/>
@@ -341,7 +335,7 @@ export default function AccountForm() {
 									setNewEmail("")
 								}}
 							>
-								Cancel
+								{tCommon("cancel")}
 							</Button>
 							<Button
 								type="submit"
@@ -350,10 +344,10 @@ export default function AccountForm() {
 								{isChangingEmail ? (
 									<>
 										<Loader2 className="mr-2 size-4 animate-spin" />
-										Updating...
+										{t("updating")}
 									</>
 								) : (
-									"Update email"
+									t("updateEmail")
 								)}
 							</Button>
 						</DialogFooter>
@@ -365,49 +359,47 @@ export default function AccountForm() {
 			<Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Change password</DialogTitle>
-						<DialogDescription>Change your password to secure your account.</DialogDescription>
+						<DialogTitle>{t("changePasswordTitle")}</DialogTitle>
+						<DialogDescription>{t("changePasswordDescription")}</DialogDescription>
 					</DialogHeader>
 					<form onSubmit={handlePasswordSubmit}>
 						<div className="space-y-4">
 							<div className="space-y-2">
 								<label htmlFor="currentPassword" className="text-sm font-medium leading-none">
-									Current password
+									{t("currentPassword")}
 								</label>
 								<PasswordInput
 									id="currentPassword"
 									value={currentPassword}
 									onChange={(e) => setCurrentPassword(e.target.value)}
-									placeholder="Enter your current password"
+									placeholder={t("currentPasswordPlaceholder")}
 									required
 									disabled={isChangingPassword}
 								/>
 							</div>
 							<div className="space-y-2">
 								<label htmlFor="newPassword" className="text-sm font-medium leading-none">
-									New password
+									{t("newPassword")}
 								</label>
-								<p className="text-xs text-muted-foreground">
-									The password must be at least 8 characters long.
-								</p>
+								<p className="text-xs text-muted-foreground">{t("newPasswordDescription")}</p>
 								<PasswordInput
 									id="newPassword"
 									value={newPassword}
 									onChange={(e) => setNewPassword(e.target.value)}
-									placeholder="Enter your new password"
+									placeholder={t("newPasswordPlaceholder")}
 									required
 									disabled={isChangingPassword}
 								/>
 							</div>
 							<div className="space-y-2">
 								<label htmlFor="confirmPassword" className="text-sm font-medium leading-none">
-									Confirm new password
+									{t("confirmNewPassword")}
 								</label>
 								<PasswordInput
 									id="confirmPassword"
 									value={confirmPassword}
 									onChange={(e) => setConfirmPassword(e.target.value)}
-									placeholder="Confirm your new password"
+									placeholder={t("confirmNewPasswordPlaceholder")}
 									required
 									disabled={isChangingPassword}
 								/>
@@ -424,7 +416,7 @@ export default function AccountForm() {
 									setConfirmPassword("")
 								}}
 							>
-								Cancel
+								{tCommon("cancel")}
 							</Button>
 							<Button
 								type="submit"
@@ -439,10 +431,10 @@ export default function AccountForm() {
 								{isChangingPassword ? (
 									<>
 										<Loader2 className="mr-2 size-4 animate-spin" />
-										Updating...
+										{t("updating")}
 									</>
 								) : (
-									"Change password"
+									t("changePassword")
 								)}
 							</Button>
 						</DialogFooter>

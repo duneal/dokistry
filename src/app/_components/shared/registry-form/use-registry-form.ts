@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import {
@@ -29,6 +30,7 @@ export function useRegistryForm({ registry, onOpenChange, onRegistrySaved }: Use
 		username: "",
 		password: "",
 	})
+	const t = useTranslations("registry")
 
 	useEffect(() => {
 		if (registry) {
@@ -58,8 +60,8 @@ export function useRegistryForm({ registry, onOpenChange, onRegistrySaved }: Use
 				isEditMode && !formData.password && registry ? registry.password : formData.password
 
 			if (!passwordToUse) {
-				toast.error("Password is required", {
-					description: "Please enter a password to test the connection",
+				toast.error(t("passwordRequired"), {
+					description: t("passwordRequiredDescription"),
 					duration: 4000,
 				})
 				setIsSubmitting(false)
@@ -75,16 +77,16 @@ export function useRegistryForm({ registry, onOpenChange, onRegistrySaved }: Use
 			setIsTestingConnection(false)
 
 			if (!connectionTest.success) {
-				toast.error("Connection test failed", {
-					description: connectionTest.error || "Unable to connect to the registry",
+				toast.error(t("connectionTestFailed"), {
+					description: connectionTest.error || t("unableToConnect"),
 					duration: 5000,
 				})
 				setIsSubmitting(false)
 				return
 			}
 
-			toast.success("Connection test passed", {
-				description: "Registry credentials are valid",
+			toast.success(t("connectionTestPassed"), {
+				description: t("credentialsValid"),
 				duration: 2000,
 			})
 
@@ -101,7 +103,7 @@ export function useRegistryForm({ registry, onOpenChange, onRegistrySaved }: Use
 			}
 
 			if (result.error) {
-				toast.error(`Failed to ${isEditMode ? "update" : "add"} registry`, {
+				toast.error(isEditMode ? t("failedToUpdate") : t("failedToAdd"), {
 					description: result.error,
 					duration: 4000,
 				})
@@ -124,8 +126,8 @@ export function useRegistryForm({ registry, onOpenChange, onRegistrySaved }: Use
 				throw error
 			}
 
-			toast.error(`Failed to ${isEditMode ? "update" : "add"} registry`, {
-				description: "An unexpected error occurred",
+			toast.error(isEditMode ? t("failedToUpdate") : t("failedToAdd"), {
+				description: t("unexpectedError"),
 				duration: 4000,
 			})
 			console.error(`Failed to ${isEditMode ? "update" : "add"} registry:`, error)

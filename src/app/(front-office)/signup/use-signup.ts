@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 import { createFirstAdminUser } from "@/utils/lib/auth-actions"
@@ -7,6 +8,7 @@ import { clientSignIn } from "@/utils/lib/auth-client"
 export function useSignup() {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
+	const t = useTranslations("auth")
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -18,8 +20,8 @@ export function useSignup() {
 		const confirmPassword = formData.get("confirmPassword") as string
 
 		if (password !== confirmPassword) {
-			const errorMessage = "Passwords do not match"
-			toast.error("Signup Failed", {
+			const errorMessage = t("passwordsDoNotMatch")
+			toast.error(t("signupFailed"), {
 				description: errorMessage,
 				duration: 4000,
 			})
@@ -31,8 +33,8 @@ export function useSignup() {
 			const result = await createFirstAdminUser(email, password, email.split("@")[0])
 
 			if (result.error) {
-				const errorMessage = result.error || "Sign up failed"
-				toast.error("Signup Failed", {
+				const errorMessage = result.error || t("signupFailed")
+				toast.error(t("signupFailed"), {
 					description: errorMessage,
 					duration: 4000,
 				})
@@ -44,13 +46,13 @@ export function useSignup() {
 				})
 
 				if (signInResult.error) {
-					toast.error("Signup Failed", {
-						description: "Account created but failed to sign in. Please sign in manually.",
+					toast.error(t("signupFailed"), {
+						description: t("signupSignInFailed"),
 						duration: 4000,
 					})
 				} else {
-					toast.success("Account Created Successfully!", {
-						description: "Welcome to Dokistry! Redirecting to dashboard...",
+					toast.success(t("signupSuccess"), {
+						description: t("signupSuccessDescription"),
 						duration: 3000,
 					})
 					setTimeout(() => {
@@ -59,8 +61,8 @@ export function useSignup() {
 				}
 			}
 		} catch (err) {
-			const errorMessage = "An unexpected error occurred"
-			toast.error("Signup Failed", {
+			const errorMessage = t("unexpectedError")
+			toast.error(t("signupFailed"), {
 				description: errorMessage,
 				duration: 4000,
 			})

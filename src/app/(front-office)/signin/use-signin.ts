@@ -1,4 +1,5 @@
 import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { toast } from "sonner"
 import { clientSignIn } from "@/utils/lib/auth-client"
@@ -6,6 +7,7 @@ import { clientSignIn } from "@/utils/lib/auth-client"
 export function useSignin() {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
+	const t = useTranslations("auth")
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -28,14 +30,14 @@ export function useSignin() {
 
 			if (error) {
 				const errorMessage =
-					typeof error === "string" ? error : error?.message || "Invalid email or password"
-				toast.error("Sign In Failed", {
+					typeof error === "string" ? error : error?.message || t("invalidCredentials")
+				toast.error(t("signInFailed"), {
 					description: errorMessage,
 					duration: 4000,
 				})
 			} else {
-				toast.success("Signed In Successfully!", {
-					description: "Redirecting to dashboard...",
+				toast.success(t("signInSuccess"), {
+					description: t("redirecting"),
 					duration: 3000,
 				})
 				setTimeout(() => {
@@ -43,8 +45,8 @@ export function useSignin() {
 				}, 500)
 			}
 		} catch (err) {
-			const errorMessage = "An unexpected error occurred"
-			toast.error("Sign In Failed", {
+			const errorMessage = t("unexpectedError")
+			toast.error(t("signInFailed"), {
 				description: errorMessage,
 				duration: 4000,
 			})
