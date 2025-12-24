@@ -743,6 +743,40 @@ export async function updateUserEmail(newEmail: string) {
 	}
 }
 
+export async function updateUserName(newName: string) {
+	try {
+		const session = await getSession()
+		if (!session?.user) {
+			return { error: "Unauthorized" }
+		}
+
+		if (!newName || newName.trim() === "") {
+			return { error: "Name cannot be empty" }
+		}
+
+		const headersList = await headers()
+
+		await auth.api.adminUpdateUser({
+			body: {
+				userId: session.user.id,
+				data: {
+					name: newName.trim(),
+				},
+			},
+			headers: headersList,
+		})
+
+		return { success: true }
+	} catch (error) {
+		if (error instanceof APIError) {
+			console.error("Name update error:", error.message, error.status)
+			return { error: error.message || "Failed to update name" }
+		}
+		console.error("Error updating name:", error)
+		return { error: "Failed to update name" }
+	}
+}
+
 export async function getAllUsers() {
 	try {
 		const session = await getSession()

@@ -3,7 +3,6 @@ import { NoRegistryEmptyState } from "@/app/_components/shared"
 import { databaseRegistryService } from "@/features/registry"
 import type { RegistryRepositoriesResponse, Repository } from "@/utils/types/registry.interface"
 import ImageDetailsWrapper from "./_components/image-details-wrapper"
-import "./image.scss"
 
 export const dynamic = "force-dynamic"
 
@@ -30,10 +29,8 @@ export default async function ImagePage({ params }: ImagePageProps) {
 
 	if (!hasRegistry) {
 		return (
-			<main className="image-page">
-				<div className="image-page__container">
-					<NoRegistryEmptyState />
-				</div>
+			<main className="flex flex-1 items-center justify-center p-4">
+				<NoRegistryEmptyState />
 			</main>
 		)
 	}
@@ -48,7 +45,6 @@ export default async function ImagePage({ params }: ImagePageProps) {
 		error = err instanceof Error ? err.message : "Failed to fetch registry data"
 	}
 
-	// Find the specific repository
 	const emptyRepository = {
 		name: imageName,
 		tags: [],
@@ -56,8 +52,8 @@ export default async function ImagePage({ params }: ImagePageProps) {
 	const repository = repositoriesData.repositories.find((repo) => repo.name === imageName)
 
 	return (
-		<main className="image-page">
-			<div className="image-page__container">
+		<main className="flex flex-1 flex-col p-4">
+			<div className="w-full">
 				<ImageDetailsWrapper
 					initialRepository={repository || emptyRepository}
 					initialError={error}

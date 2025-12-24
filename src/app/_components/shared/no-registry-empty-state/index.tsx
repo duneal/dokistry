@@ -2,11 +2,10 @@
 
 import { Plus } from "lucide-react"
 import * as React from "react"
-import Button from "@/app/_components/ui/button"
+import { Button } from "@/app/_components/ui/button"
 import { useAuth } from "@/utils/lib/auth-hooks"
 import type { Registry } from "@/utils/types/registry.interface"
 import { RegistryAddForm } from "../registry-form"
-import "./no-registry-empty-state.scss"
 
 interface NoRegistryEmptyStateProps {
 	onRegistryAdded?: () => void
@@ -26,12 +25,18 @@ export function NoRegistryEmptyState({ onRegistryAdded }: NoRegistryEmptyStatePr
 	}
 
 	return (
-		<div className="no-registry-empty-state">
-			<p>Add a registry to get started</p>
+		<div className="flex flex-1 flex-col items-center justify-center gap-4 p-8 text-center">
+			<div className="flex flex-col items-center gap-2">
+				<div className="rounded-full bg-muted p-4">
+					<Plus className="size-8 text-muted-foreground" />
+				</div>
+				<h3 className="text-lg font-semibold">No registry found</h3>
+				<p className="text-sm text-muted-foreground">Add a registry to get started</p>
+			</div>
 			{isAdmin && (
 				<>
-					<Button variant="primary" onClick={() => setIsDialogOpen(true)}>
-						<Plus className="no-registry-empty-state__button__icon" size={20} />
+					<Button onClick={() => setIsDialogOpen(true)}>
+						<Plus className="mr-2 size-4" />
 						Add a Registry
 					</Button>
 
@@ -39,7 +44,6 @@ export function NoRegistryEmptyState({ onRegistryAdded }: NoRegistryEmptyStatePr
 						open={isDialogOpen}
 						onOpenChange={setIsDialogOpen}
 						onRegistrySaved={handleRegistryAdded}
-						className="no-registry-empty-state__dialog"
 					/>
 				</>
 			)}

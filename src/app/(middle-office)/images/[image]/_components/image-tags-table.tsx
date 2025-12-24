@@ -2,10 +2,22 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import { format, formatDistanceToNow } from "date-fns"
-import { ArrowUpDown, CalendarDays, HardDrive, Tag } from "lucide-react"
-import { Badge, Button, Checkbox, Table } from "@/app/_components/ui"
+import { ArrowUpDown, CalendarDays, HardDrive, MoreHorizontal, Tag, Trash2 } from "lucide-react"
+import * as React from "react"
+import {
+	Badge,
+	Button,
+	Checkbox,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+	Input,
+	Table,
+} from "@/app/_components/ui"
 import type { Repository } from "@/utils/types/registry.interface"
-import "./image-tags-table.scss"
 import TagsActionBar from "./tags-action-bar"
 import {
 	type ManifestGroup,
@@ -20,7 +32,6 @@ interface ImageTagsTableProps {
 	onRefresh?: () => void
 }
 
-// Utility function to format file sizes
 const formatFileSize = (bytes: number): string => {
 	if (bytes === 0) return "0 B"
 
@@ -36,20 +47,18 @@ const formatRelativeTime = (date: Date) => {
 	const diffInMs = now.getTime() - date.getTime()
 	const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
 
-	// If it's the day before yesterday or older, show the actual date
 	if (diffInDays >= 2) {
 		return format(date, "MMM d, yyyy")
 	}
 
-	// For recent dates (today and yesterday), use date-fns relative formatting
 	return formatDistanceToNow(date, { addSuffix: true, includeSeconds: true })
 }
 
 const getTagVariant = (tag: TagWithDateAndSize) => {
-	if (tag.isLatest) return "primary"
+	if (tag.isLatest) return "default"
 	if (tag.name.includes("dev") || tag.name.includes("test")) return "warning"
-	if (tag.name.includes("prod") || tag.name.includes("stable")) return "primary"
-	return "default"
+	if (tag.name.includes("prod") || tag.name.includes("stable")) return "default"
+	return "secondary"
 }
 
 export default function ImageTagsTable({
@@ -58,6 +67,7 @@ export default function ImageTagsTable({
 	onDeleteTags,
 	onRefresh,
 }: ImageTagsTableProps) {
+	const [filterValue, setFilterValue] = React.useState("")
 	const {
 		selectedTags,
 		isDeleting,
@@ -102,48 +112,50 @@ export default function ImageTagsTable({
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
+					size="xs"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="image-tags-table__sort-button"
+					className="-ml-4 my-1"
 				>
-					<Tag className="image-tags-table__header__icon" size={16} />
+					<Tag className="size-4" />
 					Tags
-					<ArrowUpDown className="image-tags-table__sort-icon" size={14} />
+					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
 			cell: ({ row }) => (
-				<div className="image-tags-table__tag-cell">
-					<div className="image-tags-table__tags-container">
-						{row.original.tags.map((tag) => (
-							<Badge
-								key={tag.name}
-								variant={getTagVariant(tag)}
-								className="image-tags-table__tag-badge"
-							>
-								{tag.name}
-							</Badge>
-						))}
-					</div>
+				<div className="flex flex-wrap gap-1.5">
+					{row.original.tags.map((tag) => (
+						<Badge key={tag.name} variant={getTagVariant(tag)}>
+							{tag.name}
+						</Badge>
+					))}
 				</div>
 			),
+			filterFn: (row, _id, value) => {
+				const tags = row.original.tags as TagWithDateAndSize[]
+				const searchValue = (value as string)?.toLowerCase() || ""
+				if (!searchValue) return true
+				return tags.some((tag) => tag.name.toLowerCase().includes(searchValue))
+			},
 		},
 		{
 			accessorKey: "date",
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
+					size="xs"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="image-tags-table__sort-button"
+					className="-ml-4"
 				>
-					<CalendarDays className="image-tags-table__header__icon" size={16} />
+					<CalendarDays className="size-4" />
 					Creation time
-					<ArrowUpDown className="image-tags-table__sort-icon" size={14} />
+					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
 			cell: ({ row }) => {
 				const value = row.getValue("date") as Date
 				const isUnset = value instanceof Date && value.getTime() === 0
 				return (
-					<span className="image-tags-table__date">
+					<span className="text-sm text-muted-foreground">
 						{!value || isUnset ? "-" : formatRelativeTime(value)}
 					</span>
 				)
@@ -154,17 +166,48 @@ export default function ImageTagsTable({
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
+					size="xs"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="image-tags-table__sort-button"
+					className="-ml-4"
 				>
-					<HardDrive className="image-tags-table__header__icon" size={16} />
+					<HardDrive className="size-4" />
 					Size
-					<ArrowUpDown className="image-tags-table__sort-icon" size={14} />
+					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
-			cell: ({ row }) => <div>{formatFileSize(row.getValue("size"))}</div>,
+			cell: ({ row }) => <span className="text-sm">{formatFileSize(row.getValue("size"))}</span>,
 		},
-		// layers column removed per request
+		{
+			id: "actions",
+			enableHiding: false,
+			cell: ({ row }) => {
+				const manifestGroup = row.original
+				const tagNames = manifestGroup.tags.map((tag) => tag.name)
+
+				return (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button variant="ghost" className="h-6 w-8 p-0">
+								<span className="sr-only">Open menu</span>
+								<MoreHorizontal className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuLabel>Actions</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								onClick={() => handleDeleteTags(tagNames)}
+								disabled={isDeleting}
+								className="text-destructive focus:text-destructive"
+							>
+								<Trash2 className="mr-2 h-4 w-4" />
+								Delete
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				)
+			},
+		},
 	]
 
 	if (!repository) {
@@ -172,20 +215,32 @@ export default function ImageTagsTable({
 	}
 
 	return (
-		<div className="image-tags-table">
-			<TagsActionBar
-				selectedTags={selectedTags}
-				onClearSelection={handleClearSelection}
-				onDeleteTags={handleDeleteTags}
-				isDeleting={isDeleting}
-			/>
-			<div className="image-tags-table__table-wrapper">
+		<div className="space-y-4">
+			<div className="flex items-center py-4 m-0">
+				<Input
+					placeholder="Filter tags..."
+					value={filterValue}
+					onChange={(event) => setFilterValue(event.target.value)}
+					className="max-w-sm"
+				/>
+			</div>
+			<div className="relative">
+				<TagsActionBar
+					selectedTags={selectedTags}
+					onClearSelection={handleClearSelection}
+					onDeleteTags={handleDeleteTags}
+					isDeleting={isDeleting}
+				/>
 				<Table
 					columns={columns}
 					data={processedManifestGroups}
 					enableSelection={true}
+					enablePagination={true}
 					onSelectionChange={handleSelectionChange}
-					className="image-tags-table__table"
+					emptyMessage="No tags found."
+					filterColumn="tags"
+					filterValue={filterValue}
+					defaultSorting={[{ id: "date", desc: true }]}
 				/>
 			</div>
 		</div>

@@ -1,22 +1,34 @@
-export { default as Badge } from "./badge"
+export type { BadgeProps } from "./badge"
+export { Badge, badgeVariants } from "./badge"
 export {
 	Breadcrumb,
+	BreadcrumbEllipsis,
 	BreadcrumbItem,
 	BreadcrumbLink,
 	BreadcrumbList,
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from "./breadcrumb"
-export { default as Button } from "./button"
+export type { ButtonProps } from "./button"
+export { Button, buttonVariants } from "./button"
 export {
 	Card,
+	CardAction,
 	CardContent,
 	CardDescription,
 	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "./card"
-export { ChartContainer, ChartTooltip, ChartTooltipContent } from "./chart"
+export type { ChartConfig } from "./chart"
+export {
+	ChartContainer,
+	ChartLegend,
+	ChartLegendContent,
+	ChartStyle,
+	ChartTooltip,
+	ChartTooltipContent,
+} from "./chart"
 export { Checkbox } from "./checkbox"
 export {
 	Dialog,
@@ -47,7 +59,8 @@ export {
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "./dropdown-menu"
-export { default as Input } from "./input"
+export type { InputProps } from "./input"
+export { Input } from "./input"
 export {
 	Pagination,
 	PaginationContent,
@@ -61,17 +74,37 @@ export { Separator } from "./separator"
 export {
 	Sidebar,
 	SidebarContent,
+	SidebarFooter,
 	SidebarGroup,
+	SidebarGroupAction,
 	SidebarGroupContent,
 	SidebarGroupLabel,
 	SidebarHeader,
+	SidebarInput,
 	SidebarInset,
 	SidebarMenu,
+	SidebarMenuAction,
+	SidebarMenuBadge,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarMenuSkeleton,
+	SidebarMenuSub,
+	SidebarMenuSubButton,
+	SidebarMenuSubItem,
 	SidebarProvider,
 	SidebarRail,
+	SidebarSeparator,
 	SidebarTrigger,
 	useSidebar,
 } from "./sidebar"
-export { Table } from "./table"
+export {
+	Table,
+	TableBody,
+	TableCaption,
+	TableCell,
+	TableFooter,
+	TableHead,
+	TableHeader,
+	TableRoot,
+	TableRow,
+} from "./table"

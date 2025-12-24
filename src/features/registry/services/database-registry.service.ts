@@ -266,7 +266,11 @@ class DatabaseRegistryService {
 			if (!createdAt && configDigest) {
 				try {
 					await this.initializeConfig()
-					const response: AxiosResponse<any> = await axios.get(
+					interface DockerImageConfig {
+						created?: string
+						[key: string]: unknown
+					}
+					const response: AxiosResponse<DockerImageConfig> = await axios.get(
 						`${this.baseUrl}/v2/${repositoryName}/blobs/${configDigest}`,
 						{
 							headers: {

@@ -1,10 +1,9 @@
 "use client"
 
 import { ShowMore as ShowMoreReactTruncate } from "@re-dev/react-truncate"
-import clsx from "clsx"
 import type React from "react"
 import { useMediaQuery } from "react-responsive"
-import "./show-more.scss"
+import { cn } from "@/utils/lib/shadcn-ui"
 
 interface ShowMoreProps {
 	children: React.ReactNode
@@ -12,6 +11,12 @@ interface ShowMoreProps {
 	className?: string
 	mediaQuery?: number
 	variant?: "default" | "compact" | "expanded"
+}
+
+const variantStyles = {
+	default: "",
+	compact: "text-sm",
+	expanded: "text-base",
 }
 
 const ShowMore = ({
@@ -26,13 +31,11 @@ const ShowMore = ({
 		maxWidth: mediaQuery ?? 0,
 	})
 
-	const containerClassName = clsx("showMore", `showMore--${variant}`, className)
-
 	return (
-		<div className={containerClassName}>
+		<div className={cn("relative", variantStyles[variant], className)}>
 			<ShowMoreReactTruncate
 				lines={mediaQuery ? (isUnderMediaQuery ? lines : 0) : lines}
-				className="content"
+				className="[&_button]:text-primary [&_button]:font-medium [&_button]:hover:underline [&_button]:cursor-pointer"
 				{...props}
 			>
 				{children}

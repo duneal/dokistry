@@ -1,83 +1,37 @@
-import clsx from "clsx"
-import type React from "react"
-import "./card.scss"
+import type * as React from "react"
+import { cn } from "@/utils/lib/shadcn-ui"
 
-// Card
-interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-	children: React.ReactNode
-}
-
-const Card = ({ children, className, ...props }: CardProps) => {
+function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
 	return (
-		<div className={clsx("card", className)} {...props}>
-			{children}
-		</div>
+		<div
+			className={cn("rounded-xl border bg-card text-card-foreground shadow", className)}
+			{...props}
+		/>
 	)
 }
 
-// Card Header
-interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-	children: React.ReactNode
+function CardHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+	return <div className={cn("flex flex-col space-y-1.5 p-6", className)} {...props} />
 }
 
-const CardHeader = ({ children, className, ...props }: CardHeaderProps) => {
-	return (
-		<div className={clsx("card__header", className)} {...props}>
-			{children}
-		</div>
-	)
+function CardTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
+	return <h3 className={cn("font-semibold leading-none tracking-tight", className)} {...props} />
 }
 
-// Card Title
-interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
-	children: React.ReactNode
+function CardDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
+	return <p className={cn("text-sm text-muted-foreground", className)} {...props} />
 }
 
-const CardTitle = ({ children, className, ...props }: CardTitleProps) => {
-	return (
-		<h3 className={clsx("card__title", className)} {...props}>
-			{children}
-		</h3>
-	)
+function CardContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+	return <div className={cn("p-6 pt-0", className)} {...props} />
 }
 
-// Card Description
-interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement> {
-	children: React.ReactNode
+function CardFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+	return <div className={cn("flex items-center p-6 pt-0", className)} {...props} />
 }
 
-const CardDescription = ({ children, className, ...props }: CardDescriptionProps) => {
-	return (
-		<p className={clsx("card__description", className)} {...props}>
-			{children}
-		</p>
-	)
+function CardAction({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+	return <div className={cn("mt-4", className)} {...props} />
 }
 
-// Card Content
-interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
-	children: React.ReactNode
-}
-
-const CardContent = ({ children, className, ...props }: CardContentProps) => {
-	return (
-		<div className={clsx("card__content", className)} {...props}>
-			{children}
-		</div>
-	)
-}
-
-// Card Footer
-interface CardFooterProps extends React.HTMLAttributes<HTMLDivElement> {
-	children: React.ReactNode
-}
-
-const CardFooter = ({ children, className, ...props }: CardFooterProps) => {
-	return (
-		<div className={clsx("card__footer", className)} {...props}>
-			{children}
-		</div>
-	)
-}
-
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
+export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }

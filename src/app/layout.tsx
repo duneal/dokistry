@@ -1,10 +1,16 @@
 import type { Metadata, Viewport } from "next"
-
+import { Inter } from "next/font/google"
 import type { ReactNode } from "react"
 import { Toaster } from "sonner"
 
-import { nunitoSans } from "@/utils/fonts"
 import { ReactQueryProvider } from "@/utils/providers/ReactQueryProvider"
+import { ThemeProvider } from "@/utils/providers/ThemeProvider"
+import "./globals.css"
+
+const inter = Inter({
+	subsets: ["latin"],
+	variable: "--font-inter",
+})
 
 export const revalidate = 300 // 5 minutes
 
@@ -30,12 +36,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
-		<html lang="fr">
-			<body className={`${nunitoSans.variable}`}>
-				<ReactQueryProvider>
-					{children}
-					<Toaster position="bottom-right" richColors />
-				</ReactQueryProvider>
+		<html lang="fr" className={inter.variable} suppressHydrationWarning>
+			<body className="font-sans antialiased">
+				<ThemeProvider>
+					<ReactQueryProvider>
+						{children}
+						<Toaster position="bottom-right" richColors />
+					</ReactQueryProvider>
+				</ThemeProvider>
 			</body>
 		</html>
 	)

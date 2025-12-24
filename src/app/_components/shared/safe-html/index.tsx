@@ -1,14 +1,19 @@
 "use client"
 
-import clsx from "clsx"
 import DOMPurify from "dompurify"
 import { useEffect, useState } from "react"
-import "./safe-html.scss"
+import { cn } from "@/utils/lib/shadcn-ui"
 
 interface SafeHtmlProps {
 	htmlContent: string
 	variant?: "default" | "article" | "content"
 	className?: string
+}
+
+const variantStyles = {
+	default: "",
+	article: "prose prose-sm dark:prose-invert max-w-none",
+	content: "prose prose-sm dark:prose-invert",
 }
 
 const SafeHtml = ({ htmlContent, variant = "default", className, ...props }: SafeHtmlProps) => {
@@ -19,11 +24,9 @@ const SafeHtml = ({ htmlContent, variant = "default", className, ...props }: Saf
 		setSanitizedHtml(cleanHtml)
 	}, [htmlContent])
 
-	const containerClassName = clsx("safeHtml", `safeHtml--${variant}`, className)
-
 	return (
 		<div
-			className={containerClassName}
+			className={cn(variantStyles[variant], className)}
 			dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
 			{...props}
 		/>

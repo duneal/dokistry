@@ -11,10 +11,100 @@ import {
 	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table"
-import React, { useState } from "react"
-import "./table.scss"
+import * as React from "react"
+import { Button } from "@/app/_components/ui/button"
+import { cn } from "@/utils/lib/shadcn-ui"
 
-interface TableProps<TData, TValue> {
+const TableRoot = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
+	({ className, ...props }, ref) => (
+		<div className="relative w-full overflow-auto">
+			<table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+		</div>
+	),
+)
+TableRoot.displayName = "TableRoot"
+
+const TableHeader = React.forwardRef<
+	HTMLTableSectionElement,
+	React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+	<thead ref={ref} className={cn("bg-muted/60 [&_tr]:border-b", className)} {...props} />
+))
+TableHeader.displayName = "TableHeader"
+
+const TableBody = React.forwardRef<
+	HTMLTableSectionElement,
+	React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+	<tbody ref={ref} className={cn("[&_tr:last-child]:border-0", className)} {...props} />
+))
+TableBody.displayName = "TableBody"
+
+const TableFooter = React.forwardRef<
+	HTMLTableSectionElement,
+	React.HTMLAttributes<HTMLTableSectionElement>
+>(({ className, ...props }, ref) => (
+	<tfoot
+		ref={ref}
+		className={cn("border-t bg-muted/50 font-medium [&>tr]:last:border-b-0", className)}
+		{...props}
+	/>
+))
+TableFooter.displayName = "TableFooter"
+
+const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
+	({ className, ...props }, ref) => (
+		<tr
+			ref={ref}
+			className={cn(
+				"border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
+				className,
+			)}
+			{...props}
+		/>
+	),
+)
+TableRow.displayName = "TableRow"
+
+const TableHead = React.forwardRef<
+	HTMLTableCellElement,
+	React.ThHTMLAttributes<HTMLTableCellElement>
+>(({ className, ...props }, ref) => (
+	<th
+		ref={ref}
+		className={cn(
+			"h-8 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+			className,
+		)}
+		{...props}
+	/>
+))
+TableHead.displayName = "TableHead"
+
+const TableCell = React.forwardRef<
+	HTMLTableCellElement,
+	React.TdHTMLAttributes<HTMLTableCellElement>
+>(({ className, ...props }, ref) => (
+	<td
+		ref={ref}
+		className={cn(
+			"p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+			className,
+		)}
+		{...props}
+	/>
+))
+TableCell.displayName = "TableCell"
+
+const TableCaption = React.forwardRef<
+	HTMLTableCaptionElement,
+	React.HTMLAttributes<HTMLTableCaptionElement>
+>(({ className, ...props }, ref) => (
+	<caption ref={ref} className={cn("mt-4 text-sm text-muted-foreground", className)} {...props} />
+))
+TableCaption.displayName = "TableCaption"
+
+interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
 	className?: string
@@ -22,9 +112,13 @@ interface TableProps<TData, TValue> {
 	enablePagination?: boolean
 	enableSelection?: boolean
 	onSelectionChange?: (selectedRows: TData[]) => void
+	emptyMessage?: string
+	filterColumn?: string
+	filterValue?: string
+	defaultSorting?: SortingState
 }
 
-export function Table<TData, TValue>({
+function Table<TData, TValue>({
 	columns,
 	data,
 	className,
@@ -32,10 +126,26 @@ export function Table<TData, TValue>({
 	enablePagination = false,
 	enableSelection = false,
 	onSelectionChange,
-}: TableProps<TData, TValue>) {
-	const [sorting, setSorting] = useState<SortingState>([])
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-	const [rowSelection, setRowSelection] = useState({})
+	emptyMessage = "No results.",
+	filterColumn,
+	filterValue,
+	defaultSorting = [],
+}: DataTableProps<TData, TValue>) {
+	const [sorting, setSorting] = React.useState<SortingState>(defaultSorting)
+	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+	const [rowSelection, setRowSelection] = React.useState({})
+
+	React.useEffect(() => {
+		if (filterColumn && filterValue !== undefined) {
+			setColumnFilters((prev) => {
+				const newFilters = prev.filter((filter) => filter.id !== filterColumn)
+				if (filterValue) {
+					newFilters.push({ id: filterColumn, value: filterValue })
+				}
+				return newFilters
+			})
+		}
+	}, [filterColumn, filterValue])
 
 	const table = useReactTable({
 		data,
@@ -56,109 +166,95 @@ export function Table<TData, TValue>({
 		},
 	})
 
-	// Compute selected rows when selection changes
 	const selectedRows = React.useMemo(() => {
-		// Touch rowSelection so it's a real dependency for linting and recomputation
 		void rowSelection
 		return table.getFilteredSelectedRowModel().rows.map((row) => row.original)
 	}, [table, rowSelection])
 
-	// Notify parent component of selection changes
 	React.useEffect(() => {
 		if (!onSelectionChange) return
 		onSelectionChange(selectedRows)
 	}, [onSelectionChange, selectedRows])
 
 	return (
-		<div className={`table ${className || ""}`}>
-			<div className="table__container">
-				<table className="table__table">
-					<thead className="table__header">
+		<div className={cn("space-y-4", className)}>
+			<div className="rounded-md border m-0">
+				<TableRoot>
+					<TableHeader>
 						{table.getHeaderGroups().map((headerGroup) => (
-							<tr key={headerGroup.id} className="table__header__row">
+							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header) => (
-									<th key={header.id} className="table__header__cell">
+									<TableHead key={header.id}>
 										{header.isPlaceholder
 											? null
 											: flexRender(header.column.columnDef.header, header.getContext())}
-									</th>
+									</TableHead>
 								))}
-							</tr>
+							</TableRow>
 						))}
-					</thead>
-					<tbody className="table__body">
+					</TableHeader>
+					<TableBody>
 						{table.getRowModel().rows?.length ? (
 							table.getRowModel().rows.map((row) => (
-								<tr
-									key={row.id}
-									className="table__body__row"
-									data-state={row.getIsSelected() && "selected"}
-								>
+								<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
 									{row.getVisibleCells().map((cell) => (
-										<td key={cell.id} className="table__body__cell">
+										<TableCell key={cell.id}>
 											{flexRender(cell.column.columnDef.cell, cell.getContext())}
-										</td>
+										</TableCell>
 									))}
-								</tr>
+								</TableRow>
 							))
 						) : (
-							<tr className="table__body__row">
-								<td colSpan={columns.length} className="table__body__cell table__body__cell--empty">
-									No tags found.
-								</td>
-							</tr>
+							<TableRow>
+								<TableCell colSpan={columns.length} className="h-24 text-center">
+									{emptyMessage}
+								</TableCell>
+							</TableRow>
 						)}
-					</tbody>
-				</table>
+					</TableBody>
+				</TableRoot>
 			</div>
 
-			{enablePagination && (
-				<div className="table__pagination">
-					<div className="table__pagination__info">
-						Showing{" "}
-						{table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{" "}
-						{Math.min(
-							(table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-							table.getFilteredRowModel().rows.length,
-						)}{" "}
-						of {table.getFilteredRowModel().rows.length} entries
-					</div>
-					<div className="table__pagination__controls">
-						<button
-							type="button"
-							onClick={() => table.setPageIndex(0)}
-							disabled={!table.getCanPreviousPage()}
-							className="table__pagination__button"
-						>
-							First
-						</button>
-						<button
-							type="button"
-							onClick={() => table.previousPage()}
-							disabled={!table.getCanPreviousPage()}
-							className="table__pagination__button"
-						>
-							Previous
-						</button>
-						<button
-							type="button"
-							onClick={() => table.nextPage()}
-							disabled={!table.getCanNextPage()}
-							className="table__pagination__button"
-						>
-							Next
-						</button>
-						<button
-							type="button"
-							onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-							disabled={!table.getCanNextPage()}
-							className="table__pagination__button"
-						>
-							Last
-						</button>
-					</div>
+			{(enablePagination || enableSelection) && (
+				<div className="flex items-center justify-end space-x-2 py-4">
+					{enableSelection && (
+						<div className="text-muted-foreground flex-1 text-sm">
+							{table.getFilteredSelectedRowModel().rows.length} of{" "}
+							{table.getFilteredRowModel().rows.length} row(s) selected.
+						</div>
+					)}
+					{enablePagination && (
+						<div className="space-x-2">
+							<Button
+								variant="outline"
+								onClick={() => table.previousPage()}
+								disabled={!table.getCanPreviousPage()}
+							>
+								Previous
+							</Button>
+							<Button
+								variant="outline"
+								onClick={() => table.nextPage()}
+								disabled={!table.getCanNextPage()}
+							>
+								Next
+							</Button>
+						</div>
+					)}
 				</div>
 			)}
 		</div>
 	)
+}
+
+export {
+	Table,
+	TableBody,
+	TableCaption,
+	TableCell,
+	TableFooter,
+	TableHead,
+	TableHeader,
+	TableRoot,
+	TableRow,
 }

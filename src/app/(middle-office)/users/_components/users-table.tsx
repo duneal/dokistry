@@ -6,6 +6,7 @@ import {
 	CalendarDays,
 	Loader2,
 	Mail,
+	MoreHorizontal,
 	Pencil,
 	Plus,
 	Shield,
@@ -15,7 +16,18 @@ import {
 } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Badge, Button } from "@/app/_components/ui"
+import {
+	Badge,
+	Button,
+	Checkbox,
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+	Input,
+} from "@/app/_components/ui"
 import {
 	Dialog,
 	DialogContent,
@@ -29,7 +41,6 @@ import { Table } from "@/app/_components/ui/table"
 import { createUser, deleteUser, updateUser } from "@/utils/lib/auth-actions"
 import { useAuth } from "@/utils/lib/auth-hooks"
 import UserForm from "./user-form"
-import "./users-table.scss"
 
 interface User {
 	id: string
@@ -47,6 +58,7 @@ interface UsersTableProps {
 export default function UsersTable({ initialUsers }: UsersTableProps) {
 	const { user: currentUser } = useAuth()
 	const [users, setUsers] = useState<User[]>(initialUsers)
+	const [filterValue, setFilterValue] = useState("")
 	const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
 	const [editingUser, setEditingUser] = useState<User | null>(null)
 	const [deletingUserId, setDeletingUserId] = useState<string | null>(null)
@@ -197,30 +209,68 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 
 	const columns: ColumnDef<User>[] = [
 		{
+			id: "select",
+			header: ({ table }) => (
+				<Checkbox
+					checked={
+						table.getIsAllPageRowsSelected()
+							? true
+							: table.getIsSomePageRowsSelected()
+								? "indeterminate"
+								: false
+					}
+					onCheckedChange={(value) => {
+						table.toggleAllPageRowsSelected(!!value)
+					}}
+					aria-label="Select all"
+				/>
+			),
+			cell: ({ row }) => (
+				<Checkbox
+					checked={row.getIsSelected()}
+					onCheckedChange={(value) => {
+						row.toggleSelected(!!value)
+					}}
+					aria-label="Select row"
+				/>
+			),
+			enableSorting: false,
+			enableHiding: false,
+		},
+		{
 			accessorKey: "name",
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
+					size="xs"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="users-table__sort-button"
+					className="-ml-4 my-1"
 				>
-					<UserIcon className="users-table__header__icon" size={16} />
+					<UserIcon className="size-4" />
 					Name
-					<ArrowUpDown className="users-table__sort-icon" size={14} />
+					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
+			filterFn: (row, _id, value) => {
+				const name = (row.getValue("name") as string)?.toLowerCase() || ""
+				const email = (row.original.email as string)?.toLowerCase() || ""
+				const searchValue = (value as string)?.toLowerCase() || ""
+				if (!searchValue) return true
+				return name.includes(searchValue) || email.includes(searchValue)
+			},
 		},
 		{
 			accessorKey: "email",
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
+					size="xs"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="users-table__sort-button"
+					className="-ml-4 my-1"
 				>
-					<Mail className="users-table__header__icon" size={16} />
+					<Mail className="size-4" />
 					Email
-					<ArrowUpDown className="users-table__sort-icon" size={14} />
+					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
 		},
@@ -229,17 +279,18 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
+					size="xs"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="users-table__sort-button"
+					className="-ml-4 my-1"
 				>
-					<Shield className="users-table__header__icon" size={16} />
+					<Shield className="size-4" />
 					Role
-					<ArrowUpDown className="users-table__sort-icon" size={14} />
+					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
 			cell: ({ row }) => {
 				const role = row.getValue("role") as string
-				return <Badge variant={role === "admin" ? "primary" : "secondary"}>{role}</Badge>
+				return <Badge variant={role === "admin" ? "default" : "secondary"}>{role}</Badge>
 			},
 		},
 		{
@@ -247,89 +298,103 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 			header: ({ column }) => (
 				<Button
 					variant="ghost"
+					size="xs"
 					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-					className="users-table__sort-button"
+					className="-ml-4 my-1"
 				>
-					<CalendarDays className="users-table__header__icon" size={16} />
+					<CalendarDays className="size-4" />
 					Created At
-					<ArrowUpDown className="users-table__sort-icon" size={14} />
+					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
 			cell: ({ row }) => {
 				const date = new Date(row.getValue("createdAt"))
-				return date.toLocaleDateString()
+				return <span className="text-sm">{date.toLocaleDateString()}</span>
 			},
 		},
 		{
 			id: "actions",
-			header: () => null,
+			enableHiding: false,
 			cell: ({ row }) => {
 				const user = row.original
 				const isCurrentUser = currentUser?.id === user.id
 
 				return (
-					<div className="users-table__actions">
-						{!isCurrentUser && (
-							<Dialog
-								open={editingUser?.id === user.id}
-								onOpenChange={(open) => !open && setEditingUser(null)}
-							>
-								<DialogTrigger asChild>
-									<Button
-										variant="ghost"
-										size="sm"
-										onClick={() => setEditingUser(user)}
-										className="users-table__actions__button"
-									>
-										<Pencil size={16} />
-									</Button>
-								</DialogTrigger>
-								<DialogContent className="users-table__dialog">
-									<DialogHeader>
-										<DialogTitle>Edit User</DialogTitle>
-										<DialogDescription>Update user email and password.</DialogDescription>
-									</DialogHeader>
-									<UserForm
-										user={user}
-										onSubmit={(email, password, name, role) =>
-											handleUpdateUser(user.id, email, password, name, role)
-										}
-										onCancel={() => setEditingUser(null)}
-									/>
-								</DialogContent>
-							</Dialog>
-						)}
-						{!isCurrentUser && (
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={() => handleRequestDeleteUser(user)}
-								disabled={deletingUserId === user.id}
-								loading={deletingUserId === user.id}
-								className="users-table__actions__button"
-							>
-								<Trash2 size={16} />
-							</Button>
-						)}
-					</div>
+					<>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button variant="ghost" className="h-6 w-8 p-0">
+									<span className="sr-only">Open menu</span>
+									<MoreHorizontal className="h-4 w-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuLabel>Actions</DropdownMenuLabel>
+								<DropdownMenuSeparator />
+								{!isCurrentUser && (
+									<>
+										<DropdownMenuItem onSelect={() => setEditingUser(user)}>
+											<Pencil className="mr-2 h-4 w-4" />
+											Edit
+										</DropdownMenuItem>
+										<DropdownMenuItem
+											onSelect={() => handleRequestDeleteUser(user)}
+											disabled={deletingUserId === user.id}
+											className="text-destructive focus:text-destructive"
+										>
+											<Trash2 className="mr-2 h-4 w-4" />
+											Delete
+										</DropdownMenuItem>
+									</>
+								)}
+								{isCurrentUser && (
+									<DropdownMenuItem disabled className="text-muted-foreground">
+										You cannot edit or delete your own account
+									</DropdownMenuItem>
+								)}
+							</DropdownMenuContent>
+						</DropdownMenu>
+						<Dialog
+							open={editingUser?.id === user.id}
+							onOpenChange={(open) => !open && setEditingUser(null)}
+						>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Edit User</DialogTitle>
+									<DialogDescription>Update user email and password.</DialogDescription>
+								</DialogHeader>
+								<UserForm
+									user={user}
+									onSubmit={(email, password, name, role) =>
+										handleUpdateUser(user.id, email, password, name, role)
+									}
+									onCancel={() => setEditingUser(null)}
+								/>
+							</DialogContent>
+						</Dialog>
+					</>
 				)
 			},
 		},
 	]
 
 	return (
-		<div className="users-table">
-			<div className="users-table__table-wrapper">
-				<Table columns={columns} data={users} className="users-table__table" />
-
+		<div className="space-y-4">
+			<div className="flex items-center justify-between py-4 m-0">
+				<Input
+					placeholder="Filter users..."
+					value={filterValue}
+					onChange={(event) => setFilterValue(event.target.value)}
+					className="max-w-sm"
+				/>
 				<Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
 					<DialogTrigger asChild>
-						<Button variant="ghost" className="users-table__create-row">
-							<Plus size={16} />
+						<Button variant="outline">
+							<Plus className="size-4" />
 							Create User
 						</Button>
 					</DialogTrigger>
-					<DialogContent className="users-table__dialog">
+					<DialogContent>
 						<DialogHeader>
 							<DialogTitle>Create User</DialogTitle>
 							<DialogDescription>
@@ -345,9 +410,21 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					</DialogContent>
 				</Dialog>
 			</div>
+			<div className="relative">
+				<Table
+					columns={columns}
+					data={users}
+					enableSelection={true}
+					enablePagination={true}
+					emptyMessage="No users found."
+					filterColumn="name"
+					filterValue={filterValue}
+					defaultSorting={[{ id: "createdAt", desc: true }]}
+				/>
+			</div>
 
 			<Dialog open={isDeleteDialogOpen} onOpenChange={handleDeleteDialogOpenChange}>
-				<DialogContent className="users-table__delete-dialog">
+				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Delete User</DialogTitle>
 						<DialogDescription>
@@ -357,31 +434,28 @@ export default function UsersTable({ initialUsers }: UsersTableProps) {
 					</DialogHeader>
 					<DialogFooter>
 						<Button
-							variant="ghost"
+							variant="outline"
 							size="sm"
 							onClick={handleCancelDeleteUser}
 							disabled={!!deletingUserId}
 						>
-							<XCircle className="users-table__delete-dialog__icon" size={16} />
+							<XCircle className="mr-2 size-4" />
 							Cancel
 						</Button>
 						<Button
-							variant="danger"
+							variant="destructive"
 							size="sm"
 							onClick={handleConfirmDeleteUser}
 							disabled={!!deletingUserId}
 						>
 							{deletingUserId ? (
 								<>
-									<Loader2
-										className="users-table__delete-dialog__icon users-table__delete-dialog__icon--spinning"
-										size={16}
-									/>
+									<Loader2 className="mr-2 size-4 animate-spin" />
 									Deleting...
 								</>
 							) : (
 								<>
-									<Trash2 className="users-table__delete-dialog__icon" size={16} />
+									<Trash2 className="mr-2 size-4" />
 									Delete permanently
 								</>
 							)}

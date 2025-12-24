@@ -3,10 +3,9 @@
 import { Pencil, Plus } from "lucide-react"
 import { useId, useMemo, useState } from "react"
 import { PasswordInput } from "@/app/_components/shared"
-import { Button } from "@/app/_components/ui"
+import { Button, Input } from "@/app/_components/ui"
 import { DialogFooter } from "@/app/_components/ui/dialog"
-import Input from "@/app/_components/ui/input"
-import "./user-form.scss"
+import { cn } from "@/utils/lib/shadcn-ui"
 
 interface UserFormProps {
 	user?: {
@@ -56,9 +55,12 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 	}
 
 	return (
-		<form onSubmit={handleSubmit} className="user-form">
-			<div className="user-form__field">
-				<label htmlFor={nameId} className="user-form__label">
+		<form onSubmit={handleSubmit} className="space-y-4">
+			<div className="space-y-2">
+				<label
+					htmlFor={nameId}
+					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+				>
 					Name
 				</label>
 				<Input
@@ -71,15 +73,24 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 				/>
 			</div>
 
-			<div className="user-form__field">
-				<label htmlFor={roleId} className="user-form__label">
+			<div className="space-y-2">
+				<label
+					htmlFor={roleId}
+					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+				>
 					Role
 				</label>
 				<select
 					id={roleId}
 					value={role}
 					onChange={(e) => setRole(e.target.value as "admin" | "user")}
-					className="user-form__select"
+					className={cn(
+						"flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors",
+						"file:border-0 file:bg-transparent file:text-sm file:font-medium",
+						"placeholder:text-muted-foreground",
+						"focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+						"disabled:cursor-not-allowed disabled:opacity-50",
+					)}
 					required
 				>
 					<option value="user">Member</option>
@@ -87,8 +98,11 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 				</select>
 			</div>
 
-			<div className="user-form__field">
-				<label htmlFor={emailId} className="user-form__label">
+			<div className="space-y-2">
+				<label
+					htmlFor={emailId}
+					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+				>
 					Email
 				</label>
 				<Input
@@ -101,8 +115,11 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 				/>
 			</div>
 
-			<div className="user-form__field">
-				<label htmlFor={passwordId} className="user-form__label">
+			<div className="space-y-2">
+				<label
+					htmlFor={passwordId}
+					className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+				>
 					{isEditMode ? "New password (optional)" : "Password"}
 				</label>
 				<PasswordInput
@@ -115,11 +132,11 @@ export default function UserForm({ user, onSubmit, onCancel }: UserFormProps) {
 			</div>
 
 			<DialogFooter>
-				<Button type="button" variant="ghost" onClick={onCancel} disabled={isSubmitting}>
+				<Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
 					Cancel
 				</Button>
-				<Button type="submit" variant="primary" loading={isSubmitting}>
-					<SubmitIcon className="user-form__button__icon" size={16} />
+				<Button type="submit" loading={isSubmitting}>
+					<SubmitIcon className="mr-2 size-4" />
 					{submitLabel}
 				</Button>
 			</DialogFooter>

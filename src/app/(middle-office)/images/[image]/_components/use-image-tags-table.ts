@@ -133,7 +133,7 @@ export function useImageTagsTable({
 			const tagWithSize = repository.tagsWithSize?.find((t) => t.name === tag)
 			if (tagWithSize?.createdAt) {
 				const parsed = new Date(tagWithSize.createdAt)
-				if (!isNaN(parsed.getTime())) {
+				if (!Number.isNaN(parsed.getTime())) {
 					date = parsed
 				}
 			}

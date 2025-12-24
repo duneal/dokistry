@@ -3,7 +3,7 @@
 import { Pencil, Plus } from "lucide-react"
 import { useId } from "react"
 import PasswordInput from "@/app/_components/shared/password-input"
-import Button from "@/app/_components/ui/button"
+import { Button } from "@/app/_components/ui/button"
 import {
 	Dialog,
 	DialogContent,
@@ -12,10 +12,10 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/app/_components/ui/dialog"
-import Input from "@/app/_components/ui/input"
+import { Input } from "@/app/_components/ui/input"
+import { cn } from "@/utils/lib/shadcn-ui"
 import type { Registry } from "@/utils/types/registry.interface"
 import { useRegistryForm } from "./use-registry-form"
-import "./registry-form.scss"
 
 interface RegistryFormProps {
 	open: boolean
@@ -48,7 +48,7 @@ export function RegistryForm({
 
 	return (
 		<Dialog open={open} onOpenChange={handleDialogOpenChange}>
-			<DialogContent className={className}>
+			<DialogContent className={cn("sm:max-w-md", className)}>
 				<DialogHeader>
 					<DialogTitle>{isEditMode ? "Edit Registry" : "Add a Registry"}</DialogTitle>
 					<DialogDescription>
@@ -57,9 +57,12 @@ export function RegistryForm({
 							: "Add a new Docker registry to your list of available registries."}
 					</DialogDescription>
 				</DialogHeader>
-				<form onSubmit={handleSubmit} className="registry-add-form">
-					<div className="registry-add-form__field">
-						<label htmlFor={urlId} className="registry-add-form__label">
+				<form onSubmit={handleSubmit} className="space-y-4">
+					<div className="space-y-2">
+						<label
+							htmlFor={urlId}
+							className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						>
 							Registry URL
 						</label>
 						<Input
@@ -71,8 +74,11 @@ export function RegistryForm({
 							required
 						/>
 					</div>
-					<div className="registry-add-form__field">
-						<label htmlFor={usernameId} className="registry-add-form__label">
+					<div className="space-y-2">
+						<label
+							htmlFor={usernameId}
+							className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						>
 							Username
 						</label>
 						<Input
@@ -84,8 +90,11 @@ export function RegistryForm({
 							required
 						/>
 					</div>
-					<div className="registry-add-form__field">
-						<label htmlFor={passwordId} className="registry-add-form__label">
+					<div className="space-y-2">
+						<label
+							htmlFor={passwordId}
+							className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+						>
 							Password
 						</label>
 						<PasswordInput
@@ -99,20 +108,19 @@ export function RegistryForm({
 					<DialogFooter>
 						<Button
 							type="submit"
-							variant="primary"
 							loading={isSubmitting || isTestingConnection}
 							disabled={isTestingConnection}
 						>
 							{isTestingConnection ? (
-								<>Testing connection...</>
+								"Testing connection..."
 							) : isEditMode ? (
 								<>
-									<Pencil className="registry-add-form__button__icon" size={18} />
+									<Pencil className="mr-2 size-4" />
 									Update Registry
 								</>
 							) : (
 								<>
-									<Plus className="registry-add-form__button__icon" size={18} />
+									<Plus className="mr-2 size-4" />
 									Add Registry
 								</>
 							)}

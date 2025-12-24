@@ -9,7 +9,6 @@ import {
 	Separator,
 	SidebarTrigger,
 } from "@/app/_components/ui"
-import "./header.scss"
 
 export default function Header() {
 	const pathname = usePathname()
@@ -20,7 +19,7 @@ export default function Header() {
 			const imageName = path.replace("/images/", "")
 			return decodeURIComponent(imageName)
 		}
-		if (path === "/settings") return "Settings"
+		if (path === "/account") return "Account"
 		if (path === "/users") return "Users"
 		return path.charAt(1).toUpperCase() + path.slice(2)
 	}
@@ -28,16 +27,18 @@ export default function Header() {
 	const pageName = getPageName(pathname)
 
 	return (
-		<header className="header">
-			<SidebarTrigger />
-			<Separator orientation="vertical" />
-			<Breadcrumb>
-				<BreadcrumbList>
-					<BreadcrumbItem>
-						<BreadcrumbPage>{pageName}</BreadcrumbPage>
-					</BreadcrumbItem>
-				</BreadcrumbList>
-			</Breadcrumb>
+		<header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+			<div className="flex items-center gap-2 px-4">
+				<SidebarTrigger className="-ml-1" />
+				<Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
+				<Breadcrumb>
+					<BreadcrumbList>
+						<BreadcrumbItem>
+							<BreadcrumbPage>{pageName}</BreadcrumbPage>
+						</BreadcrumbItem>
+					</BreadcrumbList>
+				</Breadcrumb>
+			</div>
 		</header>
 	)
 }

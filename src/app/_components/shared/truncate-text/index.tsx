@@ -1,16 +1,21 @@
 "use client"
 
 import { Truncate } from "@re-dev/react-truncate"
-import clsx from "clsx"
 import type React from "react"
 import { useState } from "react"
-import "./truncate-text.scss"
+import { cn } from "@/utils/lib/shadcn-ui"
 
 interface TruncateTextProps {
 	children: React.ReactNode
 	lines: number
 	variant?: "default" | "compact" | "expanded"
 	className?: string
+}
+
+const variantStyles = {
+	default: "",
+	compact: "text-sm",
+	expanded: "text-base",
 }
 
 const TruncateText = ({
@@ -22,21 +27,17 @@ const TruncateText = ({
 }: TruncateTextProps) => {
 	const [isTruncated, setIsTruncated] = useState(false)
 
-	const containerClassName = clsx("truncateText", `truncateText--${variant}`, className)
-
 	return (
-		<div className={containerClassName}>
+		<div className={cn("relative overflow-hidden", variantStyles[variant], className)}>
 			<Truncate
 				lines={lines}
 				onTruncate={(truncated) => {
 					setIsTruncated(truncated)
 				}}
-				className="content"
+				className="[&_button]:text-primary [&_button]:font-medium [&_button]:hover:underline [&_button]:cursor-pointer"
 				{...props}
 			>
-				<div className="truncatedContent" style={{ display: isTruncated ? "block" : "none" }}>
-					{children}
-				</div>
+				<div className={cn(isTruncated ? "block" : "hidden")}>{children}</div>
 			</Truncate>
 		</div>
 	)

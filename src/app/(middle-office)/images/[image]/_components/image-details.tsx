@@ -6,7 +6,6 @@ import { useCallback } from "react"
 import { toast } from "sonner"
 import { Badge } from "@/app/_components/ui"
 import type { Repository } from "@/utils/types/registry.interface"
-import "./image-details.scss"
 import ImageTagsTable from "./image-tags-table"
 
 interface ImageDetailsProps {
@@ -16,7 +15,6 @@ interface ImageDetailsProps {
 	onRefresh?: () => void
 }
 
-// Utility function to format file sizes
 const formatFileSize = (bytes: number): string => {
 	if (bytes === 0) return "0 B"
 
@@ -28,7 +26,7 @@ const formatFileSize = (bytes: number): string => {
 }
 
 export default function ImageDetails({ repository, imageName, onRefresh }: ImageDetailsProps) {
-	const handleTagSelection = useCallback((selectedTags: string[]) => {}, [])
+	const handleTagSelection = useCallback((_selectedTags: string[]) => {}, [])
 
 	const handleDeleteTags = useCallback(
 		async (tags: string[]) => {
@@ -48,7 +46,6 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 
 				const result = await response.json()
 
-				// Show success message
 				if (result.summary.successful > 0) {
 					toast.success(`Successfully deleted ${result.summary.successful} tag(s)`, {
 						description: result.deleted.join(", "),
@@ -56,7 +53,6 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 					})
 				}
 
-				// Show error messages for failed deletions
 				if (result.summary.failed > 0) {
 					result.failed.forEach((failure: { tag: string; error: string }) => {
 						toast.error(`Failed to delete tag: ${failure.tag}`, {
@@ -66,7 +62,6 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 					})
 				}
 
-				// Show warning if some deletions failed
 				if (result.summary.failed > 0 && result.summary.successful > 0) {
 					toast.warning(`Partial deletion completed`, {
 						description: `${result.summary.successful} succeeded, ${result.summary.failed} failed`,
@@ -74,7 +69,6 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 					})
 				}
 
-				// Refresh the data after successful deletion
 				if (onRefresh && result.summary.successful > 0) {
 					onRefresh()
 				}
@@ -87,7 +81,7 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 					duration: 6000,
 				})
 
-				throw error // Re-throw to let the action bar handle the error state
+				throw error
 			}
 		},
 		[imageName, onRefresh],
@@ -98,18 +92,18 @@ export default function ImageDetails({ repository, imageName, onRefresh }: Image
 	}
 
 	return (
-		<div className="imageDetails">
-			<div className="imageDetails__header">
-				<div className="imageDetails__header__info">
-					<h1 className="imageDetails__title">{repository.name}</h1>
-					<div className="imageDetails__stats">
-						<Badge>
-							<Tag className="imageDetails__stats__icon" size={16} />
-							{repository.tags.length} Tag
+		<div className="space-y-6">
+			<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+				<div className="space-y-2">
+					<h1 className="text-3xl font-bold tracking-tight pb-1">{repository.name}</h1>
+					<div className="flex flex-wrap gap-2">
+						<Badge variant="secondary" size="md" className="flex items-center gap-1.5">
+							<Tag className="size-3.5" />
+							{repository.tags.length} tag
 							{repository.tags.length !== 1 ? "s" : ""}
 						</Badge>
-						<Badge>
-							<HardDrive className="imageDetails__stats__icon" size={16} />
+						<Badge variant="secondary" size="md" className="flex items-center gap-1.5">
+							<HardDrive className="size-3.5" />
 							{formatFileSize(repository.totalSize || 0)}
 						</Badge>
 					</div>

@@ -1,7 +1,6 @@
-import { Nunito_Sans } from "next/font/google"
+import { Inter } from "next/font/google"
 
-export const nunitoSans = Nunito_Sans({
+export const inter = Inter({
 	subsets: ["latin"],
-	variable: "--font-family-nunito-sans",
-	preload: true,
+	variable: "--font-inter",
 })

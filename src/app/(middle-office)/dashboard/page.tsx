@@ -1,8 +1,8 @@
 import { NoRegistryEmptyState } from "@/app/_components/shared"
 import { databaseRegistryService } from "@/features/registry"
 import type { Repository } from "@/utils/types/registry.interface"
-import DashboardChart from "./_components/dashboard-chart"
-import "./dashboard.scss"
+import DashboardBarChart from "./_components/dashboard-bar-chart"
+import DashboardStatsCards from "./_components/dashboard-stats-cards"
 
 export const dynamic = "force-dynamic"
 
@@ -11,7 +11,7 @@ export default async function Dashboard() {
 
 	if (!hasRegistry) {
 		return (
-			<main className="dashboard dashboard--empty">
+			<main className="flex flex-1 items-center justify-center p-4">
 				<NoRegistryEmptyState />
 			</main>
 		)
@@ -21,8 +21,15 @@ export default async function Dashboard() {
 	const repositories = data.repositories as Repository[]
 
 	return (
-		<main className="dashboard">
-			<DashboardChart repositories={repositories} />
+		<main className="flex flex-col gap-6 p-4">
+			<div className="space-y-2">
+				<h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+				<p className="text-muted-foreground">
+					Vue d&apos;ensemble de vos repositories Docker et statistiques de stockage
+				</p>
+			</div>
+			<DashboardStatsCards repositories={repositories} />
+			<DashboardBarChart repositories={repositories} />
 		</main>
 	)
 }

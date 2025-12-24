@@ -1,9 +1,13 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
-	"root": true,
+	"vcs": {
+		"clientKind": "git",
+		"enabled": true,
+		"useIgnoreFile": true
+	},
 	"files": {
-		"ignoreUnknown": true,
-		"includes": ["src/**/*", "next.config.ts", "tsconfig.json", "README.md"]
+		"ignoreUnknown": false,
+		"includes": ["src/**/*", "next.config.ts", "tsconfig.json"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -11,8 +15,27 @@
 		"lineWidth": 100
 	},
 	"linter": {
+		"domains": {
+			"next": "recommended",
+			"react": "recommended"
+		},
 		"enabled": true,
 		"rules": {
+			"a11y": {
+				"noStaticElementInteractions": "off",
+				"noSvgWithoutTitle": "off",
+				"useAriaPropsForRole": "off",
+				"useFocusableInteractive": "off",
+				"useKeyWithClickEvents": "off",
+				"useSemanticElements": "off",
+				"useValidAnchor": "off"
+			},
+			"complexity": {
+				"noImportantStyles": "off"
+			},
+			"correctness": {
+				"useUniqueElementIds": "off"
+			},
 			"recommended": true,
 			"security": {
 				"noDangerouslySetInnerHtml": "off"
@@ -21,19 +44,19 @@
 				"noNonNullAssertion": "off"
 			},
 			"suspicious": {
-				"noShadowRestrictedNames": "off"
-			},
-			"a11y": {
-				"noSvgWithoutTitle": "off",
-				"noStaticElementInteractions": "off",
-				"useKeyWithClickEvents": "off"
+				"noArrayIndexKey": "off",
+				"noShadowRestrictedNames": "off",
+				"noUnknownAtRules": "off"
 			}
 		}
 	},
-	"javascript": {
-		"formatter": {
-			"semicolons": "asNeeded"
-		}
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		},
+		"enabled": true
 	},
 	"css": {
 		"formatter": {
@@ -45,12 +68,10 @@
 			"enabled": true
 		}
 	},
-	"assist": {
-		"enabled": true,
-		"actions": {
-			"source": {
-				"organizeImports": "on"
-			}
+	"javascript": {
+		"formatter": {
+			"semicolons": "asNeeded"
 		}
-	}
+	},
+	"root": true
 }
