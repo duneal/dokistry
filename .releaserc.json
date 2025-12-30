@@ -16,39 +16,39 @@
           },
           {
             "type": "chore",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "refactor",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "docs",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "style",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "perf",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "test",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "build",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "ci",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "type": "revert",
-            "release": "minor"
+            "release": "patch"
           },
           {
             "breaking": true,
