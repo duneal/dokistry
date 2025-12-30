@@ -91,8 +91,8 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 						<SidebarGroupLabel>{t("images")}</SidebarGroupLabel>
 						<SidebarGroupContent>
 							<SidebarMenu>
-								{Array.from({ length: 3 }, (_, index) => `skeleton-${index}`).map((key) => (
-									<SidebarMenuSkeleton key={key} showIcon />
+								{Array.from({ length: 3 }, (_, index) => `skeleton-${index}`).map((key, index) => (
+									<SidebarMenuSkeleton key={key} showIcon index={index} />
 								))}
 							</SidebarMenu>
 						</SidebarGroupContent>
