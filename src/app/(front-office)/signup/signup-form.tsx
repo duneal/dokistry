@@ -84,9 +84,13 @@ export function SignupForm() {
 			</div>
 
 			{/* Presentation Section */}
-			<div className="hidden md:flex w-3/5 items-center justify-center bg-gradient-to-br from-primary via-primary/90 to-primary/70">
-				<h1 className="flex items-center gap-2 text-2xl font-bold text-primary-foreground">
-					<Logo width={110} height={110} className="[&_path]:fill-primary-foreground" />
+			<div className="hidden md:flex w-3/5 items-center justify-center bg-gradient-to-br from-primary via-primary/90 to-primary/70 dark:from-[#0e1825] dark:via-[#1b314b] dark:to-[#294970]">
+				<h1 className="flex items-center gap-2 text-2xl font-bold text-primary-foreground dark:text-primary">
+					<Logo
+						width={110}
+						height={110}
+						className="[&_path]:fill-primary-foreground dark:[&_path]:fill-primary"
+					/>
 				</h1>
 			</div>
 		</div>

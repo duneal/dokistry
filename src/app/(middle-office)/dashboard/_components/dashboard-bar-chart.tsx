@@ -47,7 +47,10 @@ export default function DashboardBarChart({ repositories }: DashboardBarChartPro
 	const chartConfig = {
 		size: {
 			label: t("size"),
-			color: "#447abb",
+			theme: {
+				light: "oklch(0.24 0.06 248.5)",
+				dark: "oklch(0.96 0.03 252)",
+			},
 		},
 	} satisfies ChartConfig
 
