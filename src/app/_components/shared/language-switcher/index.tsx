@@ -44,7 +44,7 @@ export function LanguageSwitcher() {
 					<span className="sr-only">Change language</span>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent align="end" className="w-48">
+			<DropdownMenuContent align="end" className="w-48 max-h-48 overflow-y-auto">
 				{locales.map((loc) => {
 					const FlagComponent = flags[loc as FlagCode]
 					return (
