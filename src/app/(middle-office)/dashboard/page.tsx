@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { NoRegistryEmptyState } from "@/app/_components/shared"
-import { databaseRegistryService } from "@/features/registry"
+import { defaultRegistryService } from "@/features/registry"
 import type { Repository } from "@/utils/types/registry.interface"
 import DashboardBarChart from "./_components/dashboard-bar-chart"
 import DashboardStatsCards from "./_components/dashboard-stats-cards"
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Dashboard() {
 	const t = await getTranslations("dashboard")
-	const hasRegistry = await databaseRegistryService.hasRegistry()
+	const hasRegistry = await defaultRegistryService.hasRegistry()
 
 	if (!hasRegistry) {
 		return (
@@ -28,7 +28,7 @@ export default async function Dashboard() {
 		)
 	}
 
-	const data = await databaseRegistryService.getRepositoriesWithTags()
+	const data = await defaultRegistryService.getRepositoriesWithTags()
 	const repositories = data.repositories as Repository[]
 
 	return (

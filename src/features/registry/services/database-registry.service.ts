@@ -8,8 +8,9 @@ import type {
 	Repository,
 	TagWithSize,
 } from "@/utils/types/registry.interface"
+import type { IRegistryService } from "./registry-service.interface"
 
-class DatabaseRegistryService {
+class DatabaseRegistryService implements IRegistryService {
 	private baseUrl: string | null = null
 	private auth: string | null = null
 

@@ -3,13 +3,13 @@ import type {
 	SidebarMenuData,
 	SidebarMenuItem,
 } from "@/utils/types/registry.interface"
-import { registryService } from "./registry.service"
+import { defaultRegistryService } from "./registry-service.factory"
 
 class SidebarMenuService {
 	async getSidebarMenuData(): Promise<SidebarMenuData> {
 		try {
 			// Get repositories with their tags
-			const { repositories } = await registryService.getRepositoriesWithTags()
+			const { repositories } = await defaultRegistryService.getRepositoriesWithTags()
 
 			// Create the Images menu item with dynamic data
 			const imagesMenuItem: SidebarMenuItem = {

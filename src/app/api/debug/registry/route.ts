@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server"
-import { databaseRegistryService } from "@/features/registry/services"
+import { defaultRegistryService } from "@/features/registry/services"
 
 export async function GET() {
 	try {
 		// Test registry connection
-		const connectionTest = await databaseRegistryService.testConnection()
+		const connectionTest = await defaultRegistryService.testConnection()
 
 		if (!connectionTest.success) {
 			return NextResponse.json(
@@ -17,10 +17,10 @@ export async function GET() {
 		}
 
 		// Get repositories
-		const repositories = await databaseRegistryService.getRepositories()
+		const repositories = await defaultRegistryService.getRepositories()
 
 		// Get repositories with tags
-		const repositoriesWithTags = await databaseRegistryService.getRepositoriesWithTags()
+		const repositoriesWithTags = await defaultRegistryService.getRepositoriesWithTags()
 
 		return NextResponse.json({
 			connectionTest,

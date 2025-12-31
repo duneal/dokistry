@@ -6,6 +6,8 @@ import { APIError } from "better-auth/api"
 import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
+import { isDemoMode } from "@/utils/constants/registry"
+import type { Registry } from "@/utils/types/registry.interface"
 import { auth, authAdmin } from "./auth"
 import { db } from "./db"
 import { registry, user } from "./db/schema"
@@ -14,6 +16,30 @@ function normalizeRegistryUrl(registryUrl: string) {
 	const trimmed = registryUrl.trim()
 	const normalized = trimmed.replace(/\/+$/, "")
 	return normalized || trimmed
+}
+
+function getDemoRegistries(userId: string): Registry[] {
+	const now = new Date().toISOString()
+	return [
+		{
+			id: "demo-registry-1",
+			url: "https://registry-1.example.com",
+			username: "demo-user-1",
+			password: "demo-password-1",
+			userId,
+			createdAt: now,
+			updatedAt: now,
+		},
+		{
+			id: "demo-registry-2",
+			url: "https://registry-2.example.com",
+			username: "demo-user-2",
+			password: "demo-password-2",
+			userId,
+			createdAt: now,
+			updatedAt: now,
+		},
+	]
 }
 
 export async function signInAction(formData: FormData) {
@@ -197,6 +223,11 @@ export async function getRegistriesList() {
 			redirect("/signin")
 		}
 
+		if (isDemoMode()) {
+			const demoRegistries = getDemoRegistries(session.user.id)
+			return { registries: demoRegistries }
+		}
+
 		const registries = await db.select().from(registry)
 
 		// Convert Date objects to strings for the interface
@@ -245,6 +276,15 @@ export async function updateSelectedRegistry(registryId: string) {
 		const session = await getSession()
 		if (!session?.user) {
 			redirect("/signin")
+		}
+
+		if (isDemoMode()) {
+			const demoRegistries = getDemoRegistries(session.user.id)
+			const isValidDemoRegistry = demoRegistries.some((reg) => reg.id === registryId)
+			if (!isValidDemoRegistry) {
+				return { error: "Registry not found" }
+			}
+			return { success: true }
 		}
 
 		// Verify the registry exists
@@ -327,6 +367,10 @@ export async function createRegistry(url: string, username: string, password: st
 		const session = await getSession()
 		if (!session?.user) {
 			redirect("/signin")
+		}
+
+		if (isDemoMode()) {
+			return { error: "Cannot create registries in demo mode" }
 		}
 
 		if (session.user.role !== "admin") {
@@ -470,6 +514,10 @@ export async function deleteRegistry(registryId: string) {
 			redirect("/signin")
 		}
 
+		if (isDemoMode()) {
+			return { error: "Cannot delete registries in demo mode" }
+		}
+
 		if (session.user.role !== "admin") {
 			return { error: "Unauthorized: Only admins can delete registries" }
 		}
@@ -531,6 +579,11 @@ export async function getCurrentSelectedRegistry() {
 		const session = await getSession()
 		if (!session?.user) {
 			redirect("/signin")
+		}
+
+		if (isDemoMode()) {
+			const demoRegistries = getDemoRegistries(session.user.id)
+			return { registry: demoRegistries[0] }
 		}
 
 		// Get user with selected registry

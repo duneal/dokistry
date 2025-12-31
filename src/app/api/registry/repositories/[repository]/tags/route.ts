@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { databaseRegistryService } from "@/features/registry/services"
+import { defaultRegistryService } from "@/features/registry/services"
 
 interface RouteParams {
 	params: Promise<{
@@ -17,7 +17,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 		}
 
 		// Check if registry is configured
-		const hasRegistry = await databaseRegistryService.hasRegistry()
+		const hasRegistry = await defaultRegistryService.hasRegistry()
 		if (!hasRegistry) {
 			return NextResponse.json(
 				{
@@ -31,7 +31,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 		}
 
 		// Get repository tags
-		const tags = await databaseRegistryService.getRepositoryTags(repository)
+		const tags = await defaultRegistryService.getRepositoryTags(repository)
 
 		if (!tags || tags.length === 0) {
 			return NextResponse.json({ error: "Repository not found or has no tags" }, { status: 404 })
@@ -41,7 +41,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
 		const tagsWithDigests = await Promise.all(
 			tags.map(async (tag: string) => {
 				try {
-					const digest = await databaseRegistryService.getManifestDigest(repository, tag)
+					const digest = await defaultRegistryService.getManifestDigest(repository, tag)
 					return { tag, digest }
 				} catch (error) {
 					console.warn(`Failed to get digest for tag ${tag}:`, error)
@@ -87,7 +87,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 		}
 
 		// Check if registry is configured
-		const hasRegistry = await databaseRegistryService.hasRegistry()
+		const hasRegistry = await defaultRegistryService.hasRegistry()
 		if (!hasRegistry) {
 			return NextResponse.json(
 				{
@@ -99,7 +99,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 		}
 
 		// Delete the tags
-		const result = await databaseRegistryService.deleteTags(repository, tags)
+		const result = await defaultRegistryService.deleteTags(repository, tags)
 
 		// Return success response with details
 		return NextResponse.json({

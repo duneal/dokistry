@@ -1,3 +1,6 @@
 export { databaseRegistryService } from "./database-registry.service"
+export { demoRegistryService } from "./demo-registry.service"
 export { registryService } from "./registry.service"
+export { defaultRegistryService, getRegistryService } from "./registry-service.factory"
+export type { IRegistryService } from "./registry-service.interface"
 export { sidebarMenuService } from "./sidebar-menu.service"

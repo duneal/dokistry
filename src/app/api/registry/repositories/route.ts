@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
-import { databaseRegistryService } from "@/features/registry/services"
+import { defaultRegistryService } from "@/features/registry/services"
 
 export async function GET() {
 	try {
-		const hasRegistry = await databaseRegistryService.hasRegistry()
+		const hasRegistry = await defaultRegistryService.hasRegistry()
 
 		if (!hasRegistry) {
 			return NextResponse.json(
@@ -16,7 +16,7 @@ export async function GET() {
 			)
 		}
 
-		const repositories = await databaseRegistryService.getRepositoriesWithTags()
+		const repositories = await defaultRegistryService.getRepositoriesWithTags()
 		return NextResponse.json(repositories)
 	} catch (error) {
 		console.error("Registry API error:", error)
