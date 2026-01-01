@@ -36,4 +36,4 @@ Check out the Contributing Guide for more information.
 
 ## 👀 Preview
 
-<img width="2400" height="1632" alt="dashboard" src="https://github.com/user-attachments/assets/a526f9dc-6bdf-4285-9708-d55839da2634" />
+<img width="4904" height="3283" alt="screenshot-dashboard" src="https://github.com/user-attachments/assets/45474515-966f-4905-81ad-fd282e4ee51c" />
