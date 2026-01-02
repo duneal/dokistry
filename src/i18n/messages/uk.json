@@ -31,7 +31,15 @@
 		"filter": "Фільтр",
 		"selectAll": "Вибрати все",
 		"selectRow": "Вибрати рядок",
-		"changeLanguage": "Змінити мову"
+		"changeLanguage": "Змінити мову",
+		"previous": "Попередня",
+		"next": "Наступна",
+		"of": "з",
+		"rowsSelected": "рядок(ів) вибрано",
+		"noResults": "Немає результатів.",
+		"goToPreviousPage": "Перейти на попередню сторінку",
+		"goToNextPage": "Перейти на наступну сторінку",
+		"morePages": "Більше сторінок"
 	},
 	"auth": {
 		"signIn": "Увійти",

@@ -31,7 +31,15 @@
 		"filter": "Filtrera",
 		"selectAll": "Välj alla",
 		"selectRow": "Välj rad",
-		"changeLanguage": "Ändra språk"
+		"changeLanguage": "Ändra språk",
+		"previous": "Föregående",
+		"next": "Nästa",
+		"of": "av",
+		"rowsSelected": "rad(er) valda",
+		"noResults": "Inga resultat.",
+		"goToPreviousPage": "Gå till föregående sida",
+		"goToNextPage": "Gå till nästa sida",
+		"morePages": "Fler sidor"
 	},
 	"auth": {
 		"signIn": "Logga in",

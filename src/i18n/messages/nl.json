@@ -31,7 +31,15 @@
 		"filter": "Filteren",
 		"selectAll": "Alles selecteren",
 		"selectRow": "Rij selecteren",
-		"changeLanguage": "Taal wijzigen"
+		"changeLanguage": "Taal wijzigen",
+		"previous": "Vorige",
+		"next": "Volgende",
+		"of": "van",
+		"rowsSelected": "rij(en) geselecteerd",
+		"noResults": "Geen resultaten.",
+		"goToPreviousPage": "Ga naar vorige pagina",
+		"goToNextPage": "Ga naar volgende pagina",
+		"morePages": "Meer pagina's"
 	},
 	"auth": {
 		"signIn": "Inloggen",

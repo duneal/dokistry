@@ -31,7 +31,15 @@
 		"filter": "Lọc",
 		"selectAll": "Chọn tất cả",
 		"selectRow": "Chọn hàng",
-		"changeLanguage": "Thay đổi ngôn ngữ"
+		"changeLanguage": "Thay đổi ngôn ngữ",
+		"previous": "Trước",
+		"next": "Tiếp",
+		"of": "của",
+		"rowsSelected": "hàng đã chọn",
+		"noResults": "Không có kết quả.",
+		"goToPreviousPage": "Đi đến trang trước",
+		"goToNextPage": "Đi đến trang tiếp theo",
+		"morePages": "Thêm trang"
 	},
 	"auth": {
 		"signIn": "Đăng nhập",

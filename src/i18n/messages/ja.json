@@ -31,7 +31,15 @@
 		"filter": "フィルター",
 		"selectAll": "すべて選択",
 		"selectRow": "行を選択",
-		"changeLanguage": "言語を変更"
+		"changeLanguage": "言語を変更",
+		"previous": "前へ",
+		"next": "次へ",
+		"of": "の",
+		"rowsSelected": "行が選択されました",
+		"noResults": "結果がありません。",
+		"goToPreviousPage": "前のページに移動",
+		"goToNextPage": "次のページに移動",
+		"morePages": "その他のページ"
 	},
 	"auth": {
 		"signIn": "サインイン",

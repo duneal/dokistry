@@ -31,7 +31,15 @@
 		"filter": "Filtrele",
 		"selectAll": "Tümünü seç",
 		"selectRow": "Satır seç",
-		"changeLanguage": "Dili değiştir"
+		"changeLanguage": "Dili değiştir",
+		"previous": "Önceki",
+		"next": "Sonraki",
+		"of": "/",
+		"rowsSelected": "satır seçildi",
+		"noResults": "Sonuç bulunamadı.",
+		"goToPreviousPage": "Önceki sayfaya git",
+		"goToNextPage": "Sonraki sayfaya git",
+		"morePages": "Daha fazla sayfa"
 	},
 	"auth": {
 		"signIn": "Giriş yap",

@@ -31,7 +31,15 @@
 		"filter": "Filter",
 		"selectAll": "Pilih semua",
 		"selectRow": "Pilih baris",
-		"changeLanguage": "Ubah bahasa"
+		"changeLanguage": "Ubah bahasa",
+		"previous": "Sebelumnya",
+		"next": "Selanjutnya",
+		"of": "dari",
+		"rowsSelected": "baris dipilih",
+		"noResults": "Tidak ada hasil.",
+		"goToPreviousPage": "Buka halaman sebelumnya",
+		"goToNextPage": "Buka halaman berikutnya",
+		"morePages": "Halaman lainnya"
 	},
 	"auth": {
 		"signIn": "Masuk",

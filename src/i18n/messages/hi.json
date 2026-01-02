@@ -31,7 +31,15 @@
 		"filter": "फ़िल्टर करें",
 		"selectAll": "सभी चुनें",
 		"selectRow": "पंक्ति चुनें",
-		"changeLanguage": "भाषा बदलें"
+		"changeLanguage": "भाषा बदलें",
+		"previous": "पिछला",
+		"next": "अगला",
+		"of": "का",
+		"rowsSelected": "पंक्ति(याँ) चुनी गई",
+		"noResults": "कोई परिणाम नहीं।",
+		"goToPreviousPage": "पिछले पृष्ठ पर जाएं",
+		"goToNextPage": "अगले पृष्ठ पर जाएं",
+		"morePages": "अधिक पृष्ठ"
 	},
 	"auth": {
 		"signIn": "साइन इन करें",

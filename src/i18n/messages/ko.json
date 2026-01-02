@@ -31,7 +31,15 @@
 		"filter": "필터",
 		"selectAll": "모두 선택",
 		"selectRow": "행 선택",
-		"changeLanguage": "언어 변경"
+		"changeLanguage": "언어 변경",
+		"previous": "이전",
+		"next": "다음",
+		"of": "중",
+		"rowsSelected": "행 선택됨",
+		"noResults": "결과가 없습니다.",
+		"goToPreviousPage": "이전 페이지로 이동",
+		"goToNextPage": "다음 페이지로 이동",
+		"morePages": "더 많은 페이지"
 	},
 	"auth": {
 		"signIn": "로그인",

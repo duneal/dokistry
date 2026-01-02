@@ -11,6 +11,7 @@ import {
 	type SortingState,
 	useReactTable,
 } from "@tanstack/react-table"
+import { useTranslations } from "next-intl"
 import * as React from "react"
 import { Button } from "@/app/_components/ui/button"
 import { cn } from "@/utils/lib/shadcn-ui"
@@ -126,14 +127,16 @@ function Table<TData, TValue>({
 	enablePagination = false,
 	enableSelection = false,
 	onSelectionChange,
-	emptyMessage = "No results.",
+	emptyMessage,
 	filterColumn,
 	filterValue,
 	defaultSorting = [],
 }: DataTableProps<TData, TValue>) {
+	const t = useTranslations("common")
 	const [sorting, setSorting] = React.useState<SortingState>(defaultSorting)
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
 	const [rowSelection, setRowSelection] = React.useState({})
+	const displayEmptyMessage = emptyMessage || t("noResults")
 
 	React.useEffect(() => {
 		if (filterColumn && filterValue !== undefined) {
@@ -207,7 +210,7 @@ function Table<TData, TValue>({
 						) : (
 							<TableRow>
 								<TableCell colSpan={columns.length} className="h-24 text-center">
-									{emptyMessage}
+									{displayEmptyMessage}
 								</TableCell>
 							</TableRow>
 						)}
@@ -219,8 +222,8 @@ function Table<TData, TValue>({
 				<div className="flex items-center justify-end space-x-2 py-4">
 					{enableSelection && (
 						<div className="text-muted-foreground flex-1 text-sm">
-							{table.getFilteredSelectedRowModel().rows.length} of{" "}
-							{table.getFilteredRowModel().rows.length} row(s) selected.
+							{table.getFilteredSelectedRowModel().rows.length} {t("of")}{" "}
+							{table.getFilteredRowModel().rows.length} {t("rowsSelected")}
 						</div>
 					)}
 					{enablePagination && (
@@ -230,14 +233,14 @@ function Table<TData, TValue>({
 								onClick={() => table.previousPage()}
 								disabled={!table.getCanPreviousPage()}
 							>
-								Previous
+								{t("previous")}
 							</Button>
 							<Button
 								variant="outline"
 								onClick={() => table.nextPage()}
 								disabled={!table.getCanNextPage()}
 							>
-								Next
+								{t("next")}
 							</Button>
 						</div>
 					)}

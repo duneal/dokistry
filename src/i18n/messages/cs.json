@@ -31,7 +31,15 @@
 		"filter": "Filtrovat",
 		"selectAll": "Vybrat vše",
 		"selectRow": "Vybrat řádek",
-		"changeLanguage": "Změnit jazyk"
+		"changeLanguage": "Změnit jazyk",
+		"previous": "Předchozí",
+		"next": "Další",
+		"of": "z",
+		"rowsSelected": "řádek(ů) vybráno",
+		"noResults": "Žádné výsledky.",
+		"goToPreviousPage": "Přejít na předchozí stránku",
+		"goToNextPage": "Přejít na další stránku",
+		"morePages": "Více stránek"
 	},
 	"auth": {
 		"signIn": "Přihlásit se",

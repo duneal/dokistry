@@ -31,7 +31,15 @@
 		"filter": "Filtruj",
 		"selectAll": "Zaznacz wszystko",
 		"selectRow": "Zaznacz wiersz",
-		"changeLanguage": "Zmień język"
+		"changeLanguage": "Zmień język",
+		"previous": "Poprzednia",
+		"next": "Następna",
+		"of": "z",
+		"rowsSelected": "wiersz(e) zaznaczono",
+		"noResults": "Brak wyników.",
+		"goToPreviousPage": "Przejdź do poprzedniej strony",
+		"goToNextPage": "Przejdź do następnej strony",
+		"morePages": "Więcej stron"
 	},
 	"auth": {
 		"signIn": "Zaloguj się",

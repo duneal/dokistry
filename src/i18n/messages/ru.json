@@ -31,7 +31,15 @@
 		"filter": "Фильтр",
 		"selectAll": "Выбрать все",
 		"selectRow": "Выбрать строку",
-		"changeLanguage": "Изменить язык"
+		"changeLanguage": "Изменить язык",
+		"previous": "Предыдущая",
+		"next": "Следующая",
+		"of": "из",
+		"rowsSelected": "строка(и) выбрано",
+		"noResults": "Нет результатов.",
+		"goToPreviousPage": "Перейти на предыдущую страницу",
+		"goToNextPage": "Перейти на следующую страницу",
+		"morePages": "Больше страниц"
 	},
 	"auth": {
 		"signIn": "Войти",

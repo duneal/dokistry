@@ -31,7 +31,15 @@
 		"filter": "Filtern",
 		"selectAll": "Alle auswählen",
 		"selectRow": "Zeile auswählen",
-		"changeLanguage": "Sprache ändern"
+		"changeLanguage": "Sprache ändern",
+		"previous": "Zurück",
+		"next": "Weiter",
+		"of": "von",
+		"rowsSelected": "Zeile(n) ausgewählt",
+		"noResults": "Keine Ergebnisse.",
+		"goToPreviousPage": "Zur vorherigen Seite gehen",
+		"goToNextPage": "Zur nächsten Seite gehen",
+		"morePages": "Weitere Seiten"
 	},
 	"auth": {
 		"signIn": "Anmelden",
