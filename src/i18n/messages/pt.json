@@ -232,15 +232,23 @@
 		"noResults": "Nenhum resultado encontrado",
 		"docker": {
 			"title": "Docker",
-			"description": "Registro implantado via Docker"
+			"description": "Executa o garbage collector no registro Docker. Para e reinicia automaticamente o container."
+		},
+		"docker-no-restart": {
+			"title": "Docker (sem reinício)",
+			"description": "Executa o garbage collector no registro Docker sem parar ou reiniciar o container.",
+			"warning": {
+				"title": "Aviso",
+				"description": "Certifique-se de parar o container do registro antes de executar este script. O script não para nem reinicia o container automaticamente."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Registro implantado via Dokploy"
+			"description": "Executa o garbage collector no registro implantado via Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Registro implantado via Coolify"
+			"description": "Executa o garbage collector no registro implantado via Coolify."
 		},
 		"status": {
 			"available": "Disponível",

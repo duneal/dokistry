@@ -232,15 +232,23 @@
 		"noResults": "Geen resultaten gevonden",
 		"docker": {
 			"title": "Docker",
-			"description": "Register geïmplementeerd via Docker"
+			"description": "Voert de garbage collector uit op het Docker-register. Stopt en herstart automatisch de container."
+		},
+		"docker-no-restart": {
+			"title": "Docker (zonder herstart)",
+			"description": "Voert de garbage collector uit op het Docker-register zonder de container te stoppen of te herstarten.",
+			"warning": {
+				"title": "Waarschuwing",
+				"description": "Zorg ervoor dat u de register-container stopt voordat u dit script uitvoert. Het script stopt of herstart de container niet automatisch."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Register geïmplementeerd via Dokploy"
+			"description": "Voert de garbage collector uit op het register geïmplementeerd via Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Register geïmplementeerd via Coolify"
+			"description": "Voert de garbage collector uit op het register geïmplementeerd via Coolify."
 		},
 		"status": {
 			"available": "Beschikbaar",

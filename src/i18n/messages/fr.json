@@ -226,15 +226,23 @@
 		"noResults": "Aucun résultat trouvé",
 		"docker": {
 			"title": "Docker",
-			"description": "Registre déployé via Docker"
+			"description": "Exécute le garbage collector sur le registre Docker. Arrête et redémarre automatiquement le container."
+		},
+		"docker-no-restart": {
+			"title": "Docker (sans redémarrage)",
+			"description": "Exécute le garbage collector sur le registre Docker sans arrêter ni redémarrer le container.",
+			"warning": {
+				"title": "Attention",
+				"description": "Assurez-vous d'arrêter le container registry avant d'exécuter ce script. Le script n'arrête ni ne redémarre le container automatiquement."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Registre déployé via Dokploy"
+			"description": "Exécute le garbage collector sur le registre déployé via Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Registre déployé via Coolify"
+			"description": "Exécute le garbage collector sur le registre déployé via Coolify."
 		},
 		"status": {
 			"available": "Disponible",

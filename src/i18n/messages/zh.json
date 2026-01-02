@@ -224,15 +224,23 @@
 		"noResults": "未找到结果",
 		"docker": {
 			"title": "Docker",
-			"description": "通过 Docker 部署的注册表"
+			"description": "在 Docker 注册表上运行垃圾收集器。自动停止并重启容器。"
+		},
+		"docker-no-restart": {
+			"title": "Docker（不重启）",
+			"description": "在不停止或重启容器的情况下在 Docker 注册表上运行垃圾收集器。",
+			"warning": {
+				"title": "警告",
+				"description": "在运行此脚本之前，请确保停止注册表容器。脚本不会自动停止或重启容器。"
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "通过 Dokploy 部署的注册表"
+			"description": "在通过 Dokploy 部署的注册表上运行垃圾收集器。"
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "通过 Coolify 部署的注册表"
+			"description": "在通过 Coolify 部署的注册表上运行垃圾收集器。"
 		},
 		"status": {
 			"available": "可用",

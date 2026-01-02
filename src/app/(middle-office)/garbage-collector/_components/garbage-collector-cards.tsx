@@ -1,6 +1,15 @@
 "use client"
 
-import { CheckCircle, Clock, Code, Copy, Loader2, Search, XCircle } from "lucide-react"
+import {
+	AlertTriangle,
+	CheckCircle,
+	Clock,
+	Code,
+	Copy,
+	Loader2,
+	Search,
+	XCircle,
+} from "lucide-react"
 import Image from "next/image"
 import { useTranslations } from "next-intl"
 import { useEffect, useMemo, useState } from "react"
@@ -24,7 +33,7 @@ import {
 import { Input } from "@/app/_components/ui/input"
 import { getScript } from "@/features/garbage-collector/actions/get-script"
 
-type DeploymentType = "docker" | "dokploy" | "coolify"
+type DeploymentType = "docker" | "docker-no-restart" | "dokploy" | "coolify"
 
 type DeploymentStatus = "available" | "notAvailable" | "notYetDeveloped" | "inDevelopment"
 
@@ -35,7 +44,8 @@ interface DeploymentConfig {
 
 const deploymentConfigs: DeploymentConfig[] = [
 	{ type: "docker", status: "available" },
-	{ type: "dokploy", status: "available" },
+	{ type: "docker-no-restart", status: "available" },
+	{ type: "dokploy", status: "notYetDeveloped" },
 	{ type: "coolify", status: "notYetDeveloped" },
 ]
 
@@ -83,6 +93,9 @@ const getStatusIcon = (status: DeploymentStatus) => {
 }
 
 const getLogoPath = (type: DeploymentType): string => {
+	if (type === "docker-no-restart") {
+		return `/images/registry-setup/docker.svg`
+	}
 	return `/images/registry-setup/${type}.svg`
 }
 
@@ -120,7 +133,7 @@ export function GarbageCollectorCards() {
 			return
 		}
 
-		if (selectedType === "docker") {
+		if (selectedType === "docker" || selectedType === "docker-no-restart") {
 			setIsLoadingScript(true)
 			setScriptError(null)
 			setScriptContent("")
@@ -155,7 +168,8 @@ export function GarbageCollectorCards() {
 		if (status !== "available") {
 			return
 		}
-		const script = type === "docker" ? scriptContent : getScriptLocal(type)
+		const script =
+			type === "docker" || type === "docker-no-restart" ? scriptContent : getScriptLocal(type)
 		if (!script) {
 			toast.error(t("scriptCopyFailed"))
 			return
@@ -244,37 +258,56 @@ export function GarbageCollectorCards() {
 					</DialogHeader>
 					{selectedType && (
 						<div className="space-y-4 flex flex-col min-h-0">
-							<div className="relative rounded-md bg-muted p-4 overflow-auto max-h-[40vh]">
-								{selectedType === "docker" && !isLoadingScript && !scriptError && (
-									<Button
-										variant="ghost"
-										size="icon"
-										className="absolute right-2 top-2 h-8 w-8 shrink-0 z-10"
-										onClick={() => {
-											const config = deploymentConfigs.find((c) => c.type === selectedType)
-											if (config) {
-												handleCopyScript(selectedType, config.status)
-											}
-										}}
-										title={t("copyScript")}
-									>
-										<Copy className="size-4" />
-									</Button>
-								)}
-								{selectedType === "docker" && isLoadingScript && (
-									<div className="flex items-center justify-center py-8">
-										<Loader2 className="size-6 animate-spin text-muted-foreground" />
+							{selectedType === "docker-no-restart" && (
+								<div className="flex items-start gap-3 rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4">
+									<AlertTriangle className="size-5 shrink-0 text-yellow-600 dark:text-yellow-500 mt-0.5" />
+									<div className="flex-1 space-y-1">
+										<p className="text-sm font-medium text-yellow-900 dark:text-yellow-200">
+											{t("docker-no-restart.warning.title")}
+										</p>
+										<p className="text-sm text-yellow-800 dark:text-yellow-300">
+											{t("docker-no-restart.warning.description")}
+										</p>
 									</div>
-								)}
-								{selectedType === "docker" && scriptError && (
-									<div className="py-8 text-center text-destructive">{scriptError}</div>
-								)}
-								{selectedType === "docker" && !isLoadingScript && !scriptError && (
-									<pre className="overflow-x-auto text-sm">
-										<code>{scriptContent}</code>
-									</pre>
-								)}
-								{selectedType !== "docker" && (
+								</div>
+							)}
+							<div className="relative rounded-md bg-muted p-4 overflow-auto max-h-[40vh]">
+								{(selectedType === "docker" || selectedType === "docker-no-restart") &&
+									!isLoadingScript &&
+									!scriptError && (
+										<Button
+											variant="ghost"
+											size="icon"
+											className="absolute right-2 top-2 h-8 w-8 shrink-0 z-10"
+											onClick={() => {
+												const config = deploymentConfigs.find((c) => c.type === selectedType)
+												if (config) {
+													handleCopyScript(selectedType, config.status)
+												}
+											}}
+											title={t("copyScript")}
+										>
+											<Copy className="size-4" />
+										</Button>
+									)}
+								{(selectedType === "docker" || selectedType === "docker-no-restart") &&
+									isLoadingScript && (
+										<div className="flex items-center justify-center py-8">
+											<Loader2 className="size-6 animate-spin text-muted-foreground" />
+										</div>
+									)}
+								{(selectedType === "docker" || selectedType === "docker-no-restart") &&
+									scriptError && (
+										<div className="py-8 text-center text-destructive">{scriptError}</div>
+									)}
+								{(selectedType === "docker" || selectedType === "docker-no-restart") &&
+									!isLoadingScript &&
+									!scriptError && (
+										<pre className="overflow-x-auto text-sm">
+											<code>{scriptContent}</code>
+										</pre>
+									)}
+								{selectedType !== "docker" && selectedType !== "docker-no-restart" && (
 									<pre className="overflow-x-auto text-sm">
 										<code>{getScriptLocal(selectedType)}</code>
 									</pre>

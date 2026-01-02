@@ -232,15 +232,23 @@
 		"noResults": "Inga resultat hittades",
 		"docker": {
 			"title": "Docker",
-			"description": "Register distribuerat via Docker"
+			"description": "Kör garbage collector på Docker-registret. Stoppar och startar om containern automatiskt."
+		},
+		"docker-no-restart": {
+			"title": "Docker (utan omstart)",
+			"description": "Kör garbage collector på Docker-registret utan att stoppa eller starta om containern.",
+			"warning": {
+				"title": "Varning",
+				"description": "Se till att stoppa registercontainern innan du kör detta skript. Skriptet stoppar eller startar inte om containern automatiskt."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Register distribuerat via Dokploy"
+			"description": "Kör garbage collector på registret distribuerat via Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Register distribuerat via Coolify"
+			"description": "Kör garbage collector på registret distribuerat via Coolify."
 		},
 		"status": {
 			"available": "Tillgänglig",

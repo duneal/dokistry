@@ -232,15 +232,23 @@
 		"noResults": "結果が見つかりませんでした",
 		"docker": {
 			"title": "Docker",
-			"description": "Docker経由でデプロイされたレジストリ"
+			"description": "Dockerレジストリでガベージコレクターを実行します。コンテナを自動的に停止して再起動します。"
+		},
+		"docker-no-restart": {
+			"title": "Docker（再起動なし）",
+			"description": "コンテナを停止または再起動せずにDockerレジストリでガベージコレクターを実行します。",
+			"warning": {
+				"title": "警告",
+				"description": "このスクリプトを実行する前に、レジストリコンテナを停止してください。スクリプトはコンテナを自動的に停止または再起動しません。"
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Dokploy経由でデプロイされたレジストリ"
+			"description": "Dokploy経由でデプロイされたレジストリでガベージコレクターを実行します。"
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Coolify経由でデプロイされたレジストリ"
+			"description": "Coolify経由でデプロイされたレジストリでガベージコレクターを実行します。"
 		},
 		"status": {
 			"available": "利用可能",

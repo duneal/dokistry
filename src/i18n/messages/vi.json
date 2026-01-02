@@ -232,15 +232,23 @@
 		"noResults": "Không tìm thấy kết quả",
 		"docker": {
 			"title": "Docker",
-			"description": "Registry được triển khai qua Docker"
+			"description": "Chạy garbage collector trên registry Docker. Tự động dừng và khởi động lại container."
+		},
+		"docker-no-restart": {
+			"title": "Docker (không khởi động lại)",
+			"description": "Chạy garbage collector trên registry Docker mà không dừng hoặc khởi động lại container.",
+			"warning": {
+				"title": "Cảnh báo",
+				"description": "Đảm bảo dừng container registry trước khi chạy script này. Script không tự động dừng hoặc khởi động lại container."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Registry được triển khai qua Dokploy"
+			"description": "Chạy garbage collector trên registry được triển khai qua Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Registry được triển khai qua Coolify"
+			"description": "Chạy garbage collector trên registry được triển khai qua Coolify."
 		},
 		"status": {
 			"available": "Có sẵn",

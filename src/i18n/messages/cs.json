@@ -232,15 +232,23 @@
 		"noResults": "Nebyly nalezeny žádné výsledky",
 		"docker": {
 			"title": "Docker",
-			"description": "Registr nasazený přes Docker"
+			"description": "Spustí garbage collector na Docker registru. Automaticky zastaví a restartuje kontejner."
+		},
+		"docker-no-restart": {
+			"title": "Docker (bez restartu)",
+			"description": "Spustí garbage collector na Docker registru bez zastavení nebo restartování kontejneru.",
+			"warning": {
+				"title": "Varování",
+				"description": "Před spuštěním tohoto skriptu se ujistěte, že jste zastavili kontejner registru. Skript automaticky nezastaví ani nerestartuje kontejner."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Registr nasazený přes Dokploy"
+			"description": "Spustí garbage collector na registru nasazeném přes Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Registr nasazený přes Coolify"
+			"description": "Spustí garbage collector na registru nasazeném přes Coolify."
 		},
 		"status": {
 			"available": "Dostupné",

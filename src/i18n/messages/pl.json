@@ -232,15 +232,23 @@
 		"noResults": "Nie znaleziono wyników",
 		"docker": {
 			"title": "Docker",
-			"description": "Rejestr wdrożony przez Docker"
+			"description": "Uruchamia garbage collector w rejestrze Docker. Automatycznie zatrzymuje i ponownie uruchamia kontener."
+		},
+		"docker-no-restart": {
+			"title": "Docker (bez ponownego uruchomienia)",
+			"description": "Uruchamia garbage collector w rejestrze Docker bez zatrzymywania lub ponownego uruchamiania kontenera.",
+			"warning": {
+				"title": "Ostrzeżenie",
+				"description": "Upewnij się, że zatrzymałeś kontener rejestru przed uruchomieniem tego skryptu. Skrypt nie zatrzymuje ani nie ponownie uruchamia kontenera automatycznie."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Rejestr wdrożony przez Dokploy"
+			"description": "Uruchamia garbage collector w rejestrze wdrożonym przez Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Rejestr wdrożony przez Coolify"
+			"description": "Uruchamia garbage collector w rejestrze wdrożonym przez Coolify."
 		},
 		"status": {
 			"available": "Dostępny",

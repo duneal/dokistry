@@ -232,15 +232,23 @@
 		"noResults": "결과를 찾을 수 없습니다",
 		"docker": {
 			"title": "Docker",
-			"description": "Docker를 통해 배포된 레지스트리"
+			"description": "Docker 레지스트리에서 가비지 수집기를 실행합니다. 컨테이너를 자동으로 중지하고 다시 시작합니다."
+		},
+		"docker-no-restart": {
+			"title": "Docker (재시작 없음)",
+			"description": "컨테이너를 중지하거나 재시작하지 않고 Docker 레지스트리에서 가비지 수집기를 실행합니다.",
+			"warning": {
+				"title": "경고",
+				"description": "이 스크립트를 실행하기 전에 레지스트리 컨테이너를 중지했는지 확인하세요. 스크립트는 컨테이너를 자동으로 중지하거나 재시작하지 않습니다."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Dokploy를 통해 배포된 레지스트리"
+			"description": "Dokploy를 통해 배포된 레지스트리에서 가비지 수집기를 실행합니다."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Coolify를 통해 배포된 레지스트리"
+			"description": "Coolify를 통해 배포된 레지스트리에서 가비지 수집기를 실행합니다."
 		},
 		"status": {
 			"available": "사용 가능",

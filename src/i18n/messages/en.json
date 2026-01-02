@@ -232,15 +232,23 @@
 		"noResults": "No results found",
 		"docker": {
 			"title": "Docker",
-			"description": "Registry deployed via Docker"
+			"description": "Runs the garbage collector on the Docker registry. Automatically stops and restarts the container."
+		},
+		"docker-no-restart": {
+			"title": "Docker (no restart)",
+			"description": "Runs the garbage collector on the Docker registry without stopping or restarting the container.",
+			"warning": {
+				"title": "Warning",
+				"description": "Make sure to stop the registry container before running this script. The script does not stop or restart the container automatically."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Registry deployed via Dokploy"
+			"description": "Runs the garbage collector on the registry deployed via Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Registry deployed via Coolify"
+			"description": "Runs the garbage collector on the registry deployed via Coolify."
 		},
 		"status": {
 			"available": "Available",

@@ -232,15 +232,23 @@
 		"noResults": "Tidak ada hasil ditemukan",
 		"docker": {
 			"title": "Docker",
-			"description": "Registri dikerahkan melalui Docker"
+			"description": "Menjalankan garbage collector pada registri Docker. Secara otomatis menghentikan dan me-restart container."
+		},
+		"docker-no-restart": {
+			"title": "Docker (tanpa restart)",
+			"description": "Menjalankan garbage collector pada registri Docker tanpa menghentikan atau me-restart container.",
+			"warning": {
+				"title": "Peringatan",
+				"description": "Pastikan untuk menghentikan container registri sebelum menjalankan skrip ini. Skrip tidak menghentikan atau me-restart container secara otomatis."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Registri dikerahkan melalui Dokploy"
+			"description": "Menjalankan garbage collector pada registri yang dikerahkan melalui Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Registri dikerahkan melalui Coolify"
+			"description": "Menjalankan garbage collector pada registri yang dikerahkan melalui Coolify."
 		},
 		"status": {
 			"available": "Tersedia",

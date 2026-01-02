@@ -224,15 +224,23 @@
 		"noResults": "لم يتم العثور على نتائج",
 		"docker": {
 			"title": "Docker",
-			"description": "السجل الموزع عبر Docker"
+			"description": "تشغيل جامع القمامة على سجل Docker. إيقاف وإعادة تشغيل الحاوية تلقائيًا."
+		},
+		"docker-no-restart": {
+			"title": "Docker (بدون إعادة التشغيل)",
+			"description": "تشغيل جامع القمامة على سجل Docker دون إيقاف أو إعادة تشغيل الحاوية.",
+			"warning": {
+				"title": "تحذير",
+				"description": "تأكد من إيقاف حاوية السجل قبل تشغيل هذا البرنامج النصي. البرنامج النصي لا يوقف أو يعيد تشغيل الحاوية تلقائيًا."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "السجل الموزع عبر Dokploy"
+			"description": "تشغيل جامع القمامة على السجل الموزع عبر Dokploy."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "السجل الموزع عبر Coolify"
+			"description": "تشغيل جامع القمامة على السجل الموزع عبر Coolify."
 		},
 		"status": {
 			"available": "متاح",

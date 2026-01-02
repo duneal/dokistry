@@ -232,15 +232,23 @@
 		"noResults": "Keine Ergebnisse gefunden",
 		"docker": {
 			"title": "Docker",
-			"description": "Registrierung über Docker bereitgestellt"
+			"description": "Führt den Garbage Collector auf der Docker-Registrierung aus. Stoppt und startet den Container automatisch neu."
+		},
+		"docker-no-restart": {
+			"title": "Docker (ohne Neustart)",
+			"description": "Führt den Garbage Collector auf der Docker-Registrierung aus, ohne den Container zu stoppen oder neu zu starten.",
+			"warning": {
+				"title": "Warnung",
+				"description": "Stellen Sie sicher, dass Sie den Registry-Container vor dem Ausführen dieses Skripts stoppen. Das Skript stoppt oder startet den Container nicht automatisch neu."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Registrierung über Dokploy bereitgestellt"
+			"description": "Führt den Garbage Collector auf der über Dokploy bereitgestellten Registrierung aus."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Registrierung über Coolify bereitgestellt"
+			"description": "Führt den Garbage Collector auf der über Coolify bereitgestellten Registrierung aus."
 		},
 		"status": {
 			"available": "Verfügbar",

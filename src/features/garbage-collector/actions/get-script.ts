@@ -5,7 +5,7 @@ import { join } from "path"
 
 export async function getScript(type: string): Promise<{ content: string } | { error: string }> {
 	try {
-		if (type !== "docker" && type !== "dokploy") {
+		if (type !== "docker" && type !== "docker-no-restart") {
 			return { error: "Script type not available" }
 		}
 

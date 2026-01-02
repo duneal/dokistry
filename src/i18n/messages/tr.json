@@ -232,15 +232,23 @@
 		"noResults": "Sonuç bulunamadı",
 		"docker": {
 			"title": "Docker",
-			"description": "Docker aracılığıyla dağıtılan kayıt defteri"
+			"description": "Docker kayıt defterinde garbage collector'ı çalıştırır. Konteyneri otomatik olarak durdurur ve yeniden başlatır."
+		},
+		"docker-no-restart": {
+			"title": "Docker (yeniden başlatma olmadan)",
+			"description": "Konteyneri durdurmadan veya yeniden başlatmadan Docker kayıt defterinde garbage collector'ı çalıştırır.",
+			"warning": {
+				"title": "Uyarı",
+				"description": "Bu betiği çalıştırmadan önce kayıt defteri konteynerini durdurduğunuzdan emin olun. Betik konteyneri otomatik olarak durdurmaz veya yeniden başlatmaz."
+			}
 		},
 		"dokploy": {
 			"title": "Dokploy",
-			"description": "Dokploy aracılığıyla dağıtılan kayıt defteri"
+			"description": "Dokploy aracılığıyla dağıtılan kayıt defterinde garbage collector'ı çalıştırır."
 		},
 		"coolify": {
 			"title": "Coolify",
-			"description": "Coolify aracılığıyla dağıtılan kayıt defteri"
+			"description": "Coolify aracılığıyla dağıtılan kayıt defterinde garbage collector'ı çalıştırır."
 		},
 		"status": {
 			"available": "Mevcut",
