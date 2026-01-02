@@ -2,7 +2,15 @@
 
 import type { ColumnDef } from "@tanstack/react-table"
 import { format, formatDistanceToNow } from "date-fns"
-import { ArrowUpDown, CalendarDays, HardDrive, MoreHorizontal, Tag, Trash2 } from "lucide-react"
+import {
+	ArrowUpDown,
+	CalendarDays,
+	HardDrive,
+	MoreHorizontal,
+	Search,
+	Tag,
+	Trash2,
+} from "lucide-react"
 import { useTranslations } from "next-intl"
 import * as React from "react"
 import {
@@ -220,12 +228,15 @@ export default function ImageTagsTable({
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center py-4 m-0">
-				<Input
-					placeholder={t("filterTags")}
-					value={filterValue}
-					onChange={(event) => setFilterValue(event.target.value)}
-					className="max-w-sm"
-				/>
+				<div className="relative max-w-sm">
+					<Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+					<Input
+						placeholder={t("filterTags")}
+						value={filterValue}
+						onChange={(event) => setFilterValue(event.target.value)}
+						className="pl-9"
+					/>
+				</div>
 			</div>
 			<div className="relative">
 				<TagsActionBar

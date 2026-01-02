@@ -66,7 +66,9 @@
 		"unexpectedError": "Ett oväntat fel uppstod"
 	},
 	"sidebar": {
+		"general": "Allmänt",
 		"dashboard": "Instrumentpanel",
+		"garbageCollector": "Garbage Collector",
 		"images": "Bilder",
 		"failedToLoad": "Kunde inte ladda bilder",
 		"retry": "Försök igen"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Bilder",
 			"description": "Visa och hantera Docker-bilder"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Hämta skript för att automatiskt köra garbage collector från A till Ö baserat på din konfiguration",
+		"searchPlaceholder": "Sök efter distributionstyper...",
+		"copyScript": "Kopiera skript",
+		"scriptCopied": "Skript kopierat till urklipp",
+		"scriptCopyFailed": "Kunde inte kopiera skript",
+		"noResults": "Inga resultat hittades",
+		"docker": {
+			"title": "Docker",
+			"description": "Register distribuerat via Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Register distribuerat via Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Register distribuerat via Coolify"
+		},
+		"status": {
+			"available": "Tillgänglig",
+			"notAvailable": "Inte tillgänglig",
+			"notYetDeveloped": "Ännu inte utvecklad",
+			"inDevelopment": "Under utveckling"
+		},
+		"scriptDialog": {
+			"title": "Garbage Collector Skript",
+			"description": "Kopiera och kör detta skript för att automatiskt köra garbage collector"
 		}
 	},
 	"images": {

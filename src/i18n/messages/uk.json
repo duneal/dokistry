@@ -66,7 +66,9 @@
 		"unexpectedError": "Сталася неочікувана помилка"
 	},
 	"sidebar": {
+		"general": "Загальне",
 		"dashboard": "Панель керування",
+		"garbageCollector": "Garbage Collector",
 		"images": "Зображення",
 		"failedToLoad": "Не вдалося завантажити зображення",
 		"retry": "Повторити"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Зображення",
 			"description": "Переглядайте та керуйте зображеннями Docker"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Отримайте скрипти для автоматичного запуску збирача сміття від А до Я на основі вашої конфігурації",
+		"searchPlaceholder": "Пошук типів розгортання...",
+		"copyScript": "Копіювати скрипт",
+		"scriptCopied": "Скрипт скопійовано в буфер обміну",
+		"scriptCopyFailed": "Не вдалося скопіювати скрипт",
+		"noResults": "Результатів не знайдено",
+		"docker": {
+			"title": "Docker",
+			"description": "Реєстр розгорнуто через Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Реєстр розгорнуто через Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Реєстр розгорнуто через Coolify"
+		},
+		"status": {
+			"available": "Доступно",
+			"notAvailable": "Недоступно",
+			"notYetDeveloped": "Ще не розроблено",
+			"inDevelopment": "В розробці"
+		},
+		"scriptDialog": {
+			"title": "Скрипт Garbage Collector",
+			"description": "Скопіюйте та запустіть цей скрипт, щоб автоматично запустити збирач сміття"
 		}
 	},
 	"images": {

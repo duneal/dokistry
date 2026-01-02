@@ -1,4 +1,4 @@
-import { AlertCircle, Dock, LayoutDashboard, Package } from "lucide-react"
+import { AlertCircle, BrushCleaning, Dock, LayoutDashboard, Package } from "lucide-react"
 
 interface SidebarIconProps {
 	iconName: string
@@ -28,6 +28,8 @@ export function SidebarIcon({
 			return <Dock {...iconProps} />
 		case "AlertCircle":
 			return <AlertCircle {...iconProps} />
+		case "BrushCleaning":
+			return <BrushCleaning {...iconProps} />
 		default:
 			return <Package {...iconProps} />
 	}

@@ -66,7 +66,9 @@
 		"unexpectedError": "Beklenmeyen bir hata oluştu"
 	},
 	"sidebar": {
+		"general": "Genel",
 		"dashboard": "Kontrol Paneli",
+		"garbageCollector": "Garbage Collector",
 		"images": "Görüntüler",
 		"failedToLoad": "Görüntüler yüklenemedi",
 		"retry": "Yeniden Dene"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Görüntüler",
 			"description": "Docker görüntülerini görüntüleyin ve yönetin"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Yapılandırmanıza göre garbage collector'ı baştan sona otomatik olarak çalıştırmak için betikleri alın",
+		"searchPlaceholder": "Dağıtım türlerini ara...",
+		"copyScript": "Betiği kopyala",
+		"scriptCopied": "Betik panoya kopyalandı",
+		"scriptCopyFailed": "Betik kopyalanamadı",
+		"noResults": "Sonuç bulunamadı",
+		"docker": {
+			"title": "Docker",
+			"description": "Docker aracılığıyla dağıtılan kayıt defteri"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Dokploy aracılığıyla dağıtılan kayıt defteri"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Coolify aracılığıyla dağıtılan kayıt defteri"
+		},
+		"status": {
+			"available": "Mevcut",
+			"notAvailable": "Mevcut değil",
+			"notYetDeveloped": "Henüz geliştirilmedi",
+			"inDevelopment": "Geliştirme aşamasında"
+		},
+		"scriptDialog": {
+			"title": "Garbage Collector Betiği",
+			"description": "Garbage collector'ı otomatik olarak çalıştırmak için bu betiği kopyalayın ve çalıştırın"
 		}
 	},
 	"images": {

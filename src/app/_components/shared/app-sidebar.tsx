@@ -33,7 +33,6 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 	const { isMobile, state, setOpenMobile } = useSidebar()
 	const iconSize = state === "collapsed" ? 20 : 18
 	const t = useTranslations("sidebar")
-	const tCommon = useTranslations("common")
 
 	const handleMenuItemClick = useCallback(() => {
 		if (isMobile) {
@@ -67,7 +66,7 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 			</SidebarHeader>
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>{t("dashboard")}</SidebarGroupLabel>
+					<SidebarGroupLabel>{t("general")}</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							<SidebarMenuItem>
@@ -79,6 +78,18 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
 									<a href="/dashboard">
 										<SidebarIcon iconName="LayoutDashboard" size={iconSize} />
 										<span>{t("dashboard")}</span>
+									</a>
+								</SidebarMenuButton>
+							</SidebarMenuItem>
+							<SidebarMenuItem>
+								<SidebarMenuButton
+									asChild
+									isActive={isActiveUrl("/garbage-collector")}
+									onClick={handleMenuItemClick}
+								>
+									<a href="/garbage-collector">
+										<SidebarIcon iconName="BrushCleaning" size={iconSize} />
+										<span>{t("garbageCollector")}</span>
 									</a>
 								</SidebarMenuButton>
 							</SidebarMenuItem>

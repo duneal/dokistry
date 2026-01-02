@@ -66,7 +66,9 @@
 		"unexpectedError": "Ocorreu um erro inesperado"
 	},
 	"sidebar": {
+		"general": "Geral",
 		"dashboard": "Painel",
+		"garbageCollector": "Garbage Collector",
 		"images": "Imagens",
 		"failedToLoad": "Falha ao carregar imagens",
 		"retry": "Tentar novamente"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Imagens",
 			"description": "Visualize e gerencie imagens Docker"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Recupere scripts para executar automaticamente o garbage collector do início ao fim com base na sua configuração",
+		"searchPlaceholder": "Pesquisar tipos de implantação...",
+		"copyScript": "Copiar script",
+		"scriptCopied": "Script copiado para a área de transferência",
+		"scriptCopyFailed": "Falha ao copiar script",
+		"noResults": "Nenhum resultado encontrado",
+		"docker": {
+			"title": "Docker",
+			"description": "Registro implantado via Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Registro implantado via Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Registro implantado via Coolify"
+		},
+		"status": {
+			"available": "Disponível",
+			"notAvailable": "Não disponível",
+			"notYetDeveloped": "Ainda não desenvolvido",
+			"inDevelopment": "Em desenvolvimento"
+		},
+		"scriptDialog": {
+			"title": "Script Garbage Collector",
+			"description": "Copie e execute este script para executar automaticamente o garbage collector"
 		}
 	},
 	"images": {

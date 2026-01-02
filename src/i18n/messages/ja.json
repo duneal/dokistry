@@ -66,7 +66,9 @@
 		"unexpectedError": "予期しないエラーが発生しました"
 	},
 	"sidebar": {
+		"general": "一般",
 		"dashboard": "ダッシュボード",
+		"garbageCollector": "Garbage Collector",
 		"images": "イメージ",
 		"failedToLoad": "イメージの読み込みに失敗しました",
 		"retry": "再試行"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "イメージ",
 			"description": "Dockerイメージを表示および管理"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "設定に基づいてガベージコレクターを最初から最後まで自動的に実行するためのスクリプトを取得",
+		"searchPlaceholder": "デプロイメントタイプを検索...",
+		"copyScript": "スクリプトをコピー",
+		"scriptCopied": "スクリプトがクリップボードにコピーされました",
+		"scriptCopyFailed": "スクリプトのコピーに失敗しました",
+		"noResults": "結果が見つかりませんでした",
+		"docker": {
+			"title": "Docker",
+			"description": "Docker経由でデプロイされたレジストリ"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Dokploy経由でデプロイされたレジストリ"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Coolify経由でデプロイされたレジストリ"
+		},
+		"status": {
+			"available": "利用可能",
+			"notAvailable": "利用不可",
+			"notYetDeveloped": "まだ開発されていません",
+			"inDevelopment": "開発中"
+		},
+		"scriptDialog": {
+			"title": "Garbage Collectorスクリプト",
+			"description": "このスクリプトをコピーして実行し、ガベージコレクターを自動的に実行します"
 		}
 	},
 	"images": {

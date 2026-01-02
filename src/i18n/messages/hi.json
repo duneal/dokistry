@@ -66,7 +66,9 @@
 		"unexpectedError": "एक अप्रत्याशित त्रुटि हुई"
 	},
 	"sidebar": {
+		"general": "सामान्य",
 		"dashboard": "डैशबोर्ड",
+		"garbageCollector": "Garbage Collector",
 		"images": "छवियाँ",
 		"failedToLoad": "छवियाँ लोड करने में विफल",
 		"retry": "पुनः प्रयास करें"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "छवियाँ",
 			"description": "Docker छवियाँ देखें और प्रबंधित करें"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "आपकी कॉन्फ़िगरेशन के आधार पर शुरुआत से अंत तक गार्बेज कलेक्टर को स्वचालित रूप से चलाने के लिए स्क्रिप्ट पुनर्प्राप्त करें",
+		"searchPlaceholder": "परिनियोजन प्रकार खोजें...",
+		"copyScript": "स्क्रिप्ट कॉपी करें",
+		"scriptCopied": "स्क्रिप्ट क्लिपबोर्ड पर कॉपी की गई",
+		"scriptCopyFailed": "स्क्रिप्ट कॉपी करने में विफल",
+		"noResults": "कोई परिणाम नहीं मिला",
+		"docker": {
+			"title": "Docker",
+			"description": "Docker के माध्यम से तैनात रजिस्ट्री"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Dokploy के माध्यम से तैनात रजिस्ट्री"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Coolify के माध्यम से तैनात रजिस्ट्री"
+		},
+		"status": {
+			"available": "उपलब्ध",
+			"notAvailable": "उपलब्ध नहीं",
+			"notYetDeveloped": "अभी तक विकसित नहीं",
+			"inDevelopment": "विकास में"
+		},
+		"scriptDialog": {
+			"title": "Garbage Collector स्क्रिप्ट",
+			"description": "गार्बेज कलेक्टर को स्वचालित रूप से चलाने के लिए इस स्क्रिप्ट को कॉपी करें और चलाएं"
 		}
 	},
 	"images": {

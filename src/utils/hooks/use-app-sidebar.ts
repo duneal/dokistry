@@ -22,6 +22,7 @@ export function useAppSidebar() {
 
 		if (url === "/account" && pathname === "/account") return true
 		if (url === "/users" && pathname === "/users") return true
+		if (url === "/garbage-collector" && pathname === "/garbage-collector") return true
 
 		return url === pathname
 	}

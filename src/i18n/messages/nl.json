@@ -66,7 +66,9 @@
 		"unexpectedError": "Er is een onverwachte fout opgetreden"
 	},
 	"sidebar": {
+		"general": "Algemeen",
 		"dashboard": "Dashboard",
+		"garbageCollector": "Garbage Collector",
 		"images": "Afbeeldingen",
 		"failedToLoad": "Laden van afbeeldingen mislukt",
 		"retry": "Opnieuw proberen"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Afbeeldingen",
 			"description": "Bekijk en beheer Docker afbeeldingen"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Haal scripts op om de garbage collector van A tot Z automatisch uit te voeren op basis van uw configuratie",
+		"searchPlaceholder": "Zoek implementatietypen...",
+		"copyScript": "Script kopiëren",
+		"scriptCopied": "Script gekopieerd naar klembord",
+		"scriptCopyFailed": "Script kopiëren mislukt",
+		"noResults": "Geen resultaten gevonden",
+		"docker": {
+			"title": "Docker",
+			"description": "Register geïmplementeerd via Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Register geïmplementeerd via Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Register geïmplementeerd via Coolify"
+		},
+		"status": {
+			"available": "Beschikbaar",
+			"notAvailable": "Niet beschikbaar",
+			"notYetDeveloped": "Nog niet ontwikkeld",
+			"inDevelopment": "In ontwikkeling"
+		},
+		"scriptDialog": {
+			"title": "Garbage Collector Script",
+			"description": "Kopieer en voer dit script uit om de garbage collector automatisch uit te voeren"
 		}
 	},
 	"images": {

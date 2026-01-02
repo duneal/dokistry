@@ -66,7 +66,9 @@
 		"unexpectedError": "Đã xảy ra lỗi không mong muốn"
 	},
 	"sidebar": {
+		"general": "Chung",
 		"dashboard": "Bảng điều khiển",
+		"garbageCollector": "Garbage Collector",
 		"images": "Hình ảnh",
 		"failedToLoad": "Không thể tải hình ảnh",
 		"retry": "Thử lại"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Hình ảnh",
 			"description": "Xem và quản lý hình ảnh Docker"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Lấy các script để tự động chạy garbage collector từ đầu đến cuối dựa trên cấu hình của bạn",
+		"searchPlaceholder": "Tìm kiếm loại triển khai...",
+		"copyScript": "Sao chép script",
+		"scriptCopied": "Script đã được sao chép vào clipboard",
+		"scriptCopyFailed": "Không thể sao chép script",
+		"noResults": "Không tìm thấy kết quả",
+		"docker": {
+			"title": "Docker",
+			"description": "Registry được triển khai qua Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Registry được triển khai qua Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Registry được triển khai qua Coolify"
+		},
+		"status": {
+			"available": "Có sẵn",
+			"notAvailable": "Không có sẵn",
+			"notYetDeveloped": "Chưa được phát triển",
+			"inDevelopment": "Đang phát triển"
+		},
+		"scriptDialog": {
+			"title": "Script Garbage Collector",
+			"description": "Sao chép và chạy script này để tự động chạy garbage collector"
 		}
 	},
 	"images": {

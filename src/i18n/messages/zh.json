@@ -58,7 +58,9 @@
 		"unexpectedError": "发生意外错误"
 	},
 	"sidebar": {
+		"general": "常规",
 		"dashboard": "仪表板",
+		"garbageCollector": "Garbage Collector",
 		"images": "镜像",
 		"failedToLoad": "加载镜像失败",
 		"retry": "重试"
@@ -210,6 +212,37 @@
 		"images": {
 			"title": "镜像",
 			"description": "查看和管理 Docker 镜像"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "根据您的配置检索脚本以从头到尾自动运行垃圾收集器",
+		"searchPlaceholder": "搜索部署类型...",
+		"copyScript": "复制脚本",
+		"scriptCopied": "脚本已复制到剪贴板",
+		"scriptCopyFailed": "复制脚本失败",
+		"noResults": "未找到结果",
+		"docker": {
+			"title": "Docker",
+			"description": "通过 Docker 部署的注册表"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "通过 Dokploy 部署的注册表"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "通过 Coolify 部署的注册表"
+		},
+		"status": {
+			"available": "可用",
+			"notAvailable": "不可用",
+			"notYetDeveloped": "尚未开发",
+			"inDevelopment": "开发中"
+		},
+		"scriptDialog": {
+			"title": "垃圾收集器脚本",
+			"description": "复制并运行此脚本以自动运行垃圾收集器"
 		}
 	},
 	"images": {

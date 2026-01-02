@@ -66,7 +66,9 @@
 		"unexpectedError": "Došlo k neočekávané chybě"
 	},
 	"sidebar": {
+		"general": "Obecné",
 		"dashboard": "Nástěnka",
+		"garbageCollector": "Garbage Collector",
 		"images": "Obrázky",
 		"failedToLoad": "Nepodařilo se načíst obrázky",
 		"retry": "Zkusit znovu"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Obrázky",
 			"description": "Zobrazit a spravovat Docker obrázky"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Načtěte skripty pro automatické spuštění garbage collectoru od A do Z na základě vaší konfigurace",
+		"searchPlaceholder": "Hledat typy nasazení...",
+		"copyScript": "Kopírovat skript",
+		"scriptCopied": "Skript zkopírován do schránky",
+		"scriptCopyFailed": "Nepodařilo se zkopírovat skript",
+		"noResults": "Nebyly nalezeny žádné výsledky",
+		"docker": {
+			"title": "Docker",
+			"description": "Registr nasazený přes Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Registr nasazený přes Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Registr nasazený přes Coolify"
+		},
+		"status": {
+			"available": "Dostupné",
+			"notAvailable": "Nedostupné",
+			"notYetDeveloped": "Ještě nevyvinuto",
+			"inDevelopment": "Ve vývoji"
+		},
+		"scriptDialog": {
+			"title": "Skript Garbage Collector",
+			"description": "Zkopírujte a spusťte tento skript pro automatické spuštění garbage collectoru"
 		}
 	},
 	"images": {

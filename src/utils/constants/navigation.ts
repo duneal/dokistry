@@ -3,4 +3,5 @@ export const MIDDLE_OFFICE_PATHS = {
 	IMAGES: "/images",
 	USERS: "/users",
 	ACCOUNT: "/account",
+	GARBAGE_COLLECTOR: "/garbage-collector",
 }

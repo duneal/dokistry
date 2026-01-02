@@ -66,7 +66,9 @@
 		"unexpectedError": "Произошла неожиданная ошибка"
 	},
 	"sidebar": {
+		"general": "Общее",
 		"dashboard": "Панель управления",
+		"garbageCollector": "Garbage Collector",
 		"images": "Изображения",
 		"failedToLoad": "Не удалось загрузить изображения",
 		"retry": "Повторить"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Изображения",
 			"description": "Просматривайте и управляйте изображениями Docker"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Получите скрипты для автоматического запуска сборщика мусора от А до Я на основе вашей конфигурации",
+		"searchPlaceholder": "Поиск типов развертывания...",
+		"copyScript": "Копировать скрипт",
+		"scriptCopied": "Скрипт скопирован в буфер обмена",
+		"scriptCopyFailed": "Не удалось скопировать скрипт",
+		"noResults": "Результаты не найдены",
+		"docker": {
+			"title": "Docker",
+			"description": "Реестр развернут через Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Реестр развернут через Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Реестр развернут через Coolify"
+		},
+		"status": {
+			"available": "Доступно",
+			"notAvailable": "Недоступно",
+			"notYetDeveloped": "Еще не разработано",
+			"inDevelopment": "В разработке"
+		},
+		"scriptDialog": {
+			"title": "Скрипт Garbage Collector",
+			"description": "Скопируйте и запустите этот скрипт, чтобы автоматически запустить сборщик мусора"
 		}
 	},
 	"images": {

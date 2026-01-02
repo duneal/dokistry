@@ -66,7 +66,9 @@
 		"unexpectedError": "Ein unerwarteter Fehler ist aufgetreten"
 	},
 	"sidebar": {
+		"general": "Allgemein",
 		"dashboard": "Dashboard",
+		"garbageCollector": "Garbage Collector",
 		"images": "Bilder",
 		"failedToLoad": "Bilder konnten nicht geladen werden",
 		"retry": "Wiederholen"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Bilder",
 			"description": "Docker-Bilder anzeigen und verwalten"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Rufen Sie Skripte ab, um den Garbage Collector von A bis Z basierend auf Ihrer Konfiguration automatisch auszuführen",
+		"searchPlaceholder": "Bereitstellungstypen suchen...",
+		"copyScript": "Skript kopieren",
+		"scriptCopied": "Skript in die Zwischenablage kopiert",
+		"scriptCopyFailed": "Skript konnte nicht kopiert werden",
+		"noResults": "Keine Ergebnisse gefunden",
+		"docker": {
+			"title": "Docker",
+			"description": "Registrierung über Docker bereitgestellt"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Registrierung über Dokploy bereitgestellt"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Registrierung über Coolify bereitgestellt"
+		},
+		"status": {
+			"available": "Verfügbar",
+			"notAvailable": "Nicht verfügbar",
+			"notYetDeveloped": "Noch nicht entwickelt",
+			"inDevelopment": "In Entwicklung"
+		},
+		"scriptDialog": {
+			"title": "Garbage Collector Skript",
+			"description": "Kopieren und ausführen Sie dieses Skript, um den Garbage Collector automatisch auszuführen"
 		}
 	},
 	"images": {

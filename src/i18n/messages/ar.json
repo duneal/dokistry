@@ -58,7 +58,9 @@
 		"unexpectedError": "حدث خطأ غير متوقع"
 	},
 	"sidebar": {
+		"general": "عام",
 		"dashboard": "لوحة التحكم",
+		"garbageCollector": "Garbage Collector",
 		"images": "الصور",
 		"failedToLoad": "فشل تحميل الصور",
 		"retry": "إعادة المحاولة"
@@ -210,6 +212,37 @@
 		"images": {
 			"title": "الصور",
 			"description": "عرض وإدارة صور Docker"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "استرجع البرامج النصية لتشغيل جامع القمامة تلقائيًا من الألف إلى الياء بناءً على التكوين الخاص بك",
+		"searchPlaceholder": "البحث عن أنواع النشر...",
+		"copyScript": "نسخ البرنامج النصي",
+		"scriptCopied": "تم نسخ البرنامج النصي إلى الحافظة",
+		"scriptCopyFailed": "فشل نسخ البرنامج النصي",
+		"noResults": "لم يتم العثور على نتائج",
+		"docker": {
+			"title": "Docker",
+			"description": "السجل الموزع عبر Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "السجل الموزع عبر Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "السجل الموزع عبر Coolify"
+		},
+		"status": {
+			"available": "متاح",
+			"notAvailable": "غير متاح",
+			"notYetDeveloped": "لم يتم تطويره بعد",
+			"inDevelopment": "قيد التطوير"
+		},
+		"scriptDialog": {
+			"title": "برنامج Garbage Collector النصي",
+			"description": "انسخ وقم بتشغيل هذا البرنامج النصي لتشغيل جامع القمامة تلقائيًا"
 		}
 	},
 	"images": {

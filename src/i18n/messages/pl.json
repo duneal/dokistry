@@ -66,7 +66,9 @@
 		"unexpectedError": "Wystąpił nieoczekiwany błąd"
 	},
 	"sidebar": {
+		"general": "Ogólne",
 		"dashboard": "Panel",
+		"garbageCollector": "Garbage Collector",
 		"images": "Obrazy",
 		"failedToLoad": "Nie udało się załadować obrazów",
 		"retry": "Spróbuj ponownie"
@@ -218,6 +220,37 @@
 		"images": {
 			"title": "Obrazy",
 			"description": "Wyświetlaj i zarządzaj obrazami Docker"
+		}
+	},
+	"garbageCollector": {
+		"title": "Garbage Collector",
+		"description": "Pobierz skrypty, aby automatycznie uruchomić garbage collector od A do Z na podstawie konfiguracji",
+		"searchPlaceholder": "Szukaj typów wdrożenia...",
+		"copyScript": "Kopiuj skrypt",
+		"scriptCopied": "Skrypt skopiowany do schowka",
+		"scriptCopyFailed": "Nie udało się skopiować skryptu",
+		"noResults": "Nie znaleziono wyników",
+		"docker": {
+			"title": "Docker",
+			"description": "Rejestr wdrożony przez Docker"
+		},
+		"dokploy": {
+			"title": "Dokploy",
+			"description": "Rejestr wdrożony przez Dokploy"
+		},
+		"coolify": {
+			"title": "Coolify",
+			"description": "Rejestr wdrożony przez Coolify"
+		},
+		"status": {
+			"available": "Dostępny",
+			"notAvailable": "Niedostępny",
+			"notYetDeveloped": "Jeszcze nie opracowany",
+			"inDevelopment": "W rozwoju"
+		},
+		"scriptDialog": {
+			"title": "Skrypt Garbage Collector",
+			"description": "Skopiuj i uruchom ten skrypt, aby automatycznie uruchomić garbage collector"
 		}
 	},
 	"images": {
