@@ -21,8 +21,27 @@ Make sure you have Docker and Docker Compose installed. Then:
 ```bash
 git clone https://github.com/duneal/dokistry.git
 cd dokistry
+```
+
+### Option 1: Quick Start (Development)
+
+For development, create a `.env` file based on `.env.dev.example`:
+
+```bash
+cp .env.dev.example .env
+docker compose watch
+```
+
+### Option 2: Production Setup
+
+For production, create a `.env` file based on `.env.prod.example`:
+
+```bash
+cp .env.prod.example .env
 docker compose -f docker-compose.prod.yml up -d
 ```
+
+**Note:** The production compose file now includes default values for PostgreSQL (for testing purposes). For production deployments, always set secure values in your `.env` file.
 
 Your application will be available at http://localhost:3000.
 
