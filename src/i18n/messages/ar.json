@@ -259,6 +259,8 @@
 		"tag": "علامة",
 		"tags": "العلامات",
 		"size": "الحجم",
+		"registrySize": "حجم السجل",
+		"estimatedSize": "الحجم بعد فك الضغط (تقدير)",
 		"lastModified": "آخر تعديل",
 		"creationTime": "وقت الإنشاء",
 		"actions": "الإجراءات",
@@ -283,7 +285,8 @@
 		"pleaseWait": "يرجى الانتظار بينما نعالج طلبك",
 		"deletionCancelled": "تم إلغاء الحذف",
 		"noTagsDeleted": "لم يتم حذف أي علامات",
-		"unknownError": "حدث خطأ غير معروف"
+		"unknownError": "حدث خطأ غير معروف",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "تبديل المظهر"

@@ -60,6 +60,7 @@ export interface TagWithSize {
 	name: string
 	size: number
 	compressedSize: number
+	estimatedDecompressedSize: number
 	layers: number
 	createdAt?: string
 }

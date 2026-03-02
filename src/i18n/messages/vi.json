@@ -267,6 +267,8 @@
 		"tag": "Thẻ",
 		"tags": "Thẻ",
 		"size": "Kích thước",
+		"registrySize": "Kích thước registry",
+		"estimatedSize": "Kích thước giải nén (ước tính)",
 		"lastModified": "Sửa đổi lần cuối",
 		"creationTime": "Thời gian tạo",
 		"actions": "Hành động",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Vui lòng đợi trong khi chúng tôi xử lý yêu cầu của bạn",
 		"deletionCancelled": "Đã hủy xóa",
 		"noTagsDeleted": "Không có thẻ nào bị xóa",
-		"unknownError": "Đã xảy ra lỗi không xác định"
+		"unknownError": "Đã xảy ra lỗi không xác định",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Chuyển đổi giao diện"

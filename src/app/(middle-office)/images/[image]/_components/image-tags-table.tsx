@@ -7,6 +7,7 @@ import {
 	CalendarDays,
 	HardDrive,
 	MoreHorizontal,
+	PackageOpen,
 	Search,
 	Tag,
 	Trash2,
@@ -61,6 +62,27 @@ const formatRelativeTime = (date: Date) => {
 	}
 
 	return formatDistanceToNow(date, { addSuffix: true, includeSeconds: true })
+}
+
+const parseVersion = (name: string): number[] | null => {
+	const cleaned = name.replace(/^v/i, "")
+	const parts = cleaned.split(".")
+	if (parts.length < 2 || parts.some((p) => !/^\d+$/.test(p))) return null
+	return parts.map(Number)
+}
+
+const compareVersions = (a: number[], b: number[]): number => {
+	const len = Math.max(a.length, b.length)
+	for (let i = 0; i < len; i++) {
+		const diff = (a[i] ?? 0) - (b[i] ?? 0)
+		if (diff !== 0) return diff
+	}
+	return 0
+}
+
+const getPrimaryTagName = (tags: TagWithDateAndSize[]): string => {
+	const versionTag = tags.find((t) => !t.isLatest && parseVersion(t.name))
+	return versionTag?.name ?? tags[0]?.name ?? ""
 }
 
 const getTagVariant = (tag: TagWithDateAndSize) => {
@@ -141,6 +163,24 @@ export default function ImageTagsTable({
 					))}
 				</div>
 			),
+			sortingFn: (rowA, rowB) => {
+				const nameA = getPrimaryTagName(rowA.original.tags)
+				const nameB = getPrimaryTagName(rowB.original.tags)
+
+				const hasLatestA = rowA.original.tags.some((t) => t.isLatest)
+				const hasLatestB = rowB.original.tags.some((t) => t.isLatest)
+				if (hasLatestA && !hasLatestB) return 1
+				if (!hasLatestA && hasLatestB) return -1
+
+				const verA = parseVersion(nameA)
+				const verB = parseVersion(nameB)
+
+				if (verA && verB) return compareVersions(verA, verB)
+				if (verA) return 1
+				if (verB) return -1
+
+				return nameA.localeCompare(nameB)
+			},
 			filterFn: (row, _id, value) => {
 				const tags = row.original.tags as TagWithDateAndSize[]
 				const searchValue = (value as string)?.toLowerCase() || ""
@@ -167,7 +207,7 @@ export default function ImageTagsTable({
 				const isUnset = value instanceof Date && value.getTime() === 0
 				return (
 					<span className="text-sm text-muted-foreground">
-						{!value || isUnset ? "-" : formatRelativeTime(value)}
+						{!value || isUnset ? t("notAvailable") : formatRelativeTime(value)}
 					</span>
 				)
 			},
@@ -182,11 +222,41 @@ export default function ImageTagsTable({
 					className="-ml-4"
 				>
 					<HardDrive className="size-4" />
-					{t("size")}
+					{t("registrySize")}
 					<ArrowUpDown className="ml-2 size-3" />
 				</Button>
 			),
-			cell: ({ row }) => <span className="text-sm">{formatFileSize(row.getValue("size"))}</span>,
+			cell: ({ row }) => {
+				const value = row.getValue("size") as number
+				return (
+					<span className="text-sm text-muted-foreground">
+						{value > 0 ? formatFileSize(value) : t("notAvailable")}
+					</span>
+				)
+			},
+		},
+		{
+			accessorKey: "estimatedDecompressedSize",
+			header: ({ column }) => (
+				<Button
+					variant="ghost"
+					size="xs"
+					onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+					className="-ml-4"
+				>
+					<PackageOpen className="size-4" />
+					{t("estimatedSize")}
+					<ArrowUpDown className="ml-2 size-3" />
+				</Button>
+			),
+			cell: ({ row }) => {
+				const value = row.getValue("estimatedDecompressedSize") as number
+				return (
+					<span className="text-sm text-muted-foreground">
+						{value > 0 ? `~${formatFileSize(value)}` : "-"}
+					</span>
+				)
+			},
 		},
 		{
 			id: "actions",

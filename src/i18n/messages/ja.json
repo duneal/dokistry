@@ -267,6 +267,8 @@
 		"tag": "タグ",
 		"tags": "タグ",
 		"size": "サイズ",
+		"registrySize": "レジストリサイズ",
+		"estimatedSize": "展開後サイズ（推定）",
 		"lastModified": "最終更新",
 		"creationTime": "作成日時",
 		"actions": "操作",
@@ -291,7 +293,8 @@
 		"pleaseWait": "リクエストを処理中です。お待ちください",
 		"deletionCancelled": "削除がキャンセルされました",
 		"noTagsDeleted": "タグは削除されませんでした",
-		"unknownError": "不明なエラーが発生しました"
+		"unknownError": "不明なエラーが発生しました",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "テーマを切り替え"

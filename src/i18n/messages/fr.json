@@ -261,6 +261,8 @@
 		"tag": "tag",
 		"tags": "Tags",
 		"size": "Taille",
+		"registrySize": "Taille registry",
+		"estimatedSize": "Taille décompressée (est.)",
 		"lastModified": "Dernière modification",
 		"creationTime": "Date de création",
 		"actions": "Actions",
@@ -285,7 +287,8 @@
 		"pleaseWait": "Veuillez patienter pendant le traitement de votre demande",
 		"deletionCancelled": "Suppression annulée",
 		"noTagsDeleted": "Aucun tag n'a été supprimé",
-		"unknownError": "Une erreur inconnue s'est produite"
+		"unknownError": "Une erreur inconnue s'est produite",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Basculer le thème"

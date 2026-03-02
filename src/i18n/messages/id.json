@@ -267,6 +267,8 @@
 		"tag": "Tag",
 		"tags": "Tag",
 		"size": "Ukuran",
+		"registrySize": "Ukuran registry",
+		"estimatedSize": "Perkiraan ukuran dekompresi",
 		"lastModified": "Terakhir Dimodifikasi",
 		"creationTime": "Waktu pembuatan",
 		"actions": "Tindakan",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Harap tunggu sementara kami memproses permintaan Anda",
 		"deletionCancelled": "Penghapusan dibatalkan",
 		"noTagsDeleted": "Tidak ada tag yang dihapus",
-		"unknownError": "Terjadi kesalahan yang tidak diketahui"
+		"unknownError": "Terjadi kesalahan yang tidak diketahui",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Alihkan tema"

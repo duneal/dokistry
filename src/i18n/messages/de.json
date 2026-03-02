@@ -267,6 +267,8 @@
 		"tag": "Tag",
 		"tags": "Tags",
 		"size": "Größe",
+		"registrySize": "Registry-Größe",
+		"estimatedSize": "Dekomprimierte Größe (gesch.)",
 		"lastModified": "Zuletzt geändert",
 		"creationTime": "Erstellungszeit",
 		"actions": "Aktionen",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Bitte warten Sie, während wir Ihre Anfrage bearbeiten",
 		"deletionCancelled": "Löschung abgebrochen",
 		"noTagsDeleted": "Keine Tags wurden gelöscht",
-		"unknownError": "Ein unbekannter Fehler ist aufgetreten"
+		"unknownError": "Ein unbekannter Fehler ist aufgetreten",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Design umschalten"

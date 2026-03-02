@@ -267,6 +267,8 @@
 		"tag": "Tag",
 		"tags": "Tags",
 		"size": "Size",
+		"registrySize": "Registry size",
+		"estimatedSize": "Est. decompressed",
 		"lastModified": "Last Modified",
 		"creationTime": "Creation time",
 		"actions": "Actions",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Please wait while we process your request",
 		"deletionCancelled": "Deletion cancelled",
 		"noTagsDeleted": "No tags were deleted",
-		"unknownError": "Unknown error occurred"
+		"unknownError": "Unknown error occurred",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Toggle theme"

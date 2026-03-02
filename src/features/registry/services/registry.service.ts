@@ -1,4 +1,5 @@
 import axios, { type AxiosResponse } from "axios"
+import { createHash } from "crypto"
 import { REGISTRY_CONFIG, validateRegistryConfig } from "@/utils/constants/registry"
 import type {
 	DockerRegistryCatalogResponse,
@@ -8,6 +9,17 @@ import type {
 	Repository,
 	TagWithSize,
 } from "@/utils/types/registry.interface"
+
+const ESTIMATED_DECOMPRESSION_RATIO = 3.5
+
+const MANIFEST_ACCEPT_HEADER = [
+	"application/vnd.docker.distribution.manifest.v2+json",
+	"application/vnd.docker.distribution.manifest.list.v2+json",
+	"application/vnd.oci.image.manifest.v1+json",
+	"application/vnd.oci.image.index.v1+json",
+	"application/vnd.docker.distribution.manifest.v1+json",
+	"application/vnd.docker.distribution.manifest.v1+prettyjws",
+].join(", ")
 
 class RegistryService {
 	private baseUrl: string | null = null
@@ -42,7 +54,7 @@ class RegistryService {
 					Authorization: `Basic ${this.auth}`,
 					Accept: customAccept || "application/json",
 				},
-				timeout: 5000, // 5 second timeout
+				timeout: 5000,
 			})
 
 			return response.data
@@ -55,7 +67,7 @@ class RegistryService {
 					throw new Error("Access forbidden: Insufficient permissions")
 				}
 				if (error.response?.status === 404) {
-					throw new Error("Registry endpoint not found")
+					throw new Error(`Resource not found: ${endpoint}`)
 				}
 				if (error.code === "ECONNABORTED") {
 					throw new Error("Registry request failed: timeout exceeded")
@@ -73,9 +85,9 @@ class RegistryService {
 			await axios.delete(`${this.baseUrl}${endpoint}`, {
 				headers: {
 					Authorization: `Basic ${this.auth}`,
-					Accept: "application/json",
+					Accept: MANIFEST_ACCEPT_HEADER,
 				},
-				timeout: 10000, // 10 second timeout for delete operations
+				timeout: 10000,
 			})
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
@@ -103,41 +115,45 @@ class RegistryService {
 	async getManifestDigest(repositoryName: string, tag: string): Promise<string> {
 		this.initializeConfig()
 
+		const url = `${this.baseUrl}/v2/${repositoryName}/manifests/${tag}`
+		const headers = {
+			Authorization: `Basic ${this.auth}`,
+			Accept: MANIFEST_ACCEPT_HEADER,
+		}
+
 		try {
-			const response = await axios.head(`${this.baseUrl}/v2/${repositoryName}/manifests/${tag}`, {
-				headers: {
-					Authorization: `Basic ${this.auth}`,
-					Accept: "application/vnd.docker.distribution.manifest.v2+json",
-				},
-				timeout: 5000,
+			const headResponse = await axios.head(url, { headers, timeout: 5000 })
+			const digest =
+				headResponse.headers["docker-content-digest"] ||
+				headResponse.headers["content-digest"] ||
+				headResponse.headers.digest
+			if (digest) return digest
+		} catch (error) {
+			if (axios.isAxiosError(error) && error.response?.status !== 405) {
+				console.warn(`HEAD manifest digest failed for ${repositoryName}:${tag}: ${error.message}`)
+			}
+		}
+
+		try {
+			const response = await axios.get(url, {
+				headers,
+				timeout: 10000,
+				transformResponse: [(data: string) => data],
 			})
 
-			console.log("Manifest HEAD response headers:", response.headers)
+			const digest =
+				response.headers["docker-content-digest"] ||
+				response.headers["content-digest"] ||
+				response.headers.digest
+			if (digest) return digest
 
-			const digest = response.headers["docker-content-digest"]
-			console.log("Extracted digest:", digest)
-
-			if (!digest) {
-				// Try alternative header names
-				const altDigest =
-					response.headers["Docker-Content-Digest"] ||
-					response.headers["content-digest"] ||
-					response.headers.digest
-				console.log("Alternative digest:", altDigest)
-
-				if (altDigest) {
-					return altDigest
-				}
-
-				throw new Error("Unable to get manifest digest from registry")
-			}
-
-			return digest
+			const rawBody =
+				typeof response.data === "string" ? response.data : JSON.stringify(response.data)
+			return `sha256:${createHash("sha256").update(rawBody, "utf8").digest("hex")}`
 		} catch (error) {
-			console.error("Error getting manifest digest:", error)
 			if (axios.isAxiosError(error)) {
 				if (error.response?.status === 404) {
-					throw new Error("Tag not found")
+					throw new Error(`Manifest not found for tag: ${tag}`)
 				}
 				throw new Error(`Failed to get manifest digest: ${error.message}`)
 			}
@@ -171,7 +187,7 @@ class RegistryService {
 		try {
 			const response = await this.makeRequest<ImageManifest>(
 				`/v2/${repositoryName}/manifests/${tag}`,
-				"application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.oci.image.index.v1+json",
+				MANIFEST_ACCEPT_HEADER,
 			)
 
 			return response
@@ -191,52 +207,51 @@ class RegistryService {
 			let totalSize = 0
 			let compressedSize = 0
 
-			// Check if this is Docker Registry v1 format (schema version 1)
 			if (manifest.schemaVersion === 1) {
-				// For v1 manifests, fetch actual blob sizes from the registry
 				if (manifest.fsLayers && manifest.fsLayers.length > 0) {
+					const uniqueBlobs = [...new Set(manifest.fsLayers.map((l) => l.blobSum))]
+
 					try {
-						// Try to fetch actual blob sizes
-						const blobSizes = await Promise.all(
-							manifest.fsLayers.map(async (fsLayer) => {
+						this.initializeConfig()
+						const blobSizeMap = new Map<string, number>()
+						await Promise.all(
+							uniqueBlobs.map(async (blobSum) => {
 								try {
-									this.initializeConfig()
 									const headResponse = await axios.head(
-										`${this.baseUrl}/v2/${repositoryName}/blobs/${fsLayer.blobSum}`,
+										`${this.baseUrl}/v2/${repositoryName}/blobs/${blobSum}`,
 										{
 											headers: {
 												Authorization: `Basic ${this.auth}`,
+												"User-Agent": "Dokistry/1.0",
 											},
-											timeout: 5000,
+											timeout: 10000,
 										},
 									)
 									const contentLength = headResponse.headers["content-length"]
-									return contentLength ? parseInt(contentLength, 10) : 0
+									blobSizeMap.set(blobSum, contentLength ? parseInt(contentLength, 10) : 0)
 								} catch {
-									return 0
+									blobSizeMap.set(blobSum, 0)
 								}
 							}),
 						)
 
-						totalSize = blobSizes.reduce((sum, size) => sum + size, 0)
+						totalSize = uniqueBlobs.reduce((sum, b) => sum + (blobSizeMap.get(b) || 0), 0)
 						compressedSize = totalSize
 
-						layers = manifest.fsLayers.map((fsLayer, index) => ({
+						layers = uniqueBlobs.map((blobSum) => ({
 							mediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
-							size: blobSizes[index],
-							digest: fsLayer.blobSum,
+							size: blobSizeMap.get(blobSum) || 0,
+							digest: blobSum,
 						}))
 					} catch {
-						// Fallback to reasonable estimation if blob fetching fails
-						// Use a much smaller per-layer estimate based on typical compressed layer sizes
-						const estimatedSizePerLayer = 10 * 1024 * 1024 // 10MB per layer (more realistic)
-						totalSize = manifest.fsLayers.length * estimatedSizePerLayer
+						const estimatedSizePerLayer = 10 * 1024 * 1024
+						totalSize = uniqueBlobs.length * estimatedSizePerLayer
 						compressedSize = totalSize
 
-						layers = manifest.fsLayers.map((fsLayer) => ({
+						layers = uniqueBlobs.map((blobSum) => ({
 							mediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
 							size: estimatedSizePerLayer,
-							digest: fsLayer.blobSum,
+							digest: blobSum,
 						}))
 					}
 				}
@@ -281,15 +296,16 @@ class RegistryService {
 				name: tag,
 				size: totalSize,
 				compressedSize: compressedSize,
+				estimatedDecompressedSize: Math.round(totalSize * ESTIMATED_DECOMPRESSION_RATIO),
 				layers: layers.length,
 			}
 		} catch (error) {
 			console.error(`Failed to get size for ${repositoryName}:${tag}:`, error)
-			// Return default values if manifest fetch fails
 			return {
 				name: tag,
 				size: 0,
 				compressedSize: 0,
+				estimatedDecompressedSize: 0,
 				layers: 0,
 			}
 		}
@@ -319,6 +335,7 @@ class RegistryService {
 										name: tag,
 										size: 0,
 										compressedSize: 0,
+										estimatedDecompressedSize: 0,
 										layers: 0,
 									}
 								}

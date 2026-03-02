@@ -267,6 +267,8 @@
 		"tag": "Štítek",
 		"tags": "Štítky",
 		"size": "Velikost",
+		"registrySize": "Velikost v registru",
+		"estimatedSize": "Odhadovaná dekomprimovaná velikost",
 		"lastModified": "Naposledy Upraveno",
 		"creationTime": "Čas vytvoření",
 		"actions": "Akce",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Počkejte prosím, zpracováváme váš požadavek",
 		"deletionCancelled": "Mazání zrušeno",
 		"noTagsDeleted": "Nebyly smazány žádné štítky",
-		"unknownError": "Došlo k neznámé chybě"
+		"unknownError": "Došlo k neznámé chybě",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Přepnout motiv"

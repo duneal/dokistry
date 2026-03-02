@@ -261,6 +261,8 @@
 		"tag": "etiqueta",
 		"tags": "etiquetas",
 		"size": "Tamaño",
+		"registrySize": "Tamaño registry",
+		"estimatedSize": "Tamaño descomprimido (est.)",
 		"lastModified": "Última modificación",
 		"creationTime": "Fecha de creación",
 		"actions": "Acciones",
@@ -285,7 +287,8 @@
 		"pleaseWait": "Por favor espere mientras procesamos su solicitud",
 		"deletionCancelled": "Eliminación cancelada",
 		"noTagsDeleted": "No se eliminaron etiquetas",
-		"unknownError": "Ocurrió un error desconocido"
+		"unknownError": "Ocurrió un error desconocido",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Alternar tema"

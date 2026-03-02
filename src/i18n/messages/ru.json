@@ -267,6 +267,8 @@
 		"tag": "Тег",
 		"tags": "Теги",
 		"size": "Размер",
+		"registrySize": "Размер в реестре",
+		"estimatedSize": "Размер после распаковки (прибл.)",
 		"lastModified": "Последнее Изменение",
 		"creationTime": "Время создания",
 		"actions": "Действия",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Пожалуйста, подождите, пока мы обрабатываем ваш запрос",
 		"deletionCancelled": "Удаление отменено",
 		"noTagsDeleted": "Теги не были удалены",
-		"unknownError": "Произошла неизвестная ошибка"
+		"unknownError": "Произошла неизвестная ошибка",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Переключить тему"

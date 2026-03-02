@@ -267,6 +267,8 @@
 		"tag": "Тег",
 		"tags": "Теги",
 		"size": "Розмір",
+		"registrySize": "Розмір у реєстрі",
+		"estimatedSize": "Розмір після розпакування (прибл.)",
 		"lastModified": "Остання Зміна",
 		"creationTime": "Час створення",
 		"actions": "Дії",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Будь ласка, зачекайте, поки ми обробляємо ваш запит",
 		"deletionCancelled": "Видалення скасовано",
 		"noTagsDeleted": "Жодного тегу не видалено",
-		"unknownError": "Сталася невідома помилка"
+		"unknownError": "Сталася невідома помилка",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Перемкнути тему"

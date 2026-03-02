@@ -267,6 +267,8 @@
 		"tag": "태그",
 		"tags": "태그",
 		"size": "크기",
+		"registrySize": "레지스트리 크기",
+		"estimatedSize": "압축 해제 크기 (추정)",
 		"lastModified": "최종 수정",
 		"creationTime": "생성 시간",
 		"actions": "작업",
@@ -291,7 +293,8 @@
 		"pleaseWait": "요청을 처리하는 동안 기다려 주세요",
 		"deletionCancelled": "삭제 취소됨",
 		"noTagsDeleted": "태그가 삭제되지 않았습니다",
-		"unknownError": "알 수 없는 오류가 발생했습니다"
+		"unknownError": "알 수 없는 오류가 발생했습니다",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "테마 전환"

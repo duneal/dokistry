@@ -267,6 +267,8 @@
 		"tag": "Tag",
 		"tags": "Tags",
 		"size": "Tamanho",
+		"registrySize": "Tamanho registry",
+		"estimatedSize": "Tamanho descomprimido (est.)",
 		"lastModified": "Última Modificação",
 		"creationTime": "Hora de criação",
 		"actions": "Ações",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Por favor, aguarde enquanto processamos sua solicitação",
 		"deletionCancelled": "Exclusão cancelada",
 		"noTagsDeleted": "Nenhuma tag foi excluída",
-		"unknownError": "Ocorreu um erro desconhecido"
+		"unknownError": "Ocorreu um erro desconhecido",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Alternar tema"

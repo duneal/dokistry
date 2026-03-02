@@ -267,6 +267,8 @@
 		"tag": "Etiket",
 		"tags": "Etiketler",
 		"size": "Boyut",
+		"registrySize": "Registry boyutu",
+		"estimatedSize": "Tahmini açılmış boyut",
 		"lastModified": "Son Değiştirilme",
 		"creationTime": "Oluşturulma zamanı",
 		"actions": "İşlemler",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Lütfen isteğinizi işlerken bekleyin",
 		"deletionCancelled": "Silme iptal edildi",
 		"noTagsDeleted": "Hiçbir etiket silinmedi",
-		"unknownError": "Bilinmeyen bir hata oluştu"
+		"unknownError": "Bilinmeyen bir hata oluştu",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Temayı değiştir"

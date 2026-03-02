@@ -267,6 +267,8 @@
 		"tag": "Tagg",
 		"tags": "Taggar",
 		"size": "Storlek",
+		"registrySize": "Registerstorlek",
+		"estimatedSize": "Uppskattad dekomprimerad storlek",
 		"lastModified": "Senast Ändrad",
 		"creationTime": "Skapad tid",
 		"actions": "Åtgärder",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Vänta medan vi behandlar din begäran",
 		"deletionCancelled": "Radering avbruten",
 		"noTagsDeleted": "Inga taggar raderades",
-		"unknownError": "Ett okänt fel uppstod"
+		"unknownError": "Ett okänt fel uppstod",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Växla tema"

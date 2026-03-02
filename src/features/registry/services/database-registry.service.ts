@@ -1,4 +1,5 @@
 import axios, { type AxiosResponse } from "axios"
+import { createHash } from "crypto"
 import { getCurrentSelectedRegistry } from "@/utils/lib/auth-actions"
 import type {
 	DockerRegistryCatalogResponse,
@@ -9,6 +10,17 @@ import type {
 	TagWithSize,
 } from "@/utils/types/registry.interface"
 import type { IRegistryService } from "./registry-service.interface"
+
+const ESTIMATED_DECOMPRESSION_RATIO = 3.5
+
+const MANIFEST_ACCEPT_HEADER = [
+	"application/vnd.docker.distribution.manifest.v2+json",
+	"application/vnd.docker.distribution.manifest.list.v2+json",
+	"application/vnd.oci.image.manifest.v1+json",
+	"application/vnd.oci.image.index.v1+json",
+	"application/vnd.docker.distribution.manifest.v1+json",
+	"application/vnd.docker.distribution.manifest.v1+prettyjws",
+].join(", ")
 
 class DatabaseRegistryService implements IRegistryService {
 	private baseUrl: string | null = null
@@ -66,7 +78,7 @@ class DatabaseRegistryService implements IRegistryService {
 					Accept: customAccept || "application/json",
 					"User-Agent": "Dokistry/1.0",
 				},
-				timeout: 10000, // Increased timeout to 10 seconds
+				timeout: 10000,
 			})
 
 			return response.data
@@ -79,7 +91,7 @@ class DatabaseRegistryService implements IRegistryService {
 					throw new Error("Access forbidden: Insufficient permissions")
 				}
 				if (error.response?.status === 404) {
-					throw new Error("Registry endpoint not found")
+					throw new Error(`Resource not found: ${endpoint}`)
 				}
 				if (error.code === "ECONNABORTED") {
 					throw new Error("Registry request failed: timeout exceeded")
@@ -97,9 +109,9 @@ class DatabaseRegistryService implements IRegistryService {
 			await axios.delete(`${this.baseUrl}${endpoint}`, {
 				headers: {
 					Authorization: `Basic ${this.auth}`,
-					Accept: "application/json",
+					Accept: MANIFEST_ACCEPT_HEADER,
 				},
-				timeout: 10000, // 10 second timeout for delete operations
+				timeout: 10000,
 			})
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
@@ -110,14 +122,17 @@ class DatabaseRegistryService implements IRegistryService {
 					throw new Error("Access forbidden: Insufficient permissions")
 				}
 				if (error.response?.status === 404) {
-					throw new Error("Registry endpoint not found")
+					throw new Error("Manifest not found or already deleted")
+				}
+				if (error.response?.status === 405) {
+					throw new Error("Delete operation not supported by registry")
 				}
 				if (error.code === "ECONNABORTED") {
 					throw new Error("Registry request failed: timeout exceeded")
 				}
-				throw new Error(`Registry request failed: ${error.message}`)
+				throw new Error(`Delete request failed: ${error.message}`)
 			}
-			throw new Error("Unknown error occurred while connecting to registry")
+			throw new Error("Unknown error occurred while deleting from registry")
 		}
 	}
 
@@ -177,56 +192,55 @@ class DatabaseRegistryService implements IRegistryService {
 			let createdAt: string | undefined
 			let configDigest: string | undefined
 
-			// Check if this is Docker Registry v1 format (schema version 1)
 			if (manifest.schemaVersion === 1) {
-				// For v1 manifests, fetch actual blob sizes from the registry
 				if (manifest.fsLayers && manifest.fsLayers.length > 0) {
+					const uniqueBlobs = [...new Set(manifest.fsLayers.map((l) => l.blobSum))]
+
 					try {
-						// Try to fetch actual blob sizes
-						const blobSizes = await Promise.all(
-							manifest.fsLayers.map(async (fsLayer) => {
+						await this.initializeConfig()
+						const blobSizeMap = new Map<string, number>()
+						await Promise.all(
+							uniqueBlobs.map(async (blobSum) => {
 								try {
-									await this.initializeConfig()
 									const headResponse = await axios.head(
-										`${this.baseUrl}/v2/${repositoryName}/blobs/${fsLayer.blobSum}`,
+										`${this.baseUrl}/v2/${repositoryName}/blobs/${blobSum}`,
 										{
 											headers: {
 												Authorization: `Basic ${this.auth}`,
+												"User-Agent": "Dokistry/1.0",
 											},
-											timeout: 5000,
+											timeout: 10000,
 										},
 									)
 									const contentLength = headResponse.headers["content-length"]
-									return contentLength ? parseInt(contentLength, 10) : 0
+									blobSizeMap.set(blobSum, contentLength ? parseInt(contentLength, 10) : 0)
 								} catch {
-									return 0
+									blobSizeMap.set(blobSum, 0)
 								}
 							}),
 						)
 
-						totalSize = blobSizes.reduce((sum, size) => sum + size, 0)
+						totalSize = uniqueBlobs.reduce((sum, b) => sum + (blobSizeMap.get(b) || 0), 0)
 						compressedSize = totalSize
 
-						layers = manifest.fsLayers.map((fsLayer, index) => ({
+						layers = uniqueBlobs.map((blobSum) => ({
 							mediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
-							size: blobSizes[index],
-							digest: fsLayer.blobSum,
+							size: blobSizeMap.get(blobSum) || 0,
+							digest: blobSum,
 						}))
 					} catch {
-						// Fallback to reasonable estimation if blob fetching fails
-						// Use a much smaller per-layer estimate based on typical compressed layer sizes
-						const estimatedSizePerLayer = 10 * 1024 * 1024 // 10MB per layer (more realistic)
-						totalSize = manifest.fsLayers.length * estimatedSizePerLayer
+						const estimatedSizePerLayer = 10 * 1024 * 1024
+						totalSize = uniqueBlobs.length * estimatedSizePerLayer
 						compressedSize = totalSize
 
-						layers = manifest.fsLayers.map((fsLayer) => ({
+						layers = uniqueBlobs.map((blobSum) => ({
 							mediaType: "application/vnd.docker.image.rootfs.diff.tar.gzip",
 							size: estimatedSizePerLayer,
-							digest: fsLayer.blobSum,
+							digest: blobSum,
 						}))
 					}
 				}
-				// Try to read created date from history[0].v1Compatibility
+
 				if (manifest.history && manifest.history.length > 0) {
 					try {
 						const compat = JSON.parse(manifest.history[0].v1Compatibility)
@@ -292,16 +306,17 @@ class DatabaseRegistryService implements IRegistryService {
 				name: tag,
 				size: totalSize,
 				compressedSize: compressedSize,
+				estimatedDecompressedSize: Math.round(totalSize * ESTIMATED_DECOMPRESSION_RATIO),
 				layers: layers.length,
 				createdAt,
 			}
 		} catch (error) {
 			console.error(`Failed to fetch size for ${repositoryName}:${tag}:`, error)
-			// Return a fallback size if we can't get the actual size
 			return {
 				name: tag,
 				size: 0,
 				compressedSize: 0,
+				estimatedDecompressedSize: 0,
 				layers: 0,
 			}
 		}
@@ -311,7 +326,7 @@ class DatabaseRegistryService implements IRegistryService {
 		try {
 			const response = await this.makeRequest<ImageManifest>(
 				`/v2/${repositoryName}/manifests/${tag}`,
-				"application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.oci.image.manifest.v1+json, application/vnd.oci.image.index.v1+json",
+				MANIFEST_ACCEPT_HEADER,
 			)
 
 			return response
@@ -341,6 +356,7 @@ class DatabaseRegistryService implements IRegistryService {
 									name: tag,
 									size: 0,
 									compressedSize: 0,
+									estimatedDecompressedSize: 0,
 									layers: 0,
 								}
 							}
@@ -384,8 +400,7 @@ class DatabaseRegistryService implements IRegistryService {
 		const url = `${this.baseUrl}${endpoint}`
 		const headers = {
 			Authorization: `Basic ${this.auth}`,
-			Accept:
-				"application/vnd.docker.distribution.manifest.v2+json, application/vnd.docker.distribution.manifest.list.v2+json",
+			Accept: MANIFEST_ACCEPT_HEADER,
 			"User-Agent": "Dokistry/1.0",
 		}
 
@@ -443,25 +458,20 @@ class DatabaseRegistryService implements IRegistryService {
 		}
 
 		try {
-			const response = await axios.get<ImageManifest>(url, {
+			const response = await axios.get(url, {
 				headers,
 				timeout: 10000,
+				transformResponse: [(data: string) => data],
 			})
+
 			const digestFromHeaders = extractDigestFromHeaders(convertAxiosHeaders(response.headers))
 			if (digestFromHeaders) {
 				return digestFromHeaders
 			}
 
-			// As a last resort, fall back to manifest content digests if available
-			if (response.data?.config?.digest) {
-				return response.data.config.digest
-			}
-			if (response.data?.manifests && response.data.manifests.length > 0) {
-				const manifestDigest = response.data.manifests.find((manifest) => manifest.digest)?.digest
-				if (manifestDigest) {
-					return manifestDigest
-				}
-			}
+			const rawBody =
+				typeof response.data === "string" ? response.data : JSON.stringify(response.data)
+			return `sha256:${createHash("sha256").update(rawBody, "utf8").digest("hex")}`
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				if (error.response?.status === 401) {
@@ -471,7 +481,7 @@ class DatabaseRegistryService implements IRegistryService {
 					throw new Error("Access forbidden: Insufficient permissions")
 				}
 				if (error.response?.status === 404) {
-					throw new Error("Registry endpoint not found")
+					throw new Error(`Manifest not found for tag: ${tag}`)
 				}
 				if (error.code === "ECONNABORTED") {
 					throw new Error("Registry request failed: timeout exceeded")
@@ -480,8 +490,6 @@ class DatabaseRegistryService implements IRegistryService {
 			}
 			throw new Error("Unknown error occurred while connecting to registry")
 		}
-
-		throw new Error("Unable to extract digest from manifest")
 	}
 
 	async deleteTag(repositoryName: string, tag: string): Promise<void> {

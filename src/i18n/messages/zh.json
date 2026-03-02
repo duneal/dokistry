@@ -259,6 +259,8 @@
 		"tag": "标签",
 		"tags": "标签",
 		"size": "大小",
+		"registrySize": "仓库大小",
+		"estimatedSize": "解压后大小（估计）",
 		"lastModified": "最后修改",
 		"creationTime": "创建时间",
 		"actions": "操作",
@@ -283,7 +285,8 @@
 		"pleaseWait": "请稍候，我们正在处理您的请求",
 		"deletionCancelled": "删除已取消",
 		"noTagsDeleted": "未删除任何标签",
-		"unknownError": "发生未知错误"
+		"unknownError": "发生未知错误",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "切换主题"

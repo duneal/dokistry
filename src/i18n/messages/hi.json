@@ -267,6 +267,8 @@
 		"tag": "टैग",
 		"tags": "टैग",
 		"size": "आकार",
+		"registrySize": "रजिस्ट्री आकार",
+		"estimatedSize": "अनुमानित विघटित आकार",
 		"lastModified": "अंतिम संशोधन",
 		"creationTime": "निर्माण समय",
 		"actions": "क्रियाएं",
@@ -291,7 +293,8 @@
 		"pleaseWait": "कृपया प्रतीक्षा करें जबकि हम आपका अनुरोध संसाधित करते हैं",
 		"deletionCancelled": "हटाना रद्द कर दिया गया",
 		"noTagsDeleted": "कोई टैग हटाया नहीं गया",
-		"unknownError": "एक अज्ञात त्रुटि हुई"
+		"unknownError": "एक अज्ञात त्रुटि हुई",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "थीम टॉगल करें"

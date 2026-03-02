@@ -6,6 +6,7 @@ export interface TagWithDateAndSize {
 	date: Date
 	isLatest: boolean
 	size: number
+	estimatedDecompressedSize: number
 	layers: number
 	digest?: string
 }
@@ -14,6 +15,7 @@ export interface ManifestGroup {
 	manifestDigest: string
 	tags: TagWithDateAndSize[]
 	size: number
+	estimatedDecompressedSize: number
 	layers: number
 	date: Date
 }
@@ -138,6 +140,7 @@ export function useImageTagsTable({
 				}
 			}
 			const size = tagWithSize?.size || 0
+			const estimatedDecompressedSize = tagWithSize?.estimatedDecompressedSize || 0
 			const layers = tagWithSize?.layers || 0
 
 			const tagWithDigest = tagsWithDigests.find((t) => t.tag === tag)
@@ -148,6 +151,7 @@ export function useImageTagsTable({
 				date: date ?? new Date(0),
 				isLatest: tag === "latest",
 				size,
+				estimatedDecompressedSize,
 				layers,
 				digest,
 			}
@@ -169,6 +173,7 @@ export function useImageTagsTable({
 					manifestDigest: digest,
 					tags: [tag],
 					size: tag.size,
+					estimatedDecompressedSize: tag.estimatedDecompressedSize,
 					layers: tag.layers,
 					date: tag.date,
 				})

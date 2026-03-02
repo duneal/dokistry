@@ -267,6 +267,8 @@
 		"tag": "Tag",
 		"tags": "Tags",
 		"size": "Grootte",
+		"registrySize": "Registry-grootte",
+		"estimatedSize": "Geschatte gedecomprimeerde grootte",
 		"lastModified": "Laatst Gewijzigd",
 		"creationTime": "Aanmaaktijd",
 		"actions": "Acties",
@@ -291,7 +293,8 @@
 		"pleaseWait": "Wacht terwijl we uw verzoek verwerken",
 		"deletionCancelled": "Verwijdering geannuleerd",
 		"noTagsDeleted": "Geen tags zijn verwijderd",
-		"unknownError": "Er is een onbekende fout opgetreden"
+		"unknownError": "Er is een onbekende fout opgetreden",
+		"notAvailable": "N/A"
 	},
 	"toast": {
 		"toggleTheme": "Thema wisselen"
