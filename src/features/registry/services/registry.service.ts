@@ -209,7 +209,7 @@ class RegistryService {
 
 			if (manifest.schemaVersion === 1) {
 				if (manifest.fsLayers && manifest.fsLayers.length > 0) {
-					const uniqueBlobs = [...new Set(manifest.fsLayers.map((l) => l.blobSum))]
+					const uniqueBlobs = Array.from(new Set(manifest.fsLayers.map((l) => l.blobSum)))
 
 					try {
 						this.initializeConfig()
